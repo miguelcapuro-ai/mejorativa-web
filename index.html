@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Capacitación ejecutiva en Panamá para comunicar con claridad, negociar con intención y liderar con impacto. Programas Negociar sin Romper y Presentar sin Aburrir.">
+<meta name="theme-color" content="#0D2140">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PA">
+<meta property="og:title" content="Mejorativa by Miguel Capuro">
+<meta property="og:description" content="Sacudimos organizaciones elevando el potencial humano. Capacitación ejecutiva en negociación y presentaciones de alto impacto.">
+<meta property="og:image" content="img/og.jpg">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<title>Mejorativa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,100..125,300..700;1,100..125,300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&display=swap">
+<style>
+/* Lectura de diseño: landing de capacitación ejecutiva para líderes de Talento Humano y dirección en Panamá,
+   lenguaje editorial sobrio sobre blanco, con la "caja abierta" del logo como recurso de marca.
+   Diales: DESIGN_VARIANCE 7 · MOTION_INTENSITY 5 · VISUAL_DENSITY 3.
+   Forma: botones y chips en píldora; tarjetas con doble bisel (exterior 22px, núcleo 16px); fotos rectas dentro del marco de marca.
+   Tema único claro por preferencia del cliente (fondo blanco). */
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF; --surface:#F6F7F9; --line:#EAEAEA; --line-strong:#D9DDE3;
+  --ink:#0F2440; --text:#2B3442; --muted:#5F6878;
+  --frame:#13305A; --gold:#8E6B2F;
+  --chip-bg:#EAF1FA; --chip-ink:#1F4E80;
+  --f-display:"Fraunces", "Iowan Old Style", Georgia, serif;
+  --f-body:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --shadow-soft:0 1px 2px rgba(15,36,64,.04), 0 18px 40px -24px rgba(15,36,64,.18);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--frame);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:16px;top:-60px;z-index:50;background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:600}
+.skip:focus{top:16px}
+.wrap{width:100%;max-width:1240px;margin-inline:auto;padding-inline:clamp(16px,4vw,48px)}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;color:var(--ink);letter-spacing:-.02em;line-height:1.06;text-wrap:balance;margin:0;font-variation-settings:"opsz" 144}
+h2{font-size:clamp(2rem,4vw,3.3rem)}
+h3{font-size:clamp(1.6rem,2.5vw,2.1rem);line-height:1.1}
+em{font-style:italic}
+p{margin:0}
+.label{font-family:var(--f-body);font-stretch:118%;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mark{display:inline-block;background:currentColor;-webkit-mask:var(--src) no-repeat center/contain;mask:var(--src) no-repeat center/contain}
+.ico{width:1em;height:1em;flex:none;fill:currentColor}
+.num{font-variant-numeric:tabular-nums lining-nums}
+
+/* Nav: isla flotante */
+.top{position:fixed;inset-inline:0;top:calc(env(safe-area-inset-top,0px) + 16px);z-index:30;display:flex;justify-content:center;padding-inline:16px;pointer-events:none}
+.island{pointer-events:auto;display:flex;align-items:center;gap:clamp(16px,3vw,32px);padding:8px 8px 8px 22px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid var(--line);box-shadow:0 10px 30px -18px rgba(15,36,64,.25);max-width:100%}
+.wordmark{--src:url(img/wordmark-navy.png);width:132px;aspect-ratio:845/155;color:var(--ink)}
+.nav{display:flex;align-items:center;gap:24px;font-size:.9rem}
+.nav a:not(.btn){text-decoration:none;color:var(--muted);transition:color .3s var(--ease)}
+.nav a:not(.btn):hover{color:var(--ink)}
+.btn-ico{display:none}
+@media (max-width:880px){.nav a:not(.btn){display:none}}
+@media (max-width:480px){.nav .btn{display:none}.btn-ico{display:grid}}
+
+/* Botones (botón dentro de botón) */
+.btn{display:inline-flex;align-items:center;gap:14px;padding:12px 12px 12px 22px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;border-radius:999px;white-space:nowrap;touch-action:manipulation;transition:transform .5s var(--ease),box-shadow .5s var(--ease),background-color .5s var(--ease)}
+.btn .arr{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.14);transition:transform .5s var(--ease)}
+.btn .arr .ico{width:15px;height:15px}
+.btn:hover{background:#18335A;box-shadow:0 14px 30px -14px rgba(15,36,64,.55)}
+.btn:hover .arr{transform:translate(3px,-2px) scale(1.05)}
+.btn:active{transform:scale(.98)}
+.btn.sm{padding:8px 8px 8px 16px;font-size:.85rem}
+.btn.sm .arr{width:26px;height:26px}
+.btn-ico{place-items:center;width:42px;height:42px;border-radius:50%;background:var(--ink);color:#fff;text-decoration:none}
+.btn-ico .ico{width:20px;height:20px}
+.link{font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:border-color .3s var(--ease)}
+.link:hover{border-color:var(--ink)}
+
+/* Hero */
+.hero{padding-top:calc(env(safe-area-inset-top,0px) + 132px);padding-bottom:clamp(72px,9vw,128px)}
+.hero h1{font-size:clamp(2.6rem,5.8vw,5.1rem);font-weight:340;line-height:1.02;letter-spacing:-.035em;max-width:15.5em}
+.hero h1 em{font-weight:400;color:var(--frame)}
+.hero-row{margin-top:clamp(32px,4vw,52px);display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(36px,6vw,88px);align-items:start}
+.hero .sub{max-width:34ch;font-size:clamp(1.12rem,1.5vw,1.28rem);line-height:1.55;color:var(--muted)}
+.hero .ctas{margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:18px 28px}
+.photo{position:relative;margin:0 18px 0 0}
+.photo .pic{position:relative;overflow:hidden;aspect-ratio:16/10.5;background:var(--surface)}
+.photo .pic img{width:100%;height:100%;object-fit:cover;object-position:60% 40%}
+.frame{position:absolute;inset:-16px;width:calc(100% + 32px);height:calc(100% + 32px);overflow:visible;pointer-events:none}
+.frame path{fill:none;stroke:var(--frame);stroke-width:2.5;vector-effect:non-scaling-stroke}
+.photo figcaption{margin-top:28px;font-size:.85rem;color:var(--muted)}
+@media (max-width:900px){.hero-row{grid-template-columns:1fr}.photo{margin-inline:16px}}
+
+/* Secciones */
+section{scroll-margin-top:96px}
+.sec{padding-block:clamp(88px,10vw,144px)}
+.sec.tint{background:var(--surface)}
+.head{max-width:780px}
+.head p{margin-top:20px;color:var(--muted);max-width:58ch;font-size:1.12rem}
+
+/* Costo */
+.cost-top{display:grid;grid-template-columns:1fr auto;gap:24px 56px;align-items:end}
+.cost-fig{text-align:right}
+.cost-fig .big{font-family:var(--f-display);font-weight:300;color:var(--ink);font-size:clamp(3rem,7vw,6.2rem);line-height:.95;letter-spacing:-.045em;white-space:nowrap}
+.cost-fig .per{display:block;margin-top:12px;color:var(--muted);font-size:.95rem}
+.pains{list-style:none;margin:clamp(44px,5vw,64px) 0 0;padding:28px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 36px}
+.pains li{display:grid;align-content:start;gap:14px;color:var(--text);line-height:1.5}
+.delta{width:18px;height:16px;color:var(--gold)}
+.why{margin-top:clamp(44px,5vw,64px);display:grid;grid-template-columns:auto 1fr;gap:12px 40px;align-items:baseline;max-width:980px}
+.why .q{font-family:var(--f-display);font-style:italic;font-size:clamp(1.5rem,2.4vw,2rem);color:var(--frame)}
+.why p{font-size:clamp(1.15rem,1.7vw,1.35rem);line-height:1.5;color:var(--ink);max-width:52ch}
+.why .note{grid-column:2;font-size:.82rem;color:var(--muted);line-height:1.5}
+@media (max-width:980px){.pains{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.cost-top{grid-template-columns:1fr}.cost-fig{text-align:left}.cost-fig .big{white-space:normal}.why{grid-template-columns:1fr}.why .note{grid-column:auto}}
+@media (max-width:520px){.pains{grid-template-columns:1fr}}
+
+/* Programas: doble bisel */
+.programs{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.6vw,32px)}
+.shell{padding:6px;border-radius:22px;background:var(--surface);border:1px solid var(--line);min-width:0;transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.core{height:100%;display:flex;flex-direction:column;gap:26px;padding:clamp(26px,3.2vw,42px);border-radius:16px;background:var(--bg);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 1px 2px rgba(15,36,64,.04)}
+.shell:hover{transform:translateY(-4px);box-shadow:var(--shadow-soft)}
+.promise{font-size:1.1rem;color:var(--muted);max-width:42ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font-size:.8rem;font-weight:500;padding:5px 12px;border-radius:999px;background:var(--chip-bg);color:var(--chip-ink)}
+.core h4{margin:0 0 14px;font-family:var(--f-body);font-size:.72rem;font-stretch:118%;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.dolores{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.dolores li{display:grid;grid-template-columns:20px 1fr;gap:12px;line-height:1.45}
+.dolores .delta{width:16px;height:14px;margin-top:4px}
+.dolores b{font-weight:600;color:var(--ink)}
+.dolores span{display:block;color:var(--muted);font-size:.95rem;margin-top:2px}
+.kpis{border-top:1px solid var(--line);padding-top:22px;margin-top:auto}
+.kpi{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding-block:8px}
+.kpi span{color:var(--muted);font-size:.95rem}
+.kpi strong{font-family:var(--f-display);font-weight:400;color:var(--ink);font-size:1.5rem;letter-spacing:-.02em;white-space:nowrap}
+.kpi strong i{font-style:normal;color:var(--gold);font-size:.8em;margin-right:4px}
+.footnote{margin-top:20px;font-size:.82rem;color:var(--muted)}
+.more{margin-top:clamp(40px,5vw,60px);display:grid;grid-template-columns:auto 1fr;gap:20px 48px;align-items:start;padding-top:28px;border-top:1px solid var(--line)}
+.more ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 40px}
+.more li b{display:block;font-weight:600;color:var(--ink)}
+.more li span{color:var(--muted);font-size:.95rem}
+@media (max-width:900px){.programs{grid-template-columns:1fr}.more{grid-template-columns:1fr}.more ul{grid-template-columns:1fr}}
+
+/* Método: foto panorámica + tres tiempos */
+.wide{position:relative;margin:clamp(44px,5vw,64px) 0 0}
+.wide img{width:100%;aspect-ratio:16/7;object-fit:cover;object-position:50% 45%}
+.wide figcaption{margin-top:14px;font-size:.85rem;color:var(--muted)}
+.steps{margin-top:clamp(40px,5vw,56px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px clamp(24px,4vw,56px)}
+.step{border-top:1px solid var(--ink);padding-top:20px}
+.step .when{display:block;font-family:var(--f-display);font-style:italic;font-size:1.4rem;color:var(--frame);margin-bottom:10px}
+.step b{display:block;color:var(--ink);font-weight:600;margin-bottom:6px}
+.step p{color:var(--muted)}
+.pull{margin-top:clamp(52px,6vw,80px);font-family:var(--f-display);font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.2;letter-spacing:-.02em;font-weight:340;color:var(--ink);max-width:28ch}
+.pull em{color:var(--gold)}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* Testimonios */
+.vgrid{margin-top:clamp(44px,5vw,64px);display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(28px,4vw,64px);align-items:start}
+.quote{margin:0;display:flex;flex-direction:column;gap:22px}
+.quote blockquote{margin:0;font-family:var(--f-display);font-weight:340;color:var(--ink);letter-spacing:-.015em;line-height:1.2}
+.quote.main{gap:32px}
+.quote.main blockquote{font-size:clamp(2rem,4vw,3.2rem);line-height:1.08}
+.quote.main blockquote::before{content:"\201C";display:block;font-size:2.2em;line-height:.6;color:var(--gold);margin-bottom:18px}
+.quote.side{padding-block:26px;border-top:1px solid var(--line-strong)}
+.quote.side blockquote{font-size:clamp(1.25rem,1.9vw,1.55rem)}
+.who b{display:block;font-weight:600;color:var(--ink)}
+.who span{color:var(--muted);font-size:.92rem}
+.editions{margin-top:clamp(52px,6vw,76px);display:grid;grid-template-columns:auto 1fr 1fr;gap:16px 48px;align-items:baseline;padding-top:26px;border-top:1px solid var(--line-strong)}
+.ed b{font-family:var(--f-display);font-weight:400;font-size:1.35rem;display:block;color:var(--ink);letter-spacing:-.01em}
+.ed span{color:var(--muted);font-size:.95rem}
+@media (max-width:900px){.vgrid{grid-template-columns:1fr}.editions{grid-template-columns:1fr}}
+
+/* Garantía: caja abierta a todo lo ancho */
+.boxed{position:relative;padding:clamp(32px,5vw,72px)}
+.boxed .frame{inset:0;width:100%;height:100%}
+.boxed h2{margin-top:16px;max-width:20ch;font-size:clamp(2.1rem,4.2vw,3.6rem)}
+.gtext{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px 56px;max-width:980px}
+.gtext p:first-child{font-size:1.18rem;color:var(--ink)}
+.gtext p:last-child{color:var(--muted)}
+.fit{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:36px clamp(32px,6vw,88px)}
+.fit h3{font-size:1.55rem}
+.fit ul{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px}
+.fit li{display:grid;grid-template-columns:20px 1fr;gap:12px;color:var(--text);line-height:1.5}
+.fit li .ico{width:16px;height:16px;margin-top:4px;color:var(--frame)}
+.fit .no li .ico{color:var(--gold)}
+.fit .aside{margin-top:20px;font-size:.95rem;font-style:italic;color:var(--muted)}
+@media (max-width:820px){.gtext,.fit{grid-template-columns:1fr}}
+
+/* Miguel */
+.about .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(40px,7vw,104px);align-items:center}
+.portrait{position:relative;margin:0 0 72px;max-width:460px;justify-self:end}
+.portrait img{width:100%;aspect-ratio:1/1.08;object-fit:cover;object-position:50% 20%;background:var(--surface)}
+.portrait .firma{--src:url(img/firma-navy.png);position:absolute;right:-12px;bottom:-78px;width:220px;aspect-ratio:501/201;color:var(--ink)}
+.about .lead{margin-top:24px;font-family:var(--f-display);font-size:clamp(1.35rem,2.1vw,1.75rem);line-height:1.3;letter-spacing:-.01em;font-weight:340;color:var(--ink);max-width:36ch}
+.about .bio{margin-top:20px;color:var(--muted);max-width:58ch}
+.stats{margin-top:36px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-top:24px}
+.stat b{display:block;font-family:var(--f-display);font-weight:340;color:var(--ink);font-size:clamp(2rem,3.3vw,2.7rem);letter-spacing:-.03em;line-height:1}
+.stat span{display:block;margin-top:10px;font-size:.9rem;color:var(--muted);line-height:1.4}
+.creds{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}
+.creds span{font-size:.8rem;font-weight:500;padding:5px 12px;border-radius:999px;background:var(--chip-bg);color:var(--chip-ink)}
+.sign{margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;color:var(--muted);font-size:.95rem}
+@media (max-width:900px){.about .wrap{grid-template-columns:1fr}.portrait{justify-self:start;order:-1}.portrait .firma{right:0}}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+
+/* Cierre */
+.close{padding-block:clamp(96px,11vw,156px);background:var(--surface);border-top:1px solid var(--line)}
+.close .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(32px,6vw,88px);align-items:center}
+.monogram{--src:url(img/monogram-navy.png);width:clamp(110px,13vw,170px);aspect-ratio:1;color:var(--frame)}
+.close h2{font-size:clamp(2.4rem,5.2vw,4.5rem);letter-spacing:-.03em}
+.close h2 em{color:var(--gold)}
+.close .sub{margin-top:20px;color:var(--muted);font-size:1.15rem;max-width:46ch}
+.close .btn{margin-top:34px}
+.contacts{margin-top:36px;display:flex;flex-wrap:wrap;gap:14px 36px;font-size:.98rem}
+.contacts > span{display:inline-flex;align-items:center;gap:10px;color:var(--muted)}
+.contacts .ico{width:20px;height:20px;color:var(--frame)}
+.contacts a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.contacts a:hover{border-color:var(--ink)}
+.copy{font:inherit;font-size:.78rem;background:var(--bg);border:1px solid var(--line-strong);color:var(--muted);border-radius:999px;padding:3px 10px;cursor:pointer;touch-action:manipulation}
+.copy:hover{color:var(--ink);border-color:var(--ink)}
+@media (max-width:700px){.close .wrap{grid-template-columns:1fr}}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;background:var(--surface)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:24px}
+
+/* Movimiento */
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes unveil{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@media (prefers-reduced-motion:no-preference){
+  .hero .frame path{stroke-dasharray:1;animation:draw 1.6s .4s var(--ease) both}
+  .hero h1 .ln{display:inline-block;animation:rise 1s var(--ease) both}
+  .hero h1 .ln + .ln{animation-delay:.1s}
+  .hero .sub,.hero .ctas{animation:rise 1s .25s var(--ease) both}
+  .hero .pic{animation:unveil 1.3s .15s var(--ease) both}
+  .pre{opacity:0;transform:translateY(40px);filter:blur(6px)}
+  .in{opacity:1;transform:none;filter:none;transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.shell:hover{transform:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="delta" viewBox="0 0 18 16"><path d="M9 1.5 16.5 14.5H1.5Z M9 1.5V10 M9 10 1.5 14.5 M9 10 16.5 14.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 256 256"><path d="M198,64V168a6,6,0,0,1-12,0V78.48L68.24,196.24a6,6,0,0,1-8.48-8.48L177.52,70H88a6,6,0,0,1,0-12H192A6,6,0,0,1,198,64Z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 256 256"><path d="M228.24,76.24l-128,128a6,6,0,0,1-8.48,0l-56-56a6,6,0,0,1,8.48-8.48L96,191.51,219.76,67.76a6,6,0,0,1,8.48,8.48Z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 256 256"><path d="M204.24,195.76a6,6,0,1,1-8.48,8.48L128,136.49,60.24,204.24a6,6,0,0,1-8.48-8.48L119.51,128,51.76,60.24a6,6,0,0,1,8.48-8.48L128,119.51l67.76-67.75a6,6,0,0,1,8.48,8.48L136.49,128Z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 256 256"><path d="M186.68,146.63l-32-16a6,6,0,0,0-6,.38L133,141.46A42.49,42.49,0,0,1,114.54,123L125,107.33a6,6,0,0,0,.38-6l-16-32A6,6,0,0,0,104,66a38,38,0,0,0-38,38,86.1,86.1,0,0,0,86,86,38,38,0,0,0,38-38A6,6,0,0,0,186.68,146.63ZM152,178a74.09,74.09,0,0,1-74-74,26,26,0,0,1,22.42-25.75l12.66,25.32-10.39,15.58a6,6,0,0,0-.54,5.63,54.43,54.43,0,0,0,29.07,29.07,6,6,0,0,0,5.63-.54l15.58-10.39,25.32,12.66A26,26,0,0,1,152,178ZM128,26A102,102,0,0,0,38.35,176.69L26.73,211.56a14,14,0,0,0,17.71,17.71l34.87-11.62A102,102,0,1,0,128,26Zm0,192a90,90,0,0,1-45.06-12.08,6.09,6.09,0,0,0-3-.81,6.2,6.2,0,0,0-1.9.31L40.65,217.88a2,2,0,0,1-2.53-2.53L50.58,178a6,6,0,0,0-.5-4.91A90,90,0,1,1,128,218Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 256 256"><path d="M224,50H32a6,6,0,0,0-6,6V192a14,14,0,0,0,14,14H216a14,14,0,0,0,14-14V56A6,6,0,0,0,224,50ZM208.58,62,128,135.86,47.42,62ZM216,194H40a2,2,0,0,1-2-2V69.64l86,78.78a6,6,0,0,0,8.1,0L218,69.64V192A2,2,0,0,1,216,194Z"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 256 256"><path d="M128,82a46,46,0,1,0,46,46A46.06,46.06,0,0,0,128,82Zm0,80a34,34,0,1,1,34-34A34,34,0,0,1,128,162ZM176,26H80A54.06,54.06,0,0,0,26,80v96a54.06,54.06,0,0,0,54,54h96a54.06,54.06,0,0,0,54-54V80A54.06,54.06,0,0,0,176,26Zm42,150a42,42,0,0,1-42,42H80a42,42,0,0,1-42-42V80A42,42,0,0,1,80,38h96a42,42,0,0,1,42,42ZM190,76a10,10,0,1,1-10-10A10,10,0,0,1,190,76Z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 256 256"><path d="M216,26H40A14,14,0,0,0,26,40V216a14,14,0,0,0,14,14H216a14,14,0,0,0,14-14V40A14,14,0,0,0,216,26Zm2,190a2,2,0,0,1-2,2H40a2,2,0,0,1-2-2V40a2,2,0,0,1,2-2H216a2,2,0,0,1,2,2ZM94,112v64a6,6,0,0,1-12,0V112a6,6,0,0,1,12,0Zm88,28v36a6,6,0,0,1-12,0V140a22,22,0,0,0-44,0v36a6,6,0,0,1-12,0V112a6,6,0,0,1,12,0v2.11A34,34,0,0,1,182,140ZM98,84A10,10,0,1,1,88,74,10,10,0,0,1,98,84Z"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+
+<header class="top">
+  <div class="island">
+    <a href="#inicio" aria-label="Mejorativa, ir al inicio"><span class="mark wordmark" role="img" aria-label="Mejorativa" translate="no"></span></a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#programas">Programas</a>
+      <a href="#metodo">Método</a>
+      <a href="#garantia">Garantía</a>
+      <a href="#miguel">Miguel Capuro</a>
+      <a class="btn sm" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20programas%20de%20Mejorativa%20para%20mi%20equipo." target="_blank" rel="noopener">Agenda una conversación <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+      <a class="btn-ico" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20programas%20de%20Mejorativa%20para%20mi%20equipo." target="_blank" rel="noopener" aria-label="Agenda una conversación por WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg></a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero" aria-labelledby="h-hero" id="contenido">
+    <div class="wrap">
+      <h1 id="h-hero"><span class="ln"><em>Sacudimos</em> organizaciones</span> <span class="ln">elevando el potencial humano.</span></h1>
+      <div class="hero-row">
+        <div>
+          <p class="sub">Capacitación ejecutiva para comunicar con claridad, negociar con intención y liderar con impacto.</p>
+          <div class="ctas">
+            <a class="btn" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20programas%20de%20Mejorativa%20para%20mi%20equipo." target="_blank" rel="noopener">Agenda una conversación <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+            <a class="link" href="#programas">Ver los programas</a>
+          </div>
+        </div>
+        <figure class="photo">
+          <div class="pic"><img src="img/taller-presidencia.jpg" width="1320" height="900" alt="Miguel Capuro de pie, facilitando un taller frente a participantes sentados a una mesa larga" fetchpriority="high"></div>
+          <svg class="frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M0 0H76M100 12V100H0V0M84 16 104 -6"/></svg>
+          <figcaption>Taller de Mejorativa en Ciudad de Panamá.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tint" aria-labelledby="h-cost">
+    <div class="wrap">
+      <div class="cost-top">
+        <h2 id="h-cost">¿Cuánto te cuesta que tu gente no sepa negociar ni presentar?</h2>
+        <div class="cost-fig">
+          <span class="label">Empresa de 80 a 150&nbsp;personas</span>
+          <div class="big num">USD&nbsp;180k&#8239;a&#8239;250k</div>
+          <span class="per">al año, en discusiones que no cierran nada</span>
+        </div>
+      </div>
+      <ul class="pains">
+        <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg>Reuniones eternas que no deciden nada.</li>
+        <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg>Cuarenta diapositivas para pedir una sola decisión, que se pospone “para la próxima reunión”.</li>
+        <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg>Escalamientos que podrían resolverse en cinco minutos.</li>
+        <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg>Proyectos detenidos semanas porque dos áreas no se ponen de acuerdo.</li>
+      </ul>
+      <div class="why">
+        <span class="q">¿La razón?</span>
+        <p>Casi nunca es la estrategia ni la calidad del trabajo. Las ideas llegan débiles a la mesa donde se decide. Eso equivale a 120 salarios mensuales quemados cada año.</p>
+        <p class="note">Estimación conservadora con un costo mensual por colaborador de USD&nbsp;1,500, que incluye salario y carga social.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="programas" aria-labelledby="h-prog">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="h-prog">Dos programas para que las reuniones terminen en <em>decisiones</em>.</h2>
+        <p>Jornadas in-house con grupos reducidos, casos de tu organización y feedback directo. Se toman por separado o como un sistema.</p>
+      </div>
+
+      <div class="programs">
+        <article class="shell" aria-labelledby="p1"><div class="core">
+          <span class="label">Resolución colaborativa y negociación</span>
+          <h3 id="p1" translate="no">Negociar sin Romper</h3>
+          <p class="promise">Conversaciones difíciles sin romper relaciones y cuidando los resultados. En pilotos reales, estas 8&nbsp;horas han funcionado como terapia de choque para equipos trabados.</p>
+          <div class="chips"><span>8&nbsp;horas</span><span>Hasta 20&nbsp;personas</span><span>1 jornada o 2&nbsp;medias</span><span>Modelo Harvard</span></div>
+          <div>
+            <h4>Lo que destrabamos</h4>
+            <ul class="dolores">
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Prioridades cruzadas entre jefes y áreas</b><span>Alinear decisiones y recursos sin escalarlo todo.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Decir no a lo imposible sin quemar puentes</b><span>Límites claros y canjes inteligentes.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Conflictos donde todos tienen la razón</b><span>Menos ego y menos guerras por prioridades.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Acuerdos verbales que nadie ejecuta</b><span>Del “lo hablamos” al KPI cumplido.</span></div></li>
+            </ul>
+          </div>
+          <div class="kpis">
+            <h4>Lo que medimos a 90&nbsp;días</h4>
+            <div class="kpi"><span>Escalamientos innecesarios a dirección</span><strong class="num"><i aria-label="baja">↓</i>60-80&nbsp;%</strong></div>
+            <div class="kpi"><span>Tiempo de decisión en reuniones clave</span><strong class="num"><i aria-label="baja">↓</i>20-30&nbsp;%</strong></div>
+            <div class="kpi"><span>Horas en comités y alineaciones</span><strong class="num"><i aria-label="baja">↓</i>2-4&nbsp;h/sem</strong></div>
+          </div>
+        </div></article>
+
+        <article class="shell" aria-labelledby="p2"><div class="core">
+          <span class="label">Presentaciones de alto impacto y storytelling</span>
+          <h3 id="p2" translate="no">Presentar sin Aburrir</h3>
+          <p class="promise">Que cada presentación termine en una decisión tomada o un siguiente paso claro. No enseñamos PowerPoint ni Canva. Cambiamos cómo se diseña y se entrega un mensaje.</p>
+          <div class="chips"><span>1 jornada o 2 de 4&nbsp;h</span><span>8 a 14&nbsp;personas</span><span translate="no">i-STAR-I y Minto</span><span>Voz y presencia</span></div>
+          <div>
+            <h4>Lo que destrabamos</h4>
+            <ul class="dolores">
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Presentaciones eternas que no dicen nada</b><span>Objetivo claro, menos ruido, un solo mensaje.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Ideas buenas que se mueren en PowerPoint</b><span>Estructuras simples para contar historias claras.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>“Sé del tema, pero me trabo al explicarlo”</b><span>Voz, cuerpo y presencia que suenan seguros.</span></div></li>
+              <li><svg class="delta" aria-hidden="true"><use href="#delta"/></svg><div><b>Informar mucho sin lograr decisiones</b><span>Aprobar, probar, ajustar o detener algo.</span></div></li>
+            </ul>
+          </div>
+          <div class="kpis">
+            <h4>Lo que medimos a 90&nbsp;días</h4>
+            <div class="kpi"><span>Veces que se vuelve a presentar el mismo tema</span><strong class="num"><i aria-label="baja">↓</i>40-60&nbsp;%</strong></div>
+            <div class="kpi"><span>Reuniones que terminan sin decisión clara</span><strong class="num"><i aria-label="baja">↓</i>30-50&nbsp;%</strong></div>
+            <div class="kpi"><span>Duración de presentaciones internas</span><strong class="num"><i aria-label="baja">↓</i>20-30&nbsp;%</strong></div>
+          </div>
+        </div></article>
+      </div>
+      <p class="footnote">Rangos estimados en el grupo capacitado, en escenarios conservadores.</p>
+
+      <div class="more">
+        <span class="label">También</span>
+        <ul>
+          <li><b>CV en el Quirófano</b><span>90 minutos con tips de reclutadores, revisión con IA y revisión en vivo de hojas de vida.</span></li>
+          <li><b>Sesiones 1 a 1</b><span>Sesiones individuales, virtuales o presenciales, según disponibilidad.</span></li>
+          <li><b>Módulos y plantillas</b><span>Reuniones altamente efectivas, dinámicas ágiles de alta colaboración y plantillas para que el cambio no dependa de la memoria.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="metodo" aria-labelledby="h-met">
+    <div class="wrap">
+      <div class="head"><h2 id="h-met">Aquí se practica. <em>No se teoriza.</em></h2></div>
+      <figure class="wide">
+        <img src="img/taller-istar-wide.jpg" width="1500" height="844" alt="Participantes trabajando alrededor de una mesa mientras Miguel Capuro presenta la estructura i-STAR-I en pantalla" loading="lazy" decoding="async">
+        <figcaption>Taller de presentaciones con la estructura <span translate="no">i-STAR-I</span>.</figcaption>
+      </figure>
+      <div class="steps">
+        <div class="step"><span class="when">Antes</span><b>Diagnóstico</b><p>Una entrevista breve para mapear las fricciones y elegir los casos que más le duelen a tu equipo.</p></div>
+        <div class="step"><span class="when">Durante</span><b>Simulaciones con casos reales</b><p>Role plays, conversaciones difíciles y presentaciones en vivo, con feedback directo. Metodología 100&nbsp;% vivencial.</p></div>
+        <div class="step"><span class="when">Después</span><b>Material, plantillas y certificados</b><p>Cada participante se lleva las herramientas, las plantillas complementarias y su certificado digital.</p></div>
+      </div>
+      <p class="pull">Tú pones el salón, el proyector y el café. Yo pongo <em>la incomodidad necesaria</em> para que tu gente mejore.</p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-voc">
+    <div class="wrap">
+      <div class="head"><h2 id="h-voc">Lo que se llevaron quienes ya pasaron por aquí.</h2></div>
+      <div class="vgrid">
+        <figure class="quote main">
+          <blockquote>La mejor experiencia de aprendizaje que he tenido en 12&nbsp;años de carrera.</blockquote>
+          <figcaption class="who"><b>Amy Moreno</b><span>Consultora en Mejora Continua</span></figcaption>
+        </figure>
+        <div>
+          <figure class="quote side">
+            <blockquote>Dejamos de perder 45 minutos por reunión de comité. Ahora cerramos en 70 a 80 minutos y con decisiones claras.</blockquote>
+            <figcaption class="who"><b>Robert Durling</b><span>Ingeniero Senior de Procesos</span></figcaption>
+          </figure>
+          <figure class="quote side">
+            <blockquote>Pensé que la negociación era solo laboral. Cambió la forma de relacionarme con mi equipo y hasta con mi familia.</blockquote>
+            <figcaption class="who"><b>Merybeth Gondola</b><span>Analista de Recursos Humanos</span></figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="editions">
+        <span class="label">Ediciones abiertas recientes</span>
+        <div class="ed"><b translate="no">Negociar sin Romper</b><span>20 de junio de 2026, Torre Credicorp</span></div>
+        <div class="ed"><b translate="no">Presentar sin Aburrir</b><span>1 de agosto de 2026, Sitio Currao</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tint" id="garantia" aria-labelledby="h-gar">
+    <div class="wrap">
+      <div class="boxed">
+        <svg class="frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H76M100 12V100H0V0M82 12 102 -6"/></svg>
+        <span class="label">Garantía Mejorativa</span>
+        <h2 id="h-gar">No quiero que compres un curso más. Quiero que compres <em>resultados</em>.</h2>
+        <div class="gtext">
+          <p>Si en los 90&nbsp;días siguientes no ves mejoras claras en quienes participaron, te doy una sesión de refuerzo de 2&nbsp;horas, sin costo, con casos reales de tu equipo.</p>
+          <p>Si después de eso sigues sintiendo que fue un curso más, tranquilo: no volveré a insistir con nuevas propuestas.</p>
+        </div>
+      </div>
+      <div class="fit">
+        <div>
+          <h3>Esto no es para todo el mundo.</h3>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Equipos que presentan seguido a junta, dirección o clientes clave.</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Líderes atrapados entre prioridades cruzadas que quieren menos drama y más decisiones.</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Personas dispuestas a practicar, exponerse y recibir feedback directo.</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h3>No es para…</h3>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Quien solo quiere un curso bonito para el CV.</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Quien se ofende cuando le dan feedback directo.</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>Quien cree que mandar la presentación por correo es suficiente.</li>
+          </ul>
+          <p class="aside">Si alguien de tu equipo se ofende con esta lista, probablemente no debería estar en la sala.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec about" id="miguel" aria-labelledby="h-mig">
+    <div class="wrap">
+      <div>
+        <h2 id="h-mig">Miguel Capuro</h2>
+        <p class="lead">No facilito talleres para entretener. Entro donde hay fricción, ego y desconfianza, y salimos con acuerdos claros, medibles y ejecutables.</p>
+        <p class="bio">Consultor de transformación y facilitador. Más de 15&nbsp;años en banca, gobierno, bienes raíces y aviación, traduciendo lenguaje técnico en mensajes claros para quienes deciden. Combina simplificación de procesos con trabajo ontológico con líderes, porque la transformación real ocurre cuando la gente aprende a presentar y negociar sus ideas con claridad.</p>
+        <div class="stats">
+          <div class="stat"><b class="num">US$33M+</b><span>en eficiencias logradas a lo largo de su carrera</span></div>
+          <div class="stat"><b class="num">4,000+</b><span>colaboradores capacitados en programas que coordinó</span></div>
+          <div class="stat"><b class="num">≈1.2M</b><span>horas ciudadanas liberadas al simplificar trámites</span></div>
+        </div>
+        <div class="creds"><span>Black Belt Lean Six Sigma</span><span>Maestría en Administración de Negocios</span><span>Inteligencia Emocional Aplicada</span><span>Docencia Superior, en curso</span></div>
+        <div class="sign"><span>Miguel Capuro, Líder de <span translate="no">Mejorativa</span></span><a class="link" href="https://www.linkedin.com/in/miguelcapuro/" target="_blank" rel="noopener">Ver perfil en LinkedIn</a></div>
+      </div>
+      <figure class="portrait">
+        <img src="img/miguel.jpg" width="900" height="900" alt="Retrato de Miguel Capuro" loading="lazy" decoding="async">
+        <span class="mark firma" role="img" aria-label="Firma: by Miguel Capuro"></span>
+      </figure>
+    </div>
+  </section>
+
+  <section class="close" aria-labelledby="h-close">
+    <div class="wrap">
+      <span class="mark monogram" role="img" aria-label="Monograma de Mejorativa"></span>
+      <div>
+        <h2 id="h-close">Damos lo que somos. <em>Ni más, ni menos.</em></h2>
+        <p class="sub">Primero te demuestro el impacto con un programa. Después hablamos del resto.</p>
+        <a class="btn" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20programas%20de%20Mejorativa%20para%20mi%20equipo." target="_blank" rel="noopener">Agenda una conversación <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        <div class="contacts">
+          <span><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><a href="https://wa.me/50766653528" target="_blank" rel="noopener" class="num">+507 6665-3528</a></span>
+          <span><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:miguelcapuro@mejorativa.com" id="mail">miguelcapuro@mejorativa.com</a><button class="copy" type="button" id="copy-mail" data-copy="miguelcapuro@mejorativa.com" aria-live="polite">Copiar</button></span>
+          <span><svg class="ico" aria-hidden="true"><use href="#i-ig"/></svg><a href="https://www.instagram.com/mejorativa/" target="_blank" rel="noopener">@mejorativa</a></span>
+          <span><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg><a href="https://www.linkedin.com/in/miguelcapuro/" target="_blank" rel="noopener">Miguel Capuro</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 <span translate="no">Mejorativa</span> by Miguel Capuro</span><span>Ciudad de Panamá</span></div>
+</footer>
+
+<script>
+(function(){
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var done=function(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar'},1800)};
+      var fallback=function(){var r=document.createRange();r.selectNodeContents(document.getElementById('mail'));var s=getSelection();s.removeAllRanges();s.addRange(r)};
+      try{navigator.clipboard.writeText(b.getAttribute('data-copy')).then(done,fallback)}catch(e){fallback()}
+    });
+  });
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var targets=document.querySelectorAll('.sec .head, .cost-top, .pains, .why, .shell, .more, .wide, .steps, .pull, .vgrid, .editions, .boxed, .fit, .about .wrap > *, .close .wrap > *');
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+  targets.forEach(function(t){if(t.getBoundingClientRect().top>innerHeight){t.classList.add('pre');io.observe(t)}});
+})();
+</script>
+</body>
+</html>
