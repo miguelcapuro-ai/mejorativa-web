@@ -189,12 +189,7 @@ section{scroll-margin-top:96px}
 .timeline .see:hover{border-color:var(--navy)}
 .timeline .tag{font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:999px;background:#EAF1FA;color:#1F4E80;white-space:nowrap}
 .timeline .tag.next{background:var(--ink);color:#fff}
-.career{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
-.career div{border-top:2px solid var(--ink);padding-top:16px}
-.career b{display:block;font-stretch:68%;font-weight:800;font-size:clamp(2.2rem,3.6vw,3rem);line-height:1;color:var(--ink)}
-.career span{display:block;margin-top:10px;font-size:.92rem;color:var(--muted);line-height:1.45}
-@media (max-width:820px){.year{grid-template-columns:1fr}.timeline li{grid-template-columns:1fr}.career{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
+@media (max-width:820px){.year{grid-template-columns:1fr}.timeline li{grid-template-columns:1fr}}
 /* Testimonios */
 .vgrid{margin-top:clamp(44px,5vw,64px);display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(28px,4vw,64px);align-items:start}
 .q{margin:0;display:flex;flex-direction:column;gap:20px}
@@ -247,6 +242,70 @@ section{scroll-margin-top:96px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;background:var(--surface)}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:24px}
 
+
+/* Los más pedidos */
+.flag{background:var(--ink);color:#fff;padding-block:clamp(96px,11vw,160px);position:relative;overflow:hidden}
+.flag::before{content:"";position:absolute;inset:auto -10% -40% auto;width:60vw;height:60vw;background:radial-gradient(circle,rgba(210,174,102,.10),transparent 60%);pointer-events:none}
+.flag .head h2{color:#fff}
+.flag .head .soft{color:var(--gold-bright)}
+.flag .lead{color:#C3CCDA}
+.flag .label{color:#A9B6CB}
+.fp{position:relative;margin-top:clamp(56px,7vw,96px);display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px);align-items:start;padding-top:clamp(40px,5vw,56px);border-top:1px solid rgba(255,255,255,.16)}
+.fp .vis{position:sticky;top:110px;margin:0 16px 0 0}
+.fp .vis .pic{position:relative;overflow:hidden;aspect-ratio:4/5;background:#13294A}
+.fp .vis img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) contrast(1.05)}
+.fp .vis .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,31,58,0) 45%,rgba(11,31,58,.75))}
+.fp .vis .frame path{stroke:var(--gold-bright)}
+.fp .vis .over{position:absolute;left:22px;right:22px;bottom:20px;z-index:2;color:#fff;font-weight:300;font-style:italic;font-size:clamp(1.1rem,1.6vw,1.35rem);line-height:1.3}
+.fp .kind{color:var(--gold-bright);font-weight:600;font-size:.95rem;letter-spacing:.02em}
+.fp h3{margin-top:10px;color:#fff;font-stretch:66%;font-weight:800;text-transform:uppercase;font-size:clamp(3rem,7.4vw,6.6rem);line-height:.86;letter-spacing:-.005em}
+.fp .hook{margin-top:16px;font-weight:300;font-style:italic;font-size:clamp(1.3rem,2.2vw,1.8rem);line-height:1.25;color:#E7ECF3;max-width:30ch}
+.fp .pain{margin-top:22px;color:#B7C2D3;max-width:56ch}
+.fp .cols{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:28px 40px}
+.fp h4{font-stretch:115%;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:14px}
+.mods{list-style:none;margin:0;padding:0;counter-reset:m;display:grid;gap:0}
+.mods li{counter-increment:m;display:grid;grid-template-columns:38px 1fr;gap:10px;padding-block:12px;border-top:1px solid rgba(255,255,255,.12)}
+.mods li::before{content:counter(m,decimal-leading-zero);font-stretch:66%;font-weight:800;color:var(--gold-bright);font-size:1.15rem;line-height:1.3}
+.mods b{display:block;color:#fff;font-weight:700;line-height:1.3}
+.mods span{display:block;color:#AEB9CA;font-size:.93rem;line-height:1.45;margin-top:2px}
+.wins{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.wins li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding-block:12px;border-top:1px solid rgba(255,255,255,.12);color:#E7ECF3;line-height:1.45}
+.wins li svg{width:16px;height:14px;margin-top:5px;color:var(--gold-bright)}
+.fp .culture{margin-top:30px;padding:22px 24px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:1.12rem;line-height:1.45;color:#fff}
+.fp .culture b{color:var(--gold-bright);font-weight:600;display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-stretch:115%;margin-bottom:6px}
+.fp .bottom{margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:18px 24px;justify-content:space-between}
+.fp .chips span{background:rgba(255,255,255,.09);color:#fff}
+.both{margin-top:clamp(56px,7vw,88px);display:grid;grid-template-columns:auto 1fr;gap:16px 40px;align-items:baseline;padding-top:24px;border-top:1px solid rgba(255,255,255,.16)}
+.both ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 28px;color:#DCE3EC}
+.both li{display:flex;align-items:center;gap:10px}
+.both li svg{width:14px;height:12px;color:var(--gold-bright)}
+@media (max-width:980px){.fp{grid-template-columns:1fr}.fp .vis{position:relative;top:auto;max-width:520px}.fp .vis .pic{aspect-ratio:16/11}}
+@media (max-width:680px){.fp .cols{grid-template-columns:1fr}.both{grid-template-columns:1fr}}
+
+/* Videos */
+.videos{margin-top:clamp(44px,5vw,64px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.vid{position:relative;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:clamp(22px,3vw,32px);border-radius:20px;background:var(--ink);color:#fff;text-decoration:none;overflow:hidden;transition:transform .6s var(--ease),box-shadow .6s var(--ease)}
+.vid::after{content:"";position:absolute;inset:auto -20% -60% auto;width:280px;height:280px;background:radial-gradient(circle,rgba(210,174,102,.18),transparent 65%)}
+.vid:hover{transform:translateY(-4px);box-shadow:0 26px 50px -30px rgba(11,31,58,.6)}
+.play{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:var(--gold-bright);color:var(--ink);flex:none;transition:transform .6s var(--ease)}
+.vid:hover .play{transform:scale(1.08)}
+.play svg{width:24px;height:24px;margin-left:3px}
+.vid b{display:block;font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,3vw,2.4rem);line-height:.95}
+.vid span{display:block;margin-top:6px;color:#C3CCDA;font-size:.95rem}
+.vid .play{display:grid;margin:0;color:var(--ink)}
+.vid span span{display:inline;margin:0;color:inherit;font-size:inherit}
+.vid em{display:block;margin-top:10px;font-weight:300;color:#E7ECF3}
+@media (max-width:760px){.videos{grid-template-columns:1fr}}
+
+/* En casa */
+.home{margin-top:30px;padding:24px;border-radius:20px;background:var(--bg);border:1px solid var(--line)}
+.home h3{font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:1.5rem;line-height:1}
+.home p{margin-top:10px;color:var(--muted)}
+.home .roles{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.home .roles span{font-size:.85rem;font-weight:500;padding:6px 12px;border-radius:999px;background:var(--surface);color:var(--ink)}
+.home a{margin-top:16px;display:inline-flex;align-items:center;gap:10px;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+.home a .ico{width:18px;height:18px;color:var(--navy)}
+
 /* Movimiento */
 @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
@@ -280,6 +339,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   <symbol id="i-chat" viewBox="0 0 256 256"><path d="M166,112a6,6,0,0,1-6,6H96a6,6,0,0,1,0-12h64A6,6,0,0,1,166,112Zm-6,26H96a6,6,0,0,0,0,12h64a6,6,0,0,0,0-12Zm70-10A102,102,0,0,1,79.31,217.65L44.44,229.27a14,14,0,0,1-17.71-17.71l11.62-34.87A102,102,0,1,1,230,128Zm-12,0A90,90,0,1,0,50.08,173.06a6,6,0,0,1,.5,4.91L38.12,215.35a2,2,0,0,0,2.53,2.53L78,205.42a6.2,6.2,0,0,1,1.9-.31,6.09,6.09,0,0,1,3,.81A90,90,0,0,0,218,128Z"/></symbol>
   <symbol id="i-pres" viewBox="0 0 256 256"><path d="M216,42H134V24a6,6,0,0,0-12,0V42H40A14,14,0,0,0,26,56V176a14,14,0,0,0,14,14H83.52L59.31,220.25a6,6,0,0,0,9.38,7.5L98.88,190h58.24l30.19,37.75a6,6,0,0,0,9.38-7.5L172.48,190H216a14,14,0,0,0,14-14V56A14,14,0,0,0,216,42Zm2,134a2,2,0,0,1-2,2H40a2,2,0,0,1-2-2V56a2,2,0,0,1,2-2H216a2,2,0,0,1,2,2ZM102,120v24a6,6,0,0,1-12,0V120a6,6,0,0,1,12,0Zm32-16v40a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Zm32-16v56a6,6,0,0,1-12,0V88a6,6,0,0,1,12,0Z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 256 256"><path d="M128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218ZM173.32,74.63l-64,32a6,6,0,0,0-2.69,2.69l-32,64A6,6,0,0,0,80,182a6.06,6.06,0,0,0,2.68-.63l64-32a6,6,0,0,0,2.69-2.69l32-64a6,6,0,0,0-8.05-8.05Zm-33.79,64.9L93.42,162.58l23-46.11,46.11-23Z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></symbol>
   <symbol id="i-target" viewBox="0 0 256 256"><path d="M220.06,84a102.06,102.06,0,1,1-24.31-32.27l24-24a6,6,0,0,1,8.48,8.49l-96,96a6,6,0,1,1-8.48-8.49l29.39-29.4a42,42,0,1,0,16.78,31.24,6,6,0,1,1,12-.68A54,54,0,1,1,161.7,85.83l25.54-25.55a89.91,89.91,0,1,0,22,28.93A6,6,0,1,1,220.06,84Z"/></symbol>
 </svg>
 
@@ -289,10 +349,10 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   <div class="island">
     <a href="#inicio" aria-label="Mejorativa, ir al inicio"><span class="mark wordmark" role="img" aria-label="Mejorativa" translate="no"></span></a>
     <nav class="nav" aria-label="Principal">
+      <a href="#programas">Programas</a>
       <a href="#servicios">Servicios</a>
       <a href="#empresas">Para empresas</a>
-      <a href="#trayectoria">Trayectoria</a>
-      <a href="#miguel">Sobre mí</a>
+            <a href="#miguel">Sobre mí</a>
       <a class="btn sm" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20conversar%20sobre%20c%C3%B3mo%20Mejorativa%20puede%20ayudarme." target="_blank" rel="noopener">Hablemos <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
       <a class="btn-ico" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20conversar%20sobre%20c%C3%B3mo%20Mejorativa%20puede%20ayudarme." target="_blank" rel="noopener" aria-label="Hablemos por WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg></a>
     </nav>
@@ -358,6 +418,61 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
     </div>
   </section>
 
+  <section class="flag" id="programas" aria-labelledby="h-flag">
+    <div class="wrap">
+      <div class="head">
+        <span class="label">Los más pedidos por empresas</span>
+        <h2 id="h-flag" class="display" style="margin-top:14px">Dos programas que cambian cómo trabaja tu gente.<span class="soft">Los llevamos a tu empresa.</span></h2>
+        <p class="lead">Jornadas in-house, vivenciales y diseñadas con los casos reales de tu equipo. Aquí no se escucha: se practica.</p>
+      </div>
+      <article class="fp" aria-labelledby="fp1">
+        <figure class="vis">
+          <div class="pic"><img src="img/taller-presidencia.jpg" width="1320" height="900" alt="Miguel Capuro facilitando una sesión de resolución de conflictos" loading="lazy" decoding="async" style="object-position:62% 40%"></div>
+          <svg class="frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H76M100 12V100H0V0M84 16 104 -6"/></svg>
+          <p class="over">Silencio. Escuchar. Control.</p>
+        </figure>
+        <div>
+          <span class="kind">Negociación colaborativa y resolución de conflictos</span>
+          <h3 id="fp1" translate="no">Negociar sin Romper</h3>
+          <p class="hook">Conversaciones difíciles, acuerdos firmes y relaciones intactas.</p>
+          <p class="pain">Reuniones eternas que no deciden nada. Escalamientos que podrían resolverse en cinco minutos. Proyectos detenidos porque dos áreas no se ponen de acuerdo. Un día de práctica que funciona como terapia de choque para equipos trabados.</p>
+          <div class="cols">
+            <div><h4>El programa</h4><ol class="mods"><li><div><b>Leer la mesa</b><span>Intereses, posiciones y lo que cada quien está defendiendo de verdad.</span></div></li><li><div><b>Prioridades cruzadas</b><span>Alinear decisiones y recursos entre jefes y áreas sin escalarlo todo.</span></div></li><li><div><b>Decir no sin quemar puentes</b><span>Límites claros y canjes inteligentes que cuidan la relación.</span></div></li><li><div><b>Cuando todos tienen la razón</b><span>Bajar egos, subir la colaboración y reducir las guerras internas.</span></div></li><li><div><b>Del “lo hablamos” al acuerdo</b><span>Responsables, plazos y seguimiento para que lo pactado se ejecute.</span></div></li></ol></div>
+            <div><h4>Lo que tu empresa se lleva</h4><ul class="wins"><li><svg aria-hidden="true"><use href="#delta"/></svg>Reuniones clave más cortas y con decisiones claras.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Menos escalamientos a gerencia: los equipos resuelven entre ellos.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Proyectos trabados que vuelven a moverse.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Áreas que colaboran en lugar de competir por prioridades.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Acuerdos con dueño, fecha y seguimiento.</li></ul></div>
+          </div>
+          <p class="culture"><b>El cambio cultural</b>Tu gente deja de negociar como si cada reunión fuera una guerra y empieza a construir acuerdos rápidos y rentables.</p>
+          <div class="bottom">
+            <div class="chips"><span>In-house</span><span>8 horas</span><span>1 jornada o 2 medias jornadas</span><span>Hasta 20 personas</span><span>Diagnóstico previo</span></div>
+            <a class="btn light" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20Negociar%20sin%20Romper%20para%20mi%20empresa." target="_blank" rel="noopener">Lo quiero en mi empresa <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          </div>
+        </div>
+      </article>
+      <article class="fp" aria-labelledby="fp2">
+        <figure class="vis">
+          <div class="pic"><img src="img/taller-istar-wide.jpg" width="1500" height="844" alt="Participantes trabajando mientras Miguel Capuro presenta la estructura i-STAR-I" loading="lazy" decoding="async" style="object-position:72% 50%"></div>
+          <svg class="frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H76M100 12V100H0V0M84 16 104 -6"/></svg>
+          <p class="over">A tu audiencia no la despierta lo que dices. La despierta lo que eres cuando lo dices.</p>
+        </figure>
+        <div>
+          <span class="kind">Presentaciones de alto impacto y storytelling</span>
+          <h3 id="fp2" translate="no">Presentar sin Aburrir</h3>
+          <p class="hook">Que cada presentación termine en una decisión o en un siguiente paso claro.</p>
+          <p class="pain">Cuarenta diapositivas para pedir una sola decisión. Gente brillante leyendo la pantalla. Temas que vuelven “para la próxima reunión”. El problema no es la estrategia ni el trabajo: es que las ideas llegan débiles a la mesa donde se decide.</p>
+          <div class="cols">
+            <div><h4>El programa</h4><ol class="mods"><li><div><b>Ir al punto</b><span>Definir el objetivo, filtrar el ruido y construir un mensaje central.</span></div></li><li><div><b>Historias que convencen</b><span>Estructuras simples como i-STAR-I y Minto para ordenar la idea.</span></div></li><li><div><b>Voz, cuerpo y presencia</b><span>Que lo que dices suene seguro, natural y convincente.</span></div></li><li><div><b>De informar a decidir</b><span>Cerrar con una acción concreta: aprobar, probar, ajustar o detener.</span></div></li><li><div><b>Práctica en vivo</b><span>Presentaciones reales de tu equipo, con feedback directo.</span></div></li></ol></div>
+            <div><h4>Lo que tu empresa se lleva</h4><ul class="wins"><li><svg aria-hidden="true"><use href="#delta"/></svg>Presentaciones más cortas, claras y con un solo mensaje.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Menos temas que se vuelven a presentar porque “no quedó claro”.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Reuniones que terminan con una decisión o un siguiente paso.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Personas que presentan con seguridad ante dirección y clientes.</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Referentes internos a quienes otros buscan para armar un pitch.</li></ul></div>
+          </div>
+          <p class="culture"><b>El cambio cultural</b>Tu gente deja de pasar diapositivas para cumplir y empieza a vender ideas, proyectos y decisiones.</p>
+          <div class="bottom">
+            <div class="chips"><span>In-house</span><span>1 jornada o 2 sesiones de 4 h</span><span>8 a 14 personas</span><span>No es un curso de PowerPoint</span></div>
+            <a class="btn light" href="https://wa.me/50766653528?text=Hola%20Miguel%2C%20quiero%20Presentar%20sin%20Aburrir%20para%20mi%20empresa." target="_blank" rel="noopener">Lo quiero en mi empresa <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          </div>
+        </div>
+      </article>
+      <div class="both"><span class="label">Ambos incluyen</span><ul><li><svg aria-hidden="true"><use href="#delta"/></svg>Diseño a la medida de tu equipo</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Material para participantes</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Plantillas complementarias</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Certificados digitales</li><li><svg aria-hidden="true"><use href="#delta"/></svg>Evaluación de satisfacción</li></ul></div>
+    </div>
+  </section>
+
   <section class="sec tint" id="servicios" aria-labelledby="h-serv">
     <div class="wrap">
       <div class="head">
@@ -418,11 +533,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   <section class="sec" aria-labelledby="h-prog">
     <div class="wrap">
       <div class="head">
-        <h2 id="h-prog" class="display">Lo que entrenamos.<span class="soft">Cada programa se adapta a tu equipo.</span></h2>
+        <h2 id="h-prog" class="display">Más programas.<span class="soft">Cada uno se adapta a tu equipo.</span></h2>
       </div>
       <div class="programs">
-        <div class="prog"><h3 translate="no">Negociar sin Romper</h3><p>Conversaciones difíciles sin quemar relaciones. Prioridades cruzadas, decir no sin cerrar puertas y acuerdos que sí se ejecutan.</p><span class="fmt">Negociación colaborativa</span></div>
-        <div class="prog"><h3 translate="no">Presentar sin Aburrir</h3><p>Que cada presentación termine en una decisión o un siguiente paso claro. Estructura, historia, voz y presencia.</p><span class="fmt">Presentaciones y storytelling</span></div>
         <div class="prog"><h3>Comunicación efectiva</h3><p>Hablar para que te escuchen. Para quien arranca, para quien ya lidera y para quien quiere ser más magnético cuando habla.</p><span class="fmt">Comunicación</span></div>
         <div class="prog"><h3>Reuniones altamente efectivas</h3><p>Menos reuniones eternas. Más acuerdos con responsables y fechas.</p><span class="fmt">Productividad de equipos</span></div>
         <div class="prog"><h3>Dinámicas ágiles de alta colaboración</h3><p>Formas de trabajar juntos que bajan egos y suben la colaboración entre áreas.</p><span class="fmt">Trabajo en equipo</span></div>
@@ -461,15 +574,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   <section class="sec tint" id="trayectoria" aria-labelledby="h-tray">
     <div class="wrap">
       <div class="head">
-        <h2 id="h-tray" class="display">Trayectoria.<span class="soft">Desde 2022, sala por sala.</span></h2>
+        <h2 id="h-tray" class="display">Trayectoria.</h2>
       </div>
-      <div class="years"><div class="year"><h3 class="yr">2026</h3><ol class="timeline"><li><time datetime="2026-10-31">31 oct</time><div><b><span translate="no">CV en el Quirófano</span></b><span>Club Activo 20-30 Las Tablas · Virtual</span></div><span class="tag next">Próximo</span></li><li><time datetime="2026-08-01">1 ago</time><div><b><span translate="no">Presentar sin Aburrir</span></b><span>Taller abierto de comunicación efectiva · Sitio Currao, Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DbhWWCxMKEI/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time datetime="2026-06-20">20 jun</time><div><b><span translate="no">Negociar sin Romper</span></b><span>Taller abierto de negociación · Torre Credicorp, Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DZ3Rr0AGexi/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time>2026</time><div><b>Gestión de conflictos y toma de decisiones bajo presión</b><span>Conferencia en el VI Simposio de Salud, Higiene y Seguridad Ocupacional · Ministerio de Salud de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DYbCO8JjALy/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Conferencia</span></li><li><time datetime="2026-04-15">15 abr</time><div><b>Abordando los riesgos psicosociales en el entorno laboral</b><span>Seminario · Academia de Control Gubernamental, Contraloría General de la República <a class="see" href="https://www.instagram.com/mejorativa/p/DYbPNXisJuO/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Seminario</span></li><li><time datetime="2026-04-09">9 abr</time><div><b>Negociación y resolución de conflictos</b><span>Capacitación ejecutiva abierta · Espacio del Emprendedor, Cinta Costera <a class="see" href="https://www.instagram.com/mejorativa/p/DXGNpPcjJ3f/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time>mar</time><div><b>Entrenamiento en negociación</b><span>Capacitación presencial · Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DYbHNPusA3r/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li><li><time>ene</time><div><b>Escucha, estrategia e influencia en conversaciones complejas</b><span>Capacitación en negociación junto a SpeakerCoach · Chile <a class="see" href="https://www.instagram.com/mejorativa/p/DWAoksgEVbG/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Internacional</span></li></ol></div><div class="year"><h3 class="yr">2025</h3><ol class="timeline"><li><time>sep</time><div><b>Resolución de conflictos con enfoque de cocreación</b><span>Capacitación presencial · Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DWAn-0EEadO/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li></ol></div><div class="year"><h3 class="yr">2024</h3><ol class="timeline"><li><time>ago</time><div><b>Hablar con seguridad</b><span>Graduación de una capacitación en comunicación · Panamá Pacífico <a class="see" href="https://www.instagram.com/mejorativa/p/DWAnqSUEfPg/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li><li><time>ago</time><div><b>Colaboración, pensamiento creativo y resolución en equipo</b><span>Dinámica de alta colaboración <a class="see" href="https://www.instagram.com/mejorativa/p/DWAnIaxkVcq/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Dinámica</span></li><li><time>jul</time><div><b>Alinear ideas y convertir conversaciones en dirección</b><span>Sesiones de construcción colectiva <a class="see" href="https://www.instagram.com/mejorativa/p/DWAmv8IkUVC/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Facilitación</span></li></ol></div><div class="year"><h3 class="yr">2023</h3><ol class="timeline"><li><time>jun</time><div><b>OKR: enfoque, estructura y ejecución</b><span>Taller para equipos <a class="see" href="https://www.instagram.com/mejorativa/p/DWAlWtzkUHh/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller</span></li></ol></div><div class="year"><h3 class="yr">2022</h3><ol class="timeline"><li><time>jul</time><div><b>Comunicar tu valor</b><span>Entrenamiento virtual en comunicación <a class="see" href="https://www.instagram.com/mejorativa/p/DWAlJNokTcI/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Virtual</span></li><li><time>may</time><div><b>Presencia, claridad e intención</b><span>Taller de comunicación <a class="see" href="https://www.instagram.com/mejorativa/p/DWAk5QQEXuY/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller</span></li></ol></div><div class="year"><h3 class="yr">En territorio</h3><ol class="timeline"><li><time>Chichica</time><div><b>Formación fuera de la oficina</b><span>Capacitación llevada a la comunidad de Chichica <a class="see" href="https://www.instagram.com/mejorativa/p/DWAl5gwEcj-/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Comunidad</span></li></ol></div></div>
-      <div class="career">
-        <div><b class="num">+15</b><span>años formando y liderando en aviación, banca, gobierno y bienes raíces</span></div>
-        <div><b class="num">4,000+</b><span>colaboradores capacitados en programas que coordinó</span></div>
-        <div><b class="num">+47</b><span>proveedores aeronáuticos capacitados, con más de 130 horas como instructor</span></div>
-        <div><b class="num">US$33M+</b><span>en eficiencias logradas a lo largo de su carrera</span></div>
-      </div>
+      <div class="years"><div class="year"><h3 class="yr">2026</h3><ol class="timeline"><li><time datetime="2026-10">oct</time><div><b><span translate="no">CV en el Quirófano</span></b><span>Club Activo 20-30 Las Tablas · Virtual</span></div><span class="tag next">Próximo</span></li><li><time datetime="2026-08">ago</time><div><b><span translate="no">Presentar sin Aburrir</span></b><span>Taller abierto de comunicación efectiva · Sitio Currao, Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DbhWWCxMKEI/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time datetime="2026-06">jun</time><div><b><span translate="no">Negociar sin Romper</span></b><span>Taller abierto de negociación · Torre Credicorp, Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DZ3Rr0AGexi/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time>may</time><div><b>Gestión de conflictos y toma de decisiones bajo presión</b><span>Conferencia en el VI Simposio de Salud, Higiene y Seguridad Ocupacional · Ministerio de Salud de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DYbCO8JjALy/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Conferencia</span></li><li><time datetime="2026-04">abr</time><div><b>Abordando los riesgos psicosociales en el entorno laboral</b><span>Seminario · Academia de Control Gubernamental, Contraloría General de la República <a class="see" href="https://www.instagram.com/mejorativa/p/DYbPNXisJuO/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Seminario</span></li><li><time datetime="2026-04">abr</time><div><b>Negociación y resolución de conflictos</b><span>Capacitación ejecutiva abierta · Espacio del Emprendedor, Cinta Costera <a class="see" href="https://www.instagram.com/mejorativa/p/DXGNpPcjJ3f/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller abierto</span></li><li><time>mar</time><div><b>Entrenamiento en negociación</b><span>Capacitación presencial · Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DYbHNPusA3r/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li><li><time>ene</time><div><b>Escucha, estrategia e influencia en conversaciones complejas</b><span>Capacitación en negociación junto a SpeakerCoach · Chile <a class="see" href="https://www.instagram.com/mejorativa/p/DWAoksgEVbG/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Internacional</span></li></ol></div><div class="year"><h3 class="yr">2025</h3><ol class="timeline"><li><time>sep</time><div><b>Resolución de conflictos con enfoque de cocreación</b><span>Capacitación presencial · Ciudad de Panamá <a class="see" href="https://www.instagram.com/mejorativa/p/DWAn-0EEadO/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li></ol></div><div class="year"><h3 class="yr">2024</h3><ol class="timeline"><li><time>ago</time><div><b>Hablar con seguridad</b><span>Graduación de una capacitación en comunicación · Panamá Pacífico <a class="see" href="https://www.instagram.com/mejorativa/p/DWAnqSUEfPg/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Capacitación</span></li><li><time>ago</time><div><b>Colaboración, pensamiento creativo y resolución en equipo</b><span>Dinámica de alta colaboración <a class="see" href="https://www.instagram.com/mejorativa/p/DWAnIaxkVcq/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Dinámica</span></li><li><time>jul</time><div><b>Alinear ideas y convertir conversaciones en dirección</b><span>Sesiones de construcción colectiva <a class="see" href="https://www.instagram.com/mejorativa/p/DWAmv8IkUVC/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Facilitación</span></li></ol></div><div class="year"><h3 class="yr">2023</h3><ol class="timeline"><li><time>jun</time><div><b>OKR: enfoque, estructura y ejecución</b><span>Taller para equipos <a class="see" href="https://www.instagram.com/mejorativa/p/DWAlWtzkUHh/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller</span></li><li><time>abr</time><div><b>Formación fuera de la oficina</b><span>Capacitación llevada a la comunidad de Chichica <a class="see" href="https://www.instagram.com/mejorativa/p/DWAl5gwEcj-/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Comunidad</span></li></ol></div><div class="year"><h3 class="yr">2022</h3><ol class="timeline"><li><time>jul</time><div><b>Comunicar tu valor</b><span>Entrenamiento virtual en comunicación <a class="see" href="https://www.instagram.com/mejorativa/p/DWAlJNokTcI/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Virtual</span></li><li><time>may</time><div><b>Presencia, claridad e intención</b><span>Taller de comunicación <a class="see" href="https://www.instagram.com/mejorativa/p/DWAk5QQEXuY/" target="_blank" rel="noopener">Ver en Instagram</a></span></div><span class="tag">Taller</span></li></ol></div></div>
     </div>
   </section>
 
@@ -492,10 +599,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
           </figure>
         </div>
       </div>
-      <div class="reels">
-        <span class="label">En video</span>
-        <a href="https://www.instagram.com/mejorativa/reel/DaZU9p4seLX/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-ig"/></svg><span>Faustino, participante de <span translate="no">Negociar sin Romper</span></span></a>
-        <a href="https://www.instagram.com/mejorativa/reel/DaZTG22sTEE/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-ig"/></svg><span>Yessenia, participante de <span translate="no">Negociar sin Romper</span></span></a>
+      <div class="videos">
+        <a class="vid" href="https://www.instagram.com/mejorativa/reel/DaZU9p4seLX/" target="_blank" rel="noopener" aria-label="Ver el testimonio en video de Faustino en Instagram"><span class="play"><svg aria-hidden="true"><use href="#i-play"/></svg></span><div><b>Faustino</b><span>Participante de <span translate="no">Negociar sin Romper</span></span><em>“Nadie vuelve a lo que no le sirvió.” Mira lo que se llevó.</em></div></a>
+        <a class="vid" href="https://www.instagram.com/mejorativa/reel/DaZTG22sTEE/" target="_blank" rel="noopener" aria-label="Ver el testimonio en video de Yessenia en Instagram"><span class="play"><svg aria-hidden="true"><use href="#i-play"/></svg></span><div><b>Yessenia</b><span>Participante de <span translate="no">Negociar sin Romper</span></span><em>Escúchalo de alguien que estuvo en la sala.</em></div></a>
       </div>
     </div>
   </section>
@@ -508,12 +614,18 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
       </figure>
       <div>
         <span class="label">Sobre mí</span>
-        <h2 id="h-mig" class="display" style="margin-top:14px">Hola,<span class="soft">soy Miguel.</span></h2>
+        <h2 id="h-mig" class="display" style="margin-top:14px">Hola,<span class="soft">soy Capuro.</span></h2>
         <div class="story">
           <p>Soy instructor, soy coach y ayudo a personas a crecer. Ese es mi estilo de vida.</p>
           <p>Empecé como mecánico de aviación. Pasé por la banca, el gobierno y los bienes raíces, y hoy lidero transformación con inteligencia artificial. En cada etapa aprendí lo mismo: la transformación real ocurre cuando la gente aprende a presentar y negociar sus ideas con claridad.</p>
           <p>No facilito talleres para entretener. Entro donde hay fricción, ego y desconfianza, y salimos con acuerdos claros. Combino simplificación de procesos con trabajo ontológico, porque cambiar la forma de mirar cambia la forma de actuar.</p>
           <p>Si tienes algo que quieres destrabar, escríbeme. Del otro lado del WhatsApp estoy yo.</p>
+        </div>
+        <div class="home">
+          <h3>Y fuera de la sala</h3>
+          <p>Soy humano, igual que tú. Cocino, me encantan los perfumes y las plantas.</p>
+          <div class="roles"><span>Padre</span><span>Esposo</span><span>Hijo</span><span>Amigo</span><span>Colega</span><span>Perripadre</span><span>Cocinero</span></div>
+          <a href="https://www.instagram.com/miguel.capuro/" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-ig"/></svg>Así soy en casa: @miguel.capuro</a>
         </div>
         <div class="creds"><span>Black Belt Lean Six Sigma</span><span>Maestría en Administración de Negocios</span><span>Inteligencia Emocional Aplicada</span><span>Líderes de Alto Desempeño</span><span>Docencia Superior, en curso</span></div>
         <div class="socials">
@@ -555,7 +667,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
     });
   });
   if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  var targets=document.querySelectorAll('.sec .head, .pillar, .svc, .prog, .biz .pic, .steps li, .quote-band blockquote, .year, .career > div, .vgrid, .reels, .about .wrap > *, .close .wrap > *');
+  var targets=document.querySelectorAll('.sec .head, .fp, .both, .vid, .pillar, .svc, .prog, .biz .pic, .steps li, .quote-band blockquote, .year, .vgrid, .about .wrap > *, .close .wrap > *');
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
   targets.forEach(function(t){if(t.getBoundingClientRect().top>innerHeight){t.classList.add('pre');io.observe(t)}});
 })();
