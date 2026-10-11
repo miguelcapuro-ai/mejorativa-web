@@ -306,6 +306,32 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 .home a{margin-top:16px;display:inline-flex;align-items:center;gap:10px;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
 .home a .ico{width:18px;height:18px;color:var(--navy)}
 
+
+/* Animación de portada: sacudir y elevar */
+.hero h1 .word{display:inline-block;position:relative}
+.hero h1 .ch,.hero h1 .w{display:inline-block}
+@keyframes drop{from{opacity:0;transform:translateY(-55%) rotate(-10deg)}}
+@keyframes shake{0%,100%{transform:none}12%{transform:translate(-.06em,.01em) skewX(-7deg)}26%{transform:translate(.07em,-.01em) skewX(6deg)}40%{transform:translate(-.05em,0) skewX(-4deg)}55%{transform:translate(.035em,0) skewX(2deg)}70%{transform:translate(-.02em,0)}85%{transform:translate(.01em,0)}}
+@keyframes buzz{0%,100%{opacity:0;transform:scaleY(.2)}20%,70%{opacity:1;transform:scaleY(1)}}
+@keyframes slam{from{opacity:0;transform:scale(1.9);filter:blur(10px)}}
+@keyframes thud{0%,100%{transform:none}35%{transform:translateY(.07em)}65%{transform:translateY(-.02em)}}
+@keyframes elevate{from{opacity:0;transform:translateY(80%);color:var(--gold)}55%{color:var(--gold)}}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:no-preference){
+  .anim .hero h1 .ln,.anim .hero h1 .soft{animation:none}
+  .anim .l1 .ch{animation:drop .55s var(--ease) both;animation-delay:calc(var(--i) * 40ms)}
+  .anim .l1 .word{animation:shake .7s .62s both}
+  .anim .l1 .word::before,.anim .l1 .word::after{content:"";position:absolute;top:14%;bottom:14%;width:.05em;border-radius:9px;background:var(--gold);opacity:0;animation:buzz .7s .62s both}
+  .anim .l1 .word::before{left:-.22em}
+  .anim .l1 .word::after{right:-.22em}
+  .anim .l2 .ch{animation:slam .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(1.05s + var(--i) * 28ms)}
+  .anim .l2 .word{animation:thud .45s 1.85s both}
+  .anim .hero h1 .w{animation:elevate .9s var(--ease) both;animation-delay:calc(2.05s + var(--i) * 110ms)}
+  .anim .hero h1 .w.hl{position:relative}
+  .anim .hero h1 .w.hl::after{content:"";position:absolute;left:0;right:.25em;bottom:.02em;height:.07em;background:var(--gold);transform-origin:left;animation:grow .8s 2.75s var(--ease) both}
+  .anim .hero .lead,.anim .hero .ctas,.anim .hero .who{animation:rise 1s 2.5s var(--ease) both}
+}
+
 /* Movimiento */
 @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
@@ -362,7 +388,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 <main id="inicio">
   <section class="hero" aria-labelledby="h-hero" id="contenido">
     <div class="wrap">
-      <h1 id="h-hero" class="display"><span class="ln">Sacudimos</span><span class="ln">organizaciones.</span><span class="soft">Elevamos el potencial humano.</span></h1>
+      <h1 id="h-hero" class="display" aria-label="Sacudimos organizaciones. Elevamos el potencial humano."><span class="ln l1" aria-hidden="true">Sacudimos</span><span class="ln l2" aria-hidden="true">organizaciones.</span><span class="soft" aria-hidden="true">Elevamos el potencial humano.</span></h1>
+      <script>(function(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;var h=document.getElementById("h-hero");h.querySelectorAll(".ln").forEach(function(l){var t=l.textContent;l.textContent="";var w=document.createElement("span");w.className="word";t.split("").forEach(function(c,i){var s=document.createElement("span");s.className="ch";s.style.setProperty("--i",i);s.textContent=c;w.appendChild(s)});l.appendChild(w)});var so=h.querySelector(".soft"),ws=so.textContent.split(" ");so.textContent="";ws.forEach(function(x,i){var s=document.createElement("span");s.className="w"+(i===ws.length-1?" hl":"");s.style.setProperty("--i",i);s.textContent=x;so.appendChild(s);if(i<ws.length-1)so.appendChild(document.createTextNode(" "))});document.documentElement.classList.add("anim")})();</script>
       <div class="hero-row">
         <div>
           <div class="who"><img src="img/miguel.jpg" width="900" height="900" alt=""><div><b>Miguel Capuro</b><span>Instructor, coach y facilitador</span></div></div>
