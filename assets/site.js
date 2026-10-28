@@ -36,12 +36,12 @@
   addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
   onScroll();
 
-  /* Medición: eventos listos para GA4 (solo se envían si hay consentimiento y etiqueta) */
+  /* Medición sin cookies (Umami): clics en WhatsApp, correo y teléfono */
   d.addEventListener('click',function(e){
     var a=e.target.closest('a[href]'); if(!a)return;
     var h=a.getAttribute('href'), ev=null;
     if(h.indexOf('wa.me')>-1)ev='clic_whatsapp'; else if(h.indexOf('mailto:')===0)ev='clic_correo'; else if(h.indexOf('tel:')===0)ev='clic_llamar';
-    if(ev&&window.gtag)gtag('event',ev,{ubicacion:a.getAttribute('data-where')||'',pagina:location.pathname});
+    if(ev&&window.umami)umami.track(ev,{ubicacion:a.getAttribute('data-where')||'',pagina:location.pathname});
   });
 
   /* Aparición suave al hacer scroll */
