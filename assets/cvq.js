@@ -135,8 +135,8 @@
       return '<div class="ex ' + nivel(e.puntaje) + '"><div class="k">' + x[1] + '</div><div class="v"><b>' + esc(e.puntaje) + '</b><span>/ 100</span></div><div class="bar"><i style="--v:' + Number(e.puntaje) + '%"></i></div><p>' + esc(e.resumen) + '</p></div>';
     }).join('') + '</div>';
   }
-  function renderDiagnostico(diag, precio, nombre) {
-    var n = nombre || diag.nombre_detectado || '';
+  function renderDiagnostico(diag, precio) {
+    var n = diag.nombre_detectado || '';
     var lat = diag.latidos || [];
     var si = lat.filter(function (l) { return l.cumple === 'si'; }).length;
     var co = diag.conteos || {};
@@ -152,6 +152,7 @@
     h += '<span class="label">Diagnóstico listo</span>';
     h += '<h2 id="h-diag" tabindex="-1">' + (n ? esc(n) + ', este' : 'Este') + ' es tu diagnóstico.<span class="soft">Lo que vio el quirófano en tu hoja de vida.</span></h2>';
     h += '<div class="result-head" style="margin-top:24px">' + ring(diag.puntaje_global) + '<div><p class="verdict">' + esc(diag.veredicto) + '</p>' + (diag.lo_que_funciona ? '<p class="good"><b>Lo que ya funciona:</b> ' + esc(diag.lo_que_funciona) + '</p>' : '') + '</div></div>';
+    if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
     h += '<p style="margin-top:20px"><a class="btn sm" href="#pay">Liberar mi informe · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></p>';
@@ -330,73 +331,32 @@
 
   /* ---------- flujo de revisión ---------- */
   function appRevisar() {
-    var paneles = ['triaje', 'historia', 'cv', 'cirugia', 'diag', 'redactando', 'informe'];
-    var paso = { triaje: 0, historia: 1, cv: 2 };
+    var paneles = ['cv', 'cirugia', 'diag', 'redactando', 'informe'];
     var cv = null;
+    var liTexto = '';
     var tsToken = null;
 
     if (DEMO) { var f = $('#demo-flag'); if (f) f.hidden = false; }
 
     function mostrar(nombre) {
       paneles.forEach(function (p) { var el = $('#p-' + p); if (el) el.hidden = p !== nombre; });
-      var idx = paso[nombre];
-      var st = $('.stepper');
-      if (st) {
-        st.hidden = idx == null;
-        $$('li', st).forEach(function (li, i) { li.classList.toggle('on', i === idx); li.classList.toggle('done', idx != null && i < idx); });
-      }
       var h = $('#p-' + nombre + ' h2');
       if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
       window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }
     function alerta(id, msg) { var a = $(id); if (!a) return; a.innerHTML = msg ? esc(msg) : ''; a.hidden = !msg; }
 
-    // Triaje: los 7 latidos
-    var tri = $('#latidos');
-    tri.innerHTML = LATIDOS.map(function (t, i) {
-      return '<label class="check"><input type="checkbox" name="latido" value="' + (i + 1) + '"><span class="box">' + ICO.check + '</span><span class="t">' + esc(t) + '</span></label>';
-    }).join('');
-
-    // Guardar y restaurar el formulario (nunca el archivo)
+    // Lo opcional se recuerda mientras la pestaña esté abierta (nunca el archivo)
     var form = $('#cvq-form');
     function datos() {
       var fd = new FormData(form);
-      return {
-        nombre: fd.get('nombre') || '', email: fd.get('email') || '', cargo_objetivo: fd.get('cargo_objetivo') || '', area: fd.get('area') || '',
-        anios: fd.get('anios') || '', situacion: fd.get('situacion') || '', tiempo_buscando: fd.get('tiempo_buscando') || '', respuestas: fd.get('respuestas') || '',
-        preocupacion: fd.get('preocupacion') || '', vacante: fd.get('vacante') || '',
-        autoevaluacion: fd.getAll('latido').map(Number),
-        li_url: fd.get('li_url') || '', li_titular: fd.get('li_titular') || '', li_acerca: fd.get('li_acerca') || ''
-      };
+      return { li_url: fd.get('li_url') || '', vacante: fd.get('vacante') || '' };
     }
     var previo = store.get('form');
-    if (previo) {
-      Object.keys(previo).forEach(function (k) {
-        if (k === 'autoevaluacion') { (previo[k] || []).forEach(function (v) { var c = form.querySelector('input[name="latido"][value="' + v + '"]'); if (c) c.checked = true; }); return; }
-        var el = form.elements[k];
-        if (!el) return;
-        if (el instanceof RadioNodeList) { $$('input[name="' + k + '"]', form).forEach(function (r) { r.checked = r.value === previo[k]; }); } else el.value = previo[k];
-      });
-    }
+    if (previo) ['li_url', 'vacante'].forEach(function (k) { if (previo[k] && form.elements[k]) form.elements[k].value = previo[k]; });
     form.addEventListener('input', function () { store.set('form', datos()); });
-    form.addEventListener('change', function () { store.set('form', datos()); });
 
-    $('#a-historia').addEventListener('click', function () { track('cv_paso', { paso: 'historia' }); mostrar('historia'); });
-    $('#v-triaje').addEventListener('click', function () { mostrar('triaje'); });
-    $('#a-cv').addEventListener('click', function () {
-      var x = datos(), ok = true;
-      $$('.field', $('#p-historia')).forEach(function (f) { f.classList.remove('bad'); });
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x.email.trim())) { form.elements.email.closest('.field').classList.add('bad'); ok = false; }
-      if (x.cargo_objetivo.trim().length < 2) { form.elements.cargo_objetivo.closest('.field').classList.add('bad'); ok = false; }
-      if (!ok) { alerta('#e-historia', 'Necesito tu correo (ahí te llega el informe) y el cargo al que apuntas.'); return; }
-      alerta('#e-historia', '');
-      track('cv_paso', { paso: 'cv' });
-      mostrar('cv');
-      prepararTurnstile();
-    });
-    $('#v-historia').addEventListener('click', function () { mostrar('historia'); });
-
-    // Archivo
+    // Hoja de vida
     var drop = $('#drop'), input = $('#cv-file');
     function elegir(file) {
       alerta('#e-cv', '');
@@ -421,6 +381,25 @@
     ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
     drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) elegir(f); });
 
+    // LinkedIn en PDF (opcional)
+    var liInput = $('#li-file'), liBtn = $('#li-btn'), liOk = $('#li-ok');
+    if (liBtn && liInput) {
+      liBtn.addEventListener('click', function () { liInput.click(); });
+      liInput.addEventListener('change', function () {
+        var file = liInput.files[0];
+        if (!file) return;
+        liTexto = '';
+        if (file.size > 5 * 1024 * 1024) { liOk.textContent = 'Ese PDF pesa más de 5 MB.'; return; }
+        liOk.textContent = 'Leyendo ' + file.name + '…';
+        file.arrayBuffer().then(leerPDF).then(function (r) {
+          if (r.texto.length > 200) { liTexto = r.texto.slice(0, 15000); liOk.textContent = '✓ ' + file.name + ' listo. Lo comparo con tu CV.'; liBtn.textContent = 'Cambiar mi LinkedIn en PDF'; }
+          else liOk.textContent = 'No pude leer texto en ese PDF. Usa el que genera LinkedIn con «Guardar en PDF».';
+        }).catch(function () {
+          liOk.textContent = DEMO ? '✓ ' + file.name + ' listo (vista previa).' : 'No pude leer ese archivo. Usa el que genera LinkedIn con «Guardar en PDF».';
+        });
+      });
+    }
+
     // Turnstile (opcional)
     function prepararTurnstile() {
       cargarConfig().then(function (c) {
@@ -430,6 +409,7 @@
         loadScript('https://challenges.cloudflare.com/turnstile/v0/api.js');
       });
     }
+    prepararTurnstile();
 
     // Enviar al quirófano
     var etapas, tEtapas;
@@ -439,24 +419,24 @@
       etapas[0].className = 'now';
       tEtapas = setInterval(function () {
         if (i < etapas.length - 1) { etapas[i].className = 'done'; i++; etapas[i].className = 'now'; }
-      }, 3800);
+      }, 3200);
     }
     function pararEtapas() { clearInterval(tEtapas); }
 
     $('#operar').addEventListener('click', function () {
       var x = datos();
-      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word.'); return; }
-      if (!$('#c-datos').checked || !$('#c-ia').checked || !$('#c-mayor').checked) { alerta('#e-cv', 'Para operar necesito tus tres autorizaciones.'); return; }
+      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word, o tu LinkedIn en PDF.'); return; }
+      if (!$('#c-ok').checked) { alerta('#e-cv', 'Para operar necesito tu autorización: marca la casilla.'); return; }
       var li = x.li_url.trim();
       if (li && !/linkedin\.com\/in\/[^\s]+/i.test(li)) { alerta('#e-cv', 'El enlace de LinkedIn debe verse como linkedin.com/in/tu-nombre.'); return; }
       if (config && config.turnstile && !tsToken) { alerta('#e-cv', 'Confirma que no eres un robot.'); return; }
       alerta('#e-cv', '');
       mostrar('cirugia');
       animarEtapas();
-      track('cv_operar', { tipo: cv.tipo });
+      track('cv_operar', { tipo: cv.tipo, linkedin_pdf: Boolean(liTexto) });
       var body = {
-        form: { nombre: x.nombre, email: x.email, cargo_objetivo: x.cargo_objetivo, area: x.area, anios: x.anios, situacion: x.situacion, tiempo_buscando: x.tiempo_buscando, respuestas: x.respuestas, preocupacion: x.preocupacion, vacante: x.vacante, autoevaluacion: x.autoevaluacion },
-        linkedin: { url: li, titular: x.li_titular, acerca: x.li_acerca },
+        form: { vacante: x.vacante },
+        linkedin: { url: li, texto: liTexto },
         cv: cv,
         consentimiento: { datos: true, ia: true, mayor: true },
         turnstile: tsToken
@@ -467,7 +447,7 @@
         var ses = { id: r.id, key: r.key };
         store.set('ses', ses);
         track('cv_diagnostico', { puntaje: r.diagnostico.puntaje_global });
-        return wait(500).then(function () { verDiagnostico(ses, r.diagnostico, r.precio, x.nombre); });
+        return wait(500).then(function () { verDiagnostico(ses, r.diagnostico, r.precio); });
       }).catch(function (e) {
         pararEtapas();
         mostrar('cv');
@@ -477,9 +457,11 @@
     });
 
     // Diagnóstico y pago
-    function verDiagnostico(ses, diag, precio, nombre) {
+    var diagActual = null;
+    function verDiagnostico(ses, diag, precio) {
       var p = $('#p-diag');
-      $('#diag-body').innerHTML = renderDiagnostico(diag, precio, nombre);
+      diagActual = diag;
+      $('#diag-body').innerHTML = renderDiagnostico(diag, precio);
       animarRings(p);
       mostrar('diag');
       montarPago(ses, precio);
@@ -510,10 +492,19 @@
           box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
         }
-        box.innerHTML = '<div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div><div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
+        var cargoInf = (diagActual && diagActual.cargo_objetivo_inferido) || '';
+        box.innerHTML = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
+          '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>' +
+          '<div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div><div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         var tel = $('#tel');
         tel.addEventListener('input', function () { var v = tel.value.replace(/\D/g, '').slice(0, 8); tel.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; });
         function numero() { return tel.value.replace(/\D/g, ''); }
+        function correo() { return ($('#mail').value || '').trim(); }
+        function cargo() { var c = $('#cargo'); return c ? c.value.trim() : ''; }
+        function correoOk() {
+          if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo())) return true;
+          alerta('#e-pay', 'Escribe tu correo: ahí te llega el informe.'); $('#mail').focus(); return false;
+        }
         function esperando() {
           $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>Confirma en tu app de Yappy</b><p>Te enviamos una solicitud de ' + money(precio) + ' al celular terminado en ' + esc(numero().slice(-2)) + '. Apenas la apruebes, empiezo a redactar tu informe.</p></div>';
         }
@@ -526,9 +517,10 @@
           b.textContent = 'Pagar ' + money(precio) + ' con Yappy (simulado)';
           $('#yslot').appendChild(b);
           b.addEventListener('click', function () {
+            if (!correoOk()) return;
             if (!DEMO && !/^6\d{7}$/.test(numero())) { alerta('#e-pay', 'Escribe tu número de Yappy: 8 dígitos y empieza con 6.'); return; }
             alerta('#e-pay', ''); b.disabled = true; track('cv_pago_click');
-            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero() || '60000000' } })
+            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero() || '60000000', email: correo(), cargo: cargo() } })
               .then(function () { esperando(); return api('/api/pago/demo', { method: 'POST', body: { id: ses.id, key: ses.key } }); })
               .then(pagado).catch(function (e) { b.disabled = false; fallo(e.message); });
           });
@@ -544,11 +536,12 @@
             if (e && e.detail === false) alerta('#e-pay', 'Yappy no está disponible en este momento. Intenta en unos minutos o escríbeme por WhatsApp.');
           });
           btn.addEventListener('eventClick', function () {
+            if (!correoOk()) return;
             if (!/^6\d{7}$/.test(numero())) { alerta('#e-pay', 'Escribe tu número de Yappy: 8 dígitos y empieza con 6.'); tel.focus(); return; }
             alerta('#e-pay', '');
             track('cv_pago_click');
             btn.isButtonLoading = true;
-            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero() } }).then(function (r) {
+            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero(), email: correo(), cargo: cargo() } }).then(function (r) {
               btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
               btn.isButtonLoading = false;
               esperando();
@@ -603,12 +596,12 @@
     // Retomar una revisión en curso
     $$('[data-reiniciar]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); store.del('ses'); store.del('demo'); location.reload(); }); });
     var ses = store.get('ses');
-    if (!ses) { mostrar('triaje'); return; }
+    if (!ses) { mostrar('cv'); return; }
     api('/api/estado', { query: { id: ses.id, key: ses.key } }).then(function (s) {
       if (s.listo) return api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) { verInforme(ses, r.informe); });
       if (s.pagado) return redactar(ses);
-      verDiagnostico(ses, s.diagnostico, s.precio, s.nombre);
-    }).catch(function () { store.del('ses'); mostrar('triaje'); });
+      verDiagnostico(ses, s.diagnostico, s.precio);
+    }).catch(function () { store.del('ses'); mostrar('cv'); });
   }
 
   /* ---------- página del informe (enlace del correo) ---------- */

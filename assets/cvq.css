@@ -343,3 +343,9 @@ body[data-cvq] .dock{display:none!important}
 @media (max-width:760px){body[data-cvq]{padding-bottom:0}}
 #pay{scroll-margin-top:96px}
 .toolbar .confirm{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 16px;border-radius:16px;background:#FFF8F6;border:1px solid #F2C9BF;color:#8A2A18;font-size:.95rem}
+.aim{margin-top:18px;display:inline-flex;flex-wrap:wrap;gap:6px;padding:8px 14px;border-radius:14px;background:var(--surface);color:var(--muted);font-size:.92rem}
+.aim b{color:var(--ink)}
+.more-li summary small{font-weight:400;color:var(--muted)}
+.journey.three ol{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:820px){.journey.three ol{grid-template-columns:1fr}}
+#pay-body .field + .field{margin-top:16px}
