@@ -477,7 +477,7 @@
     }
 
     var tPoll = null;
-    function poll(ses, alPagar, alFallar, lim) {
+    function poll(ses, alPagar, alFallar, lim, cada) {
       clearInterval(tPoll);
       var hasta = Date.now() + (lim || 7 * 60 * 1000);
       tPoll = setInterval(function () {
@@ -489,7 +489,7 @@
             alFallar({ rejected: 'El pago no se confirmó a tiempo. Tienes 5 minutos para aprobarlo en tu app.', cancelled: 'Cancelaste el pago en tu app de Yappy.', expired: 'La solicitud de pago venció.' }[s.orden] + ' Puedes intentar de nuevo.');
           }
         }).catch(function () { /* reintenta en el próximo ciclo */ });
-      }, 3000);
+      }, cada || 3000);
     }
 
     function montarPago(ses, precio) {
@@ -498,7 +498,8 @@
         var demoPago = DEMO || c.demo_pago;
         var yappyOn = demoPago || Boolean(c.yappy && c.yappy.activo);
         var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
-        if (!yappyOn && !paypalOn) {
+        var manualOn = !yappyOn && !paypalOn && Boolean(c.manual && c.manual.activo);
+        if (!yappyOn && !paypalOn && !manualOn) {
           box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
         }
@@ -507,6 +508,7 @@
           '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
         if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div></div>';
         if (yappyOn && paypalOn) h += '<div class="or" role="separator"><span>¿No tienes Yappy?</span></div>';
+        if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
         if (paypalOn) h += '<div class="paym" id="m-paypal">' + (yappyOn ? '' : '<p class="pp-t">Paga con PayPal.</p>') + '<div class="pp-slot" id="ppslot"></div></div>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;
@@ -539,6 +541,34 @@
         function enRevision() {
           $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>PayPal está revisando tu pago</b><p>A veces tarda unos minutos. Apenas lo apruebe, empiezo a redactar tu informe y te llega a tu correo. Puedes dejar esta pantalla abierta.</p></div>';
           poll(ses, pagado, function () { fallo('PayPal todavía no aprueba tu pago. Cuando lo haga, te llega el informe a tu correo.'); }, 30 * 60 * 1000);
+        }
+
+        // Pago manual: Yappy directo a Miguel, que lo confirma desde su panel.
+        if (manualOn) {
+          var wa = C.whatsapp || '50766653528';
+          var verCodigo = function (codigo) {
+            var yappy = c.manual.yappy;
+            var texto = 'Hola Miguel, ya pagué mi informe de CV en el Quirófano. Mi código es ' + codigo + '.';
+            $('#m-manual').innerHTML = '<div class="manual-ok"><span class="label" style="color:#A9B6CB">Tu código</span><div class="code">' + esc(codigo) + '</div>' +
+              '<ol><li>' + (yappy ? 'Envía <b>' + money(precio) + '</b> por Yappy a <b>' + esc(yappy) + '</b>.' : 'Escríbeme por WhatsApp y te paso el Yappy para enviar <b>' + money(precio) + '</b>.') + '</li>' +
+              '<li>Mándame el comprobante por WhatsApp con tu código.</li></ol>' +
+              '<a class="btn gold" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(texto) + '" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>' +
+              '<p class="fine-w">Apenas confirme tu pago, tu informe aparece en esta pantalla y te llega a tu correo. Si cierras esta página, igual te llega.</p></div>';
+            $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>Esperando la confirmación de tu pago</b></div>';
+            poll(ses, pagado, function () { $('#pay-status').innerHTML = ''; }, 3 * 24 * 3600 * 1000, 15000);
+          };
+          var previoManual = store.get('manual');
+          if (previoManual && previoManual.id === ses.id) { verCodigo(previoManual.codigo); return; }
+          $('#manual-btn').addEventListener('click', function () {
+            if (!correoOk()) return;
+            var btn = $('#manual-btn'); btn.disabled = true;
+            alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'manual' });
+            api('/api/pago/manual', datosPago({})).then(function (r) {
+              store.set('manual', { id: ses.id, codigo: r.codigo });
+              verCodigo(r.codigo);
+            }).catch(function (e) { btn.disabled = false; fallo(e.message); });
+          });
+          return;
         }
 
         // Pago simulado (modo demostración o servicio en pruebas)
@@ -678,7 +708,7 @@
     }
 
     // Retomar una revisión en curso
-    $$('[data-reiniciar]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); store.del('ses'); store.del('demo'); location.reload(); }); });
+    $$('[data-reiniciar]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); store.del('ses'); store.del('demo'); store.del('manual'); location.reload(); }); });
     var ses = store.get('ses');
     if (!ses) { mostrar('cv'); return; }
     api('/api/estado', { query: { id: ses.id, key: ses.key } }).then(function (s) {

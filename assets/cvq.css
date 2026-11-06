@@ -362,3 +362,8 @@ body[data-cvq] .dock{display:none!important}
 .ppbtn:hover{background:#F2B52C}
 .ybtn:active,.ppbtn:active{transform:scale(.98)}
 .ybtn[disabled],.ppbtn[disabled]{opacity:.55;pointer-events:none}
+/* Pago manual por Yappy directo */
+.manual-ok{display:grid;gap:12px}
+.manual-ok .code{font-stretch:68%;font-weight:800;font-size:clamp(2.2rem,7vw,3rem);letter-spacing:.18em;color:#fff;line-height:1}
+.manual-ok ol{margin:0;padding-left:1.2em;color:#E7ECF3;display:grid;gap:6px}
+.manual-ok .btn{justify-self:start}
