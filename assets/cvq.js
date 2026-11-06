@@ -1,10 +1,13 @@
-/* CV en el Quirófano · flujo de revisión, pago con Yappy e informe.
+/* CV en el Quirófano · flujo de revisión, pago con Yappy o PayPal e informe.
    Funciona en dos modos: con el servicio privado (window.CVQ.api) o en demostración (sin api). */
 (function () {
   'use strict';
   var C = window.CVQ || {};
   var API = String(C.api || '').replace(/\/$/, '');
-  var DEMO = !API;
+  // Sin servicio conectado: demostración fuera de mejorativa.com (o con ?demo). En mejorativa.com, aviso de "muy pronto".
+  var EN_SITIO = /(^|\.)mejorativa\.com$/.test(location.hostname);
+  var DEMO = !API && (!EN_SITIO || /[?&]demo\b/.test(location.search));
+  var CERRADO = !API && !DEMO;
   var ASSETS = new URL('.', document.currentScript.src).href;
   var MODO = document.body.getAttribute('data-cvq');
   var d = document;
@@ -64,6 +67,8 @@
     }
     if (path === '/api/pago/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO' }; });
     if (path === '/api/pago/demo') return wait(1800).then(function () { store.set('demo', { status: 'paid' }); return { ok: true }; });
+    if (path === '/api/paypal/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO', paypal_id: 'DEMO-CVQDEMO' }; });
+    if (path === '/api/paypal/capturar') return wait(1200).then(function () { store.set('demo', { status: 'paid' }); return { ok: true, pagado: true }; });
     if (path === '/api/informe' && (!o.method || o.method === 'GET')) return Promise.resolve(st.status === 'ready' ? { ok: true, listo: true, informe: D.informe } : { ok: true, listo: false, status: st.status });
     if (path === '/api/borrar') { store.del('demo'); return Promise.resolve({ ok: true }); }
     return Promise.reject(new Error('Ruta demo no soportada'));
@@ -337,6 +342,10 @@
     var tsToken = null;
 
     if (DEMO) { var f = $('#demo-flag'); if (f) f.hidden = false; }
+    if (CERRADO) {
+      $('#p-cv').innerHTML = '<h2>Muy pronto.<span class="soft">El quirófano abre en unos días.</span></h2><p class="sub">Mientras tanto, escríbeme y te cuento cómo revisar tu hoja de vida.</p><div class="actions"><a class="btn" href="https://wa.me/' + (C.whatsapp || '50766653528') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>';
+      return;
+    }
 
     function mostrar(nombre) {
       paneles.forEach(function (p) { var el = $('#p-' + p); if (el) el.hidden = p !== nombre; });
@@ -487,72 +496,147 @@
       var box = $('#pay-body');
       cargarConfig().then(function (c) {
         var demoPago = DEMO || c.demo_pago;
-        var activo = c.yappy && c.yappy.activo;
-        if (!demoPago && !activo) {
+        var yappyOn = demoPago || Boolean(c.yappy && c.yappy.activo);
+        var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
+        if (!yappyOn && !paypalOn) {
           box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
         }
         var cargoInf = (diagActual && diagActual.cargo_objetivo_inferido) || '';
-        box.innerHTML = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
-          '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>' +
-          '<div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div><div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
+        var h = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
+          '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
+        if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div></div>';
+        if (yappyOn && paypalOn) h += '<div class="or" role="separator"><span>¿No tienes Yappy?</span></div>';
+        if (paypalOn) h += '<div class="paym" id="m-paypal">' + (yappyOn ? '' : '<p class="pp-t">Paga con PayPal.</p>') + '<div class="pp-slot" id="ppslot"></div></div>';
+        h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
+        box.innerHTML = h;
+
         var tel = $('#tel');
-        tel.addEventListener('input', function () { var v = tel.value.replace(/\D/g, '').slice(0, 8); tel.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; });
-        function numero() { return tel.value.replace(/\D/g, ''); }
+        if (tel) tel.addEventListener('input', function () { var v = tel.value.replace(/\D/g, '').slice(0, 8); tel.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; });
+        function numero() { return tel ? tel.value.replace(/\D/g, '') : ''; }
         function correo() { return ($('#mail').value || '').trim(); }
-        function cargo() { var c = $('#cargo'); return c ? c.value.trim() : ''; }
+        function cargo() { var x = $('#cargo'); return x ? x.value.trim() : ''; }
         function correoOk() {
           if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo())) return true;
           alerta('#e-pay', 'Escribe tu correo: ahí te llega el informe.'); $('#mail').focus(); return false;
         }
-        function esperando() {
-          $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>Confirma en tu app de Yappy</b><p>Te enviamos una solicitud de ' + money(precio) + ' al celular terminado en ' + esc(numero().slice(-2)) + '. Apenas la apruebes, empiezo a redactar tu informe.</p></div>';
+        function numeroOk() {
+          if (/^6\d{7}$/.test(numero())) return true;
+          alerta('#e-pay', 'Escribe tu número de Yappy: 8 dígitos y empieza con 6.'); tel.focus(); return false;
+        }
+        function datosPago(extra) {
+          var b = { id: ses.id, key: ses.key, email: correo(), cargo: cargo() };
+          for (var k in extra) b[k] = extra[k];
+          return { method: 'POST', body: b };
+        }
+        function esperando(metodo) {
+          $('#pay-status').innerHTML = metodo === 'paypal'
+            ? '<div class="wait-box"><span class="spinner"></span><b>Confirmando tu pago con PayPal</b><p>Un momento. Apenas PayPal lo confirme, empiezo a redactar tu informe.</p></div>'
+            : '<div class="wait-box"><span class="spinner"></span><b>Confirma en tu app de Yappy</b><p>Te enviamos una solicitud de ' + money(precio) + ' al celular terminado en ' + esc(numero().slice(-2)) + '. Apenas la apruebes, empiezo a redactar tu informe.</p></div>';
         }
         function fallo(msg) { $('#pay-status').innerHTML = ''; alerta('#e-pay', msg); }
         function pagado() { track('cv_pago_ok'); redactar(ses); }
+        function enRevision() {
+          $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>PayPal está revisando tu pago</b><p>A veces tarda unos minutos. Apenas lo apruebe, empiezo a redactar tu informe y te llega a tu correo. Puedes dejar esta pantalla abierta.</p></div>';
+          poll(ses, pagado, function () { fallo('PayPal todavía no aprueba tu pago. Cuando lo haga, te llega el informe a tu correo.'); }, 30 * 60 * 1000);
+        }
 
+        // Pago simulado (modo demostración o servicio en pruebas)
         if (demoPago) {
-          var b = d.createElement('button');
-          b.className = 'demo-pay'; b.type = 'button';
-          b.textContent = 'Pagar ' + money(precio) + ' con Yappy (simulado)';
-          $('#yslot').appendChild(b);
-          b.addEventListener('click', function () {
-            if (!correoOk()) return;
-            if (!DEMO && !/^6\d{7}$/.test(numero())) { alerta('#e-pay', 'Escribe tu número de Yappy: 8 dígitos y empieza con 6.'); return; }
-            alerta('#e-pay', ''); b.disabled = true; track('cv_pago_click');
-            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero() || '60000000', email: correo(), cargo: cargo() } })
-              .then(function () { esperando(); return api('/api/pago/demo', { method: 'POST', body: { id: ses.id, key: ses.key } }); })
-              .then(pagado).catch(function (e) { b.disabled = false; fallo(e.message); });
-          });
+          var botones = [];
+          var simular = function (btn, metodo) {
+            botones.push(btn);
+            btn.addEventListener('click', function () {
+              if (!correoOk()) return;
+              if (metodo === 'yappy' && !numeroOk()) return;
+              alerta('#e-pay', ''); botones.forEach(function (x) { x.disabled = true; }); track('cv_pago_click', { metodo: metodo });
+              var libre = function () { botones.forEach(function (x) { x.disabled = false; }); };
+              var orden;
+              api(metodo === 'paypal' ? '/api/paypal/crear' : '/api/pago/crear', datosPago(metodo === 'yappy' ? { telefono: numero() } : {}))
+                .then(function (r) {
+                  orden = r;
+                  esperando(metodo);
+                  var sim = metodo === 'paypal' ? window.CVQ_simPayPal : window.CVQ_simYappy;
+                  return sim ? sim(metodo === 'paypal' ? correo() : numero(), precio) : true;
+                })
+                .then(function (aprobado) {
+                  if (!aprobado) { libre(); fallo(metodo === 'paypal' ? 'Cancelaste el pago en PayPal. Puedes intentarlo de nuevo.' : 'El pago no se aprobó en la app. Puedes intentarlo de nuevo.'); return; }
+                  if (metodo === 'paypal') return api('/api/paypal/capturar', datosPago({ paypal_id: orden.paypal_id })).then(pagado);
+                  return api('/api/pago/demo', { method: 'POST', body: { id: ses.id, key: ses.key } }).then(pagado);
+                })
+                .catch(function (e) { libre(); fallo(e.message); });
+            });
+          };
+          var nuevoBoton = function (clase, texto, slot) { var b = d.createElement('button'); b.className = clase; b.type = 'button'; b.textContent = texto; $(slot).appendChild(b); return b; };
+          if (yappyOn) simular(nuevoBoton('ybtn', 'Pagar ' + money(precio) + ' con Yappy', '#yslot'), 'yappy');
+          if (paypalOn) simular(nuevoBoton('ppbtn', 'Pagar ' + money(precio) + ' con PayPal', '#ppslot'), 'paypal');
+          $('#pay-status').insertAdjacentHTML('beforebegin', '<p class="fine-w">Pago simulado. En la web real aquí aparecen los botones oficiales de Yappy y PayPal, y el cobro es de verdad.</p>');
           return;
         }
 
-        loadScript(c.yappy.cdn, true).then(function () {
-          var btn = d.createElement('btn-yappy');
-          btn.setAttribute('theme', 'blue');
-          btn.setAttribute('rounded', 'true');
-          $('#yslot').appendChild(btn);
-          btn.addEventListener('isYappyOnline', function (e) {
-            if (e && e.detail === false) alerta('#e-pay', 'Yappy no está disponible en este momento. Intenta en unos minutos o escríbeme por WhatsApp.');
+        // Yappy
+        if (yappyOn) {
+          loadScript(c.yappy.cdn, true).then(function () {
+            var btn = d.createElement('btn-yappy');
+            btn.setAttribute('theme', 'blue');
+            btn.setAttribute('rounded', 'true');
+            $('#yslot').appendChild(btn);
+            btn.addEventListener('isYappyOnline', function (e) {
+              if (e && e.detail === false) alerta('#e-pay', 'Yappy no está disponible en este momento. Intenta en unos minutos' + (paypalOn ? ' o paga con PayPal.' : ' o escríbeme por WhatsApp.'));
+            });
+            btn.addEventListener('eventClick', function () {
+              if (!correoOk() || !numeroOk()) return;
+              alerta('#e-pay', '');
+              track('cv_pago_click', { metodo: 'yappy' });
+              btn.isButtonLoading = true;
+              api('/api/pago/crear', datosPago({ telefono: numero() })).then(function (r) {
+                btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
+                btn.isButtonLoading = false;
+                esperando('yappy');
+                poll(ses, pagado, fallo);
+              }).catch(function (e) { btn.isButtonLoading = false; fallo(e.message); });
+            });
+            btn.addEventListener('eventSuccess', function () { esperando('yappy'); poll(ses, pagado, fallo, 90 * 1000); });
+            btn.addEventListener('eventError', function () { /* el estado real llega por el IPN: el sondeo decide */ });
+          }).catch(function () {
+            alerta('#e-pay', 'No pudimos cargar el botón de Yappy. Revisa tu conexión y recarga la página.');
           });
-          btn.addEventListener('eventClick', function () {
-            if (!correoOk()) return;
-            if (!/^6\d{7}$/.test(numero())) { alerta('#e-pay', 'Escribe tu número de Yappy: 8 dígitos y empieza con 6.'); tel.focus(); return; }
-            alerta('#e-pay', '');
-            track('cv_pago_click');
-            btn.isButtonLoading = true;
-            api('/api/pago/crear', { method: 'POST', body: { id: ses.id, key: ses.key, telefono: numero(), email: correo(), cargo: cargo() } }).then(function (r) {
-              btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
-              btn.isButtonLoading = false;
-              esperando();
-              poll(ses, pagado, fallo);
-            }).catch(function (e) { btn.isButtonLoading = false; fallo(e.message); });
+        }
+
+        // PayPal: el navegador solo aprueba; el servicio captura y verifica el cobro.
+        if (paypalOn) {
+          var sdk = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.paypal.client_id) + '&currency=USD&intent=capture&components=buttons&disable-funding=paylater,venmo';
+          loadScript(sdk).then(function () {
+            var ultimoError = '';
+            window.paypal.Buttons({
+              style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
+              onClick: function (data, actions) {
+                if (!correoOk()) return actions.reject();
+                alerta('#e-pay', ''); ultimoError = '';
+                track('cv_pago_click', { metodo: 'paypal' });
+                return actions.resolve();
+              },
+              createOrder: function () {
+                return api('/api/paypal/crear', datosPago({})).then(function (r) { return r.paypal_id; })
+                  .catch(function (e) { ultimoError = e.message; throw e; });
+              },
+              onApprove: function (data, actions) {
+                esperando('paypal');
+                return api('/api/paypal/capturar', datosPago({ paypal_id: data.orderID })).then(function (r) {
+                  if (r.pendiente) { enRevision(); return; }
+                  pagado();
+                }).catch(function (e) {
+                  if (e.code === 'paypal_declinado') { fallo(e.message); return actions.restart(); }
+                  fallo(e.message);
+                });
+              },
+              onCancel: function () { fallo('Cancelaste el pago en PayPal. Puedes intentarlo de nuevo cuando quieras.'); },
+              onError: function () { fallo(ultimoError || ('PayPal no pudo procesar el pago. Intenta de nuevo' + (yappyOn ? ' o paga con Yappy.' : '.'))); }
+            }).render('#ppslot');
+          }).catch(function () {
+            $('#ppslot').innerHTML = '<p class="fine-w">No pudimos cargar PayPal. Revisa tu conexión' + (yappyOn ? ' o paga con Yappy.' : ' y recarga la página.') + '</p>';
           });
-          btn.addEventListener('eventSuccess', function () { esperando(); poll(ses, pagado, fallo, 90 * 1000); });
-          btn.addEventListener('eventError', function () { /* el estado real llega por el IPN: el sondeo decide */ });
-        }).catch(function () {
-          alerta('#e-pay', 'No pudimos cargar el botón de Yappy. Revisa tu conexión y recarga la página.');
-        });
+        }
       });
     }
 
