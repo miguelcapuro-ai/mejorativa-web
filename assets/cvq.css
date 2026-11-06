@@ -103,7 +103,10 @@
 .radios label:has(input:checked){background:var(--ink);border-color:var(--ink);color:#fff}
 .radios label:has(input:focus-visible){outline:2px solid var(--navy);outline-offset:3px}
 @media (max-width:640px){.fields{grid-template-columns:1fr}}
-.drop{margin-top:22px;display:grid;place-items:center;text-align:center;gap:10px;padding:clamp(26px,5vw,44px) 20px;border-radius:20px;border:1.5px dashed var(--line-strong);background:var(--surface);cursor:pointer;transition:border-color .3s var(--ease),background-color .3s var(--ease)}
+.solo-cv{margin-top:20px;padding:14px 18px;border-radius:14px;background:#EEF2F7;border-left:3px solid var(--navy)}
+.solo-cv b{display:block;color:var(--ink);font-size:.98rem}
+.solo-cv p{margin:4px 0 0;color:var(--muted);font-size:.9rem;line-height:1.5}
+.drop{margin-top:16px;display:grid;place-items:center;text-align:center;gap:10px;padding:clamp(26px,5vw,44px) 20px;border-radius:20px;border:1.5px dashed var(--line-strong);background:var(--surface);cursor:pointer;transition:border-color .3s var(--ease),background-color .3s var(--ease)}
 .drop:hover,.drop.over{border-color:var(--navy);background:#EEF2F7}
 .drop .ico{width:40px;height:40px;color:var(--navy)}
 .drop b{color:var(--ink);font-size:1.1rem}

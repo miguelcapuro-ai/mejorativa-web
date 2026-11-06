@@ -308,7 +308,7 @@
   function procesarArchivo(file) {
     var nombre = file.name || 'archivo';
     var ext = (nombre.split('.').pop() || '').toLowerCase();
-    if (file.size > 5 * 1024 * 1024) return Promise.reject(new Error('Tu archivo pesa más de 5 MB. Guárdalo de nuevo como PDF y vuelve a intentar.'));
+    if (file.size > 2 * 1024 * 1024) return Promise.reject(new Error('Tu archivo pesa más de 2 MB. ¿Venía con certificados o anexos? Sube solo tu hoja de vida. Si aun así pesa mucho, guárdala de nuevo como PDF desde Word o Google Docs.'));
     if (ext === 'doc') return Promise.reject(new Error('Los archivos .doc antiguos no se pueden leer. Guárdalo como PDF o como .docx.'));
     var esPDF = ext === 'pdf' || file.type === 'application/pdf';
     var esDOCX = ext === 'docx';
@@ -316,12 +316,13 @@
     return file.arrayBuffer().then(function (buf) {
       if (esPDF) {
         return leerPDF(buf).catch(function () { return { paginas: null, texto: '' }; }).then(function (r) {
-          if (r.paginas && r.paginas > 6) throw new Error('Tu hoja de vida tiene ' + r.paginas + ' páginas. Sube una versión de 1 a 3 páginas.');
+          if (r.paginas && r.paginas > 4) throw new Error('Tu archivo tiene ' + r.paginas + ' páginas. ¿Venía con certificados o anexos? Sube solo tu hoja de vida, de 1 a 4 páginas.');
           return { tipo: 'pdf', pdf_b64: aBase64(buf), texto: r.texto, meta: { paginas: r.paginas, caracteres: r.texto.length, nombre_archivo: nombre } };
         });
       }
       return leerDOCX(buf).then(function (r) {
         if (r.texto.length < 200) throw new Error('No pudimos leer suficiente texto de tu Word. Prueba guardándolo como PDF.');
+        if (r.texto.length > 20000) throw new Error('Tu Word es muy largo para una hoja de vida. ¿Venía con certificados o anexos? Sube solo tu CV, de 1 a 4 páginas.');
         return { tipo: 'docx', texto: r.texto, meta: { paginas: null, caracteres: r.texto.length, nombre_archivo: nombre } };
       });
     });
