@@ -676,7 +676,7 @@
       mostrar('redactando');
       var barra = $('#rprog');
       barra.style.setProperty('--p', '6%');
-      pedirInforme(ses, function (chars) { barra.style.setProperty('--p', Math.min(96, 6 + chars / 320) + '%'); })
+      pedirInforme(ses, function (chars) { barra.style.setProperty('--p', Math.min(96, 6 + chars / 450) + '%'); })
         .then(function (inf) {
           if (inf) return inf;
           // Otro proceso lo está redactando: esperamos a que esté listo.
@@ -686,7 +686,7 @@
               n++;
               api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) {
                 if (r.listo) { clearInterval(t); ok(r.informe); }
-                else if (n > 60) { clearInterval(t); ko(new Error('Tu informe está tardando más de lo normal. Te llegará al correo.')); }
+                else if (n > 120) { clearInterval(t); ko(new Error('Tu informe está tardando más de lo normal. Te llegará al correo.')); }
               }).catch(function () { /* sigue */ });
             }, 5000);
           });
@@ -739,8 +739,8 @@
     api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) {
       if (r.listo) return pintar(r.informe);
       if (r.status === 'diagnosed') { store.set('ses', ses); location.href = '../revisar/'; return; }
-      c.innerHTML = '<div class="panel surgery"><h2>Redactando tu informe.<span class="soft">Tarda entre 1 y 3 minutos.</span></h2><div class="progress"><i id="rprog"></i></div></div>';
-      return pedirInforme(ses, function (ch) { var b = $('#rprog'); if (b) b.style.setProperty('--p', Math.min(96, 6 + ch / 320) + '%'); }).then(function (inf) {
+      c.innerHTML = '<div class="panel surgery"><h2>Redactando tu informe.<span class="soft">Tarda entre 2 y 5 minutos.</span></h2><div class="progress"><i id="rprog"></i></div></div>';
+      return pedirInforme(ses, function (ch) { var b = $('#rprog'); if (b) b.style.setProperty('--p', Math.min(96, 6 + ch / 450) + '%'); }).then(function (inf) {
         if (inf) pintar(inf); else setTimeout(function () { location.reload(); }, 8000);
       });
     }).catch(function (e) {
