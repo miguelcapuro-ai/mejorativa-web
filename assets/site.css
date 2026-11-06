@@ -722,3 +722,32 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
 .nf-screw .soft{color:var(--gold-bright)}
 .nf-screw p{color:#C9D2DE}
 .nf-screw .link{color:#fff;border-color:rgba(255,255,255,.4)}
+
+/* ===== Ajuste nov 2026: menos densidad ===== */
+.sec{padding-block:clamp(64px,7vw,112px)}
+.flag,.close{padding-block:clamp(72px,8vw,120px)}
+.screw{min-height:min(72vh,640px)}
+
+/* Frase: el peso está en "Somos lo que repetimos" */
+.quote-band{padding-block:clamp(72px,9vw,128px)}
+.quote-band .wrap{display:block}
+.quote-band blockquote{max-width:none;font-size:inherit;text-transform:none;font-stretch:100%;font-weight:400;line-height:1}
+.qb-lead{display:block;font-size:clamp(1rem,1.5vw,1.2rem);font-weight:300;font-style:italic;letter-spacing:0;color:var(--muted);margin-bottom:clamp(14px,2vw,22px)}
+.quote-band blockquote strong{display:block;font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:clamp(2.8rem,8.6vw,8rem);line-height:.9;letter-spacing:-.01em;color:var(--ink)}
+
+/* Trayectoria: continuación de 2026 sin repetir el año */
+.older .year:first-child{border-top:0;padding-top:0}
+.screw-story p{margin:0}
+.screw-story p+p{margin-top:10px}
+
+/* Móvil: tarjetas que se deslizan en vez de apilarse */
+.swipe-hint{display:none}
+@media (max-width:760px){
+  .pillars,.services,.pcards{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;margin-inline:calc(-1 * var(--pad,16px));padding-inline:var(--pad,16px);scroll-padding-inline:var(--pad,16px);scrollbar-width:none;padding-bottom:6px}
+  .pillars::-webkit-scrollbar,.services::-webkit-scrollbar,.pcards::-webkit-scrollbar{display:none}
+  .pillar,.svc,.svc.hero-card,.svc.photo-card,.pcard{scroll-snap-align:start;grid-column:auto}
+  .svc.photo-card{display:none}
+  .pillar-pic{aspect-ratio:16/10}
+  .swipe-hint{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .flag .swipe-hint{color:#A9B6CB}
+}
