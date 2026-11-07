@@ -751,3 +751,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
   .swipe-hint{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
   .flag .swipe-hint{color:#A9B6CB}
 }
+/* responsive: mínimos legibles y columnas en móviles estrechos */
+.phrases-hint{font-size:max(11px,.6rem)}
+@media (max-width:380px){.ba-card .row{grid-template-columns:1fr;gap:6px}.ba-card .row b{padding-top:0}}
+.daily b{font-size:max(11px,.62rem)}
+.phero h1.long{font-size:clamp(2.8rem,7vw,6.6rem)}
