@@ -184,6 +184,9 @@
     if (p.examenes) h += examenes(p.examenes);
     h += sec('Apertura', 'Antes de operar.', '<div class="rep-text"><p>' + fmt(inf.apertura) + '</p><p>' + fmt(inf.diagnostico_general) + '</p></div>');
     h += sec('Lo que funciona', 'Empecemos por lo bueno.', lista(inf.lo_que_funciona) + '<div class="prio"><b>Si solo haces una cosa</b><p>' + fmt(inf.prioridad_uno) + '</p></div>');
+    if (inf.avisos && inf.avisos.length) {
+      h += sec('Antes de postular', 'Lo que debes saber de esta vacante.', lista(inf.avisos));
+    }
     h += sec('Signos vitales', 'Los 7 latidos de tu CV.', '<div class="beat-list">' + (inf.latidos || []).map(function (l) {
       var t = { si: 'Sí', parcial: '½', no: 'No' }[l.cumple] || '';
       return '<div class="beat"><span class="st ' + esc(l.cumple) + '">' + t + '</span><div><b>' + esc(LATIDOS[l.id - 1] || ('Latido ' + l.id)) + '</b><p>' + fmt(l.evidencia) + '</p>' + (l.como_arreglarlo ? '<p class="fix">' + fmt(l.como_arreglarlo) + '</p>' : '') + '</div></div>';
@@ -198,6 +201,9 @@
       return '<article class="sec-card"><header><b>' + esc(s.titulo || SECCIONES[s.id] || s.id) + '</b><span class="estado ' + esc(s.estado) + '">' + esc(ESTADOS[s.estado] || s.estado) + '</span></header><p>' + fmt(s.diagnostico) + '</p>' + lista(s.recomendaciones, '') +
         (s.antes || s.despues ? '<div class="ba2">' + (s.antes ? '<div class="a"><small>Hoy</small>' + fmt(s.antes) + '</div>' : '') + (s.despues ? '<div class="d"><small>Operado</small>' + fmt(s.despues) + '</div>' : '') + '</div>' : '') + '</article>';
     }).join('') + '</div>');
+    if (inf.coherencia && inf.coherencia.length) {
+      h += sec('Coherencia', 'Lo que no cuadra.', '<div class="secs">' + inf.coherencia.map(function (c) { return '<article class="sec-card"><p>' + fmt(c.hallazgo) + '</p><p class="how">' + fmt(c.como_corregir) + '</p></article>'; }).join('') + '</div>', 'Un reclutador desconfiado lee buscando contradicciones. Que no encuentre ninguna.');
+    }
     if (inf.experiencia && inf.experiencia.length) {
       h += sec('La cirugía mayor', 'Tus logros, operados.', (inf.experiencia || []).map(function (j) {
         return '<div class="job"><header><b>' + esc(j.cargo) + '</b><span>' + esc(j.empresa) + (j.periodo ? ' · ' + esc(j.periodo) : '') + '</span></header><p>' + fmt(j.comentario) + '</p>' + (j.logros || []).map(function (l) {
@@ -221,7 +227,7 @@
     if (au.comentario || (au.frases_genericas && au.frases_genericas.length)) {
       h += sec('Tu voz', 'Lo que suena a plantilla.', '<div class="rep-text"><p>' + fmt(au.comentario) + '</p></div>' + (au.frases_genericas || []).map(function (f) {
         return '<div class="ba2"><div class="a"><small>Suena a plantilla</small>' + fmt(f.frase) + '</div><div class="d"><small>Con evidencia</small>' + fmt(f.alternativa) + '</div></div>';
-      }).join(''));
+      }).join('') + (au.consejos_redaccion && au.consejos_redaccion.length ? '<p class="kw-h">Para que suene a ti</p>' + lista(au.consejos_redaccion) : ''));
     }
     var hi = inf.historia || {};
     if (hi.aplica) {
@@ -231,9 +237,10 @@
       h += sec('Lo que nadie te dice', 'Los sesgos que tu CV puede activar.', '<div class="secs">' + inf.sesgos.map(function (s) { return '<article class="sec-card"><header><b>' + esc(s.sesgo) + '</b></header><p>' + fmt(s.jugada) + '</p></article>'; }).join('') + '</div>', 'Los sesgos no se combaten escondiéndote. Se desactivan con evidencia.');
     }
     var li = inf.linkedin || {};
-    h += sec('Tu segundo quirófano', 'Tu LinkedIn.', '<div class="rep-text"><p>' + fmt(li.url) + '</p><p>' + fmt(li.coherencia) + '</p></div><p class="kw-h">Titular sugerido</p>' + copiable(li.titular_sugerido) + '<p class="kw-h">"Acerca de" sugerido</p>' + copiable(li.acerca_de_sugerido) + lista(li.recomendaciones));
+    h += sec('Tu segundo quirófano', 'Tu LinkedIn.', '<div class="rep-text"><p>' + fmt(li.url) + '</p><p>' + fmt(li.coherencia) + '</p></div><p class="kw-h">Titular sugerido</p>' + copiable(li.titular_sugerido) + '<p class="kw-h">"Acerca de" sugerido</p>' + copiable(li.acerca_de_sugerido) + lista(li.recomendaciones) + '<p class="note-sm">Te van a buscar en redes antes de llamarte. ¿Están actualizadas? ¿Muestran lo que quieres que vean?</p>');
     h += sec('Ensayo general', 'Las 5 preguntas difíciles.', '<div class="qs">' + (inf.preguntas_entrevista || []).map(function (q) { return '<div><b>' + fmt(q.pregunta) + '</b><p>' + fmt(q.por_que) + '</p><p class="how">' + fmt(q.como_prepararla) + '</p></div>'; }).join('') + '</div>', 'Lo que escribiste, te lo van a preguntar. Prepáralo hoy.');
     h += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
+    if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
     h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
