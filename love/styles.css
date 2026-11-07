@@ -415,7 +415,7 @@ section[id] { scroll-margin-top: 64px; }
 .postmark { width: 18cqw; height: 18cqw; border-radius: 50%; border: 1.5px solid #2b9a94; color: #2b9a94; display: grid; place-items: center; font-size: 3cqw; transform: rotate(-12deg); }
 .pc-lines { height: 12cqw; background: repeating-linear-gradient(transparent 0 3.6cqw, #7a4a3a33 3.6cqw calc(3.6cqw + 1px)); }
 
-.modal { position: fixed; inset: 0; z-index: 60; background: rgba(11,26,51,.82); display: grid; place-items: center; padding: 20px; }
+.modal { position: fixed; inset: 0; z-index: 90; background: rgba(11,26,51,.82); display: grid; place-items: center; padding: 20px; }
 .modal[hidden] { display: none; }
 .modal-inner { position: relative; display: grid; grid-template-columns: auto 280px; gap: 36px; align-items: center; color: #fff; max-height: 100%; }
 .modal .phone { width: min(320px, 78vw); max-height: calc(100vh - 140px); }

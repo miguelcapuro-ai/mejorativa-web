@@ -75,9 +75,14 @@
     const sign = off >= 0 ? "+" : "-", a = Math.abs(off);
     return `${fecha}T${hora}:00${sign}${String(Math.floor(a / 60)).padStart(2, "0")}:${String(a % 60).padStart(2, "0")}`;
   }
-  const shortDate = fecha => { if (!fecha) return "14.02.27"; const [y, m, d] = fecha.split("-"); return `${d}.${m}.${y.slice(2)}`; };
+  const MESES = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+  const shortDate = fecha => { if (!fecha) return "14 FEB 2027"; const [y, m, d] = fecha.split("-"); return `${+d} ${MESES[+m - 1]} ${y}`; };
   const longDate = fecha => fecha ? new Intl.DateTimeFormat("es-PA", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(fecha + "T12:00:00Z")) : "";
-  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const pad2 = n => String(n).padStart(2, "0");
+  const localISO = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const todayISO = () => localISO(new Date());
+  const maxISO = () => { const d = new Date(); d.setFullYear(d.getFullYear() + 10); return localISO(d); };
+  const validISO = v => /^\d{4}-\d{2}-\d{2}$/.test(v || "") && !isNaN(new Date(v + "T12:00:00"));
 
   // ---------- Arte de modelo (tarjeta) ----------
   const asset = (m, kind, thumb) => `assets/modelos/${m.id}/${thumb ? "thumb-" : ""}${kind}.webp`;
@@ -341,8 +346,8 @@
     $$("input[name=acompanantes]", form).forEach(r => (r.checked = r.value === (data.acompanantes || "si")));
     F("quiereFactura").checked = !!data.quiereFactura;
     $("#facturaField").hidden = !data.quiereFactura;
-    F("fecha").min = todayISO();
-    F("fechaLimite").min = todayISO();
+    F("fecha").min = todayISO(); F("fecha").max = maxISO();
+    F("fechaLimite").min = todayISO(); F("fechaLimite").max = maxISO();
     renderProgram(); renderPick(); renderPlanBits(); renderThumbs(); updateWa(); updateCount();
   }
   form.addEventListener("input", e => {
@@ -480,14 +485,16 @@
     const req = $$("[required]", steps.find(x => +x.dataset.step === n)).filter(i => i.type !== "checkbox");
     for (const i of req) if (!String(i.value).trim()) return fail(i, "Falta un dato obligatorio.");
     if (n === 2) {
-      if (data.fecha < todayISO()) return fail(F("fecha"), "La fecha de la boda debe ser futura.");
+      if (!validISO(data.fecha)) return fail(F("fecha"), "Revisen la fecha de la boda.");
+      if (data.fecha < todayISO()) return fail(F("fecha"), "La fecha de la boda no puede estar en el pasado.");
+      if (data.fecha > maxISO()) return fail(F("fecha"), "La fecha de la boda no puede ser a más de 10 años.");
       if (data.mapa && !/^https?:\/\//i.test(data.mapa)) return fail(F("mapa"), "El enlace del mapa debe empezar con https://");
     }
     if (n === 3) {
       const d = digits(data.telefono);
       if (d.length < 8 || d.length > 15) return fail(F("telefono"), "Revisen el número de WhatsApp (con código de país).");
       if (d.length === 8) { data.telefono = "+507 " + data.telefono; F("telefono").value = data.telefono; save(); }
-      if (data.fechaLimite < todayISO() || (data.fecha && data.fechaLimite > data.fecha)) return fail(F("fechaLimite"), "La fecha límite debe estar entre hoy y el día de la boda.");
+      if (!validISO(data.fechaLimite) || data.fechaLimite < todayISO() || (data.fecha && data.fechaLimite > data.fecha)) return fail(F("fechaLimite"), "La fecha límite debe estar entre hoy y el día de la boda.");
     }
     if (n === 4 && !modelById(data.modelo)) return fail(null, "Elijan un modelo para seguir.");
     if (n === 5) {
@@ -519,7 +526,7 @@
     const rows = [
       ["Pareja", `${data.nombre1} & ${data.nombre2}`, 1],
       ["Frase", data.frase || "—", 1],
-      ["Fecha", `${shortDate(data.fecha)} · ${data.hora} (${(CFG.timeZones.find(z => z.id === data.zona) || {}).label || data.zona})`, 2],
+      ["Fecha", `${longDate(data.fecha)} · ${data.hora} (${(CFG.timeZones.find(z => z.id === data.zona) || {}).label || data.zona})`, 2],
       ["Lugar", `${data.lugar}, ${data.direccion}`, 2],
       ["Programa", (data.programa || []).filter(a => a.hora && a.acto).map(a => `${a.hora} ${a.acto}`).join(" · ") || "—", 2],
       ["Confirmaciones", `${data.telefono} · antes del ${longDate(data.fechaLimite)}`, 3],
@@ -621,27 +628,32 @@
     if (CFG.whatsappPedidos) {
       // Sin Apps Script, el pedido completo viaja en el mensaje de WhatsApp (las fotos se adjuntan en el chat).
       const full = !CFG.orderEndpoint;
+      const f = payload.factura;
+      const hora12 = h => { const [H, M] = (h || "00:00").split(":").map(Number); return `${H % 12 || 12}:${String(M).padStart(2, "0")} ${H < 12 ? "a. m." : "p. m."}`; };
+      const diaLargo = d => new Intl.DateTimeFormat("es-PA", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(d + "T12:00:00Z"));
       const lines = [
-        `Hola, Mejorativa Love. ${full ? "Este es mi pedido" : "Les envío el comprobante de Yappy del pedido"} ${payload.pedido}.`,
-        `Pareja: ${payload.pareja.nombre1} & ${payload.pareja.nombre2}`,
-        `Plan: ${p.name} (${money(p.price)})`,
-        `Modelo: ${payload.modelo.nombre}`
+        `¡Hola, Miguel! Somos ${payload.pareja.nombre1} y ${payload.pareja.nombre2} 💍`,
+        `Acabamos de pedir nuestra invitación en Mejorativa Love.`,
+        "",
+        `*Pedido ${payload.pedido}*`,
+        `Plan ${p.name} · ${money(p.price)} · Modelo ${payload.modelo.nombre}`,
+        `Nos casamos el ${diaLargo(payload.fecha.dia)}, a las ${hora12(payload.fecha.hora)}, en ${payload.lugar.nombre}.`
       ];
       if (full) lines.push(
-        payload.frase ? `Frase: "${payload.frase}"` : null,
-        `Boda: ${payload.fecha.dia} a las ${payload.fecha.hora} (${payload.fecha.zonaHoraria})`,
-        `Lugar: ${payload.lugar.nombre}, ${payload.lugar.direccion}${payload.lugar.mapa ? " · " + payload.lugar.mapa : ""}`,
-        payload.programa.length ? `Programa: ${payload.programa.map(a => a.hora + " " + a.acto).join(" · ")}` : null,
-        `Confirmaciones al: ${payload.confirmacion.telefono}, antes del ${payload.confirmacion.fechaLimite}${payload.confirmacion.preguntarAcompanantes ? " (con acompañantes)" : ""}`,
-        payload.musica ? `Música: ${payload.musica}` : null,
+        "",
+        "*Los detalles*",
+        payload.frase ? `Frase: “${payload.frase}”` : null,
+        `Dirección: ${payload.lugar.direccion}${payload.lugar.mapa ? " · " + payload.lugar.mapa : ""}`,
+        payload.programa.length ? `Programa: ${payload.programa.map(a => hora12(a.hora) + " " + a.acto).join(" · ")}` : null,
+        `Confirmaciones al ${payload.confirmacion.telefono}, hasta el ${longDate(payload.confirmacion.fechaLimite)}${payload.confirmacion.preguntarAcompanantes ? ", con acompañantes" : ""}.`,
+        payload.musica ? `Canción: ${payload.musica}` : null,
         payload.seccionesExtra.length ? `Secciones extra: ${payload.seccionesExtra.join(", ")}` : null,
         payload.notas ? `Notas: ${payload.notas}` : null,
-        payload.fotos.length ? `Fotos: ${payload.fotos.length} (las adjunto aquí)` : "Fotos: sin fotos, usar la ilustración del modelo",
-        payload.factura ? `Factura a: ${payload.factura.nombre} · RUC/CIP ${payload.factura.ruc}${payload.factura.dv ? " DV" + payload.factura.dv : ""} · ${payload.factura.correo}${payload.factura.direccion ? " · " + payload.factura.direccion : ""}` : "Factura: no la necesito",
-        `Acepté el aviso de uso de información (v${CFG.avisoVersion}).`,
-        "Adjunto también el comprobante de Yappy."
+        payload.fotos.length ? `Les adjunto ${payload.fotos.length} ${payload.fotos.length === 1 ? "foto" : "fotos"}.` : "Sin fotos: usen la ilustración del modelo.",
+        f ? `Factura a nombre de ${f.nombre} · ${f.ruc}${f.dv ? " DV " + f.dv : ""} · ${f.correo}` : null
       );
-      const msg = lines.filter(Boolean).join("\n");
+      lines.push("", "Aquí va el comprobante de Yappy 👇");
+      const msg = lines.filter(x => x != null).join("\n");
       const wa = $("#waBtn"); wa.href = `https://wa.me/${digits(CFG.whatsappPedidos)}?text=${encodeURIComponent(msg)}`; wa.hidden = false;
     }
     $("#downloadBtn").hidden = !!CFG.orderEndpoint || !!CFG.whatsappPedidos;
