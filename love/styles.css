@@ -576,6 +576,10 @@ section[id] { scroll-margin-top: 96px; }
 .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); }
 .btn-ghost::after { background: rgba(11,31,58,.08); }
 .btn-ghost:hover { background: #EDEFF3; box-shadow: none; }
+/* Botón fantasma sobre fondo navy (vista previa): texto blanco sobre fondo transparente. */
+.btn-ghost.light { background: transparent; color: #fff; border-color: rgba(255,255,255,.55); }
+.btn-ghost.light::after { background: rgba(255,255,255,.16); }
+.btn-ghost.light:hover { background: rgba(255,255,255,.1); }
 .btn-sm { padding: 8px 8px 8px 16px; font-size: .86rem; }
 .btn-sm::after { width: 26px; height: 26px; font-size: 13px; }
 .btn.gold { background: var(--gold-bright); color: var(--ink); }

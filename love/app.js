@@ -646,7 +646,7 @@
     }
     $("#downloadBtn").hidden = !!CFG.orderEndpoint || !!CFG.whatsappPedidos;
     if (!CFG.orderEndpoint && CFG.whatsappPedidos) $("#waBtn").textContent = "Enviar pedido y comprobante por WhatsApp";
-    $("#done").hidden = false; $("#done").focus();
+    $("#done").hidden = false; order.scrollTop = 0; $("#done").focus({ preventScroll: true });
   }
   $("#downloadBtn").addEventListener("click", () => {
     if (!lastPayload) return;
