@@ -242,7 +242,7 @@
     h += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
     if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
-    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
+    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
     return h;
   }
@@ -351,7 +351,7 @@
 
     if (DEMO) { var f = $('#demo-flag'); if (f) f.hidden = false; }
     if (CERRADO) {
-      $('#p-cv').innerHTML = '<h2>Muy pronto.<span class="soft">El quirófano abre en unos días.</span></h2><p class="sub">Mientras tanto, escríbeme y te cuento cómo revisar tu hoja de vida.</p><div class="actions"><a class="btn" href="https://wa.me/' + (C.whatsapp || '50766653528') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>';
+      $('#p-cv').innerHTML = '<h2>Muy pronto.<span class="soft">El quirófano abre en unos días.</span></h2><p class="sub">Mientras tanto, escríbeme y te cuento cómo revisar tu hoja de vida.</p><div class="actions"><a class="btn" href="https://wa.me/' + (C.whatsapp || '50763454868') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>';
       return;
     }
 
@@ -508,7 +508,7 @@
         var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
         var manualOn = !yappyOn && !paypalOn && Boolean(c.manual && c.manual.activo);
         if (!yappyOn && !paypalOn && !manualOn) {
-          box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50766653528') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
+          box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
         }
         var cargoInf = (diagActual && diagActual.cargo_objetivo_inferido) || '';
@@ -553,7 +553,7 @@
 
         // Pago manual: Yappy directo a Miguel, que lo confirma desde su panel.
         if (manualOn) {
-          var wa = C.whatsapp || '50766653528';
+          var wa = C.whatsapp || '50763454868';
           var verCodigo = function (codigo) {
             var yappy = c.manual.yappy;
             var texto = 'Hola Miguel, ya pagué mi informe de CV en el Quirófano. Mi código es ' + codigo + '.';
@@ -752,7 +752,7 @@
         if (inf) pintar(inf); else setTimeout(function () { location.reload(); }, 8000);
       });
     }).catch(function (e) {
-      c.innerHTML = '<div class="panel"><h2>No pude abrir tu informe.<span class="soft">' + esc(e.message) + '</span></h2><p class="sub">Los informes se borran a los 7 días. Si crees que es un error, escríbeme por WhatsApp al +507 6665-3528.</p></div>';
+      c.innerHTML = '<div class="panel"><h2>No pude abrir tu informe.<span class="soft">' + esc(e.message) + '</span></h2><p class="sub">Los informes se borran a los 7 días. Si crees que es un error, escríbeme por WhatsApp al +507 6345-4868.</p></div>';
     });
   }
 

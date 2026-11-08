@@ -4,5 +4,5 @@
 window.CVQ = {
   api: 'https://mejorativa-cv-api.miguelcapuro.workers.dev',
   precio: 6,
-  whatsapp: '50766653528'
+  whatsapp: '50763454868'
 };
