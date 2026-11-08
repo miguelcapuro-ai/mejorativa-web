@@ -29,7 +29,7 @@
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function fmt(s) { return esc(s).replace(/\[([^\[\]]{1,120})\]/g, '<span class="ph">[$1]</span>'); }
-  function money(n) { return '$' + Number(n || 0).toFixed(2); }
+  function money(n) { var v = Number(n || 0); return '$' + (v % 1 ? v.toFixed(2) : String(v)); }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function track(ev, data) { try { if (window.umami) window.umami.track(ev, data); } catch (e) { /* nada */ } }
   var store = {
@@ -59,11 +59,11 @@
   function demoApi(path, o) {
     var D = window.CVQ_DEMO;
     var st = demoState();
-    if (path === '/api/config') return Promise.resolve({ ok: true, precio: C.precio || 4.99, demo_pago: true, yappy: { activo: false }, turnstile: null });
-    if (path === '/api/diagnostico') return wait(5200).then(function () { store.set('demo', { status: 'diagnosed' }); return { ok: true, id: 'demo', key: 'demo', precio: C.precio || 4.99, diagnostico: D.diagnostico }; });
+    if (path === '/api/config') return Promise.resolve({ ok: true, precio: C.precio || 6, demo_pago: true, yappy: { activo: false }, turnstile: null });
+    if (path === '/api/diagnostico') return wait(5200).then(function () { store.set('demo', { status: 'diagnosed' }); return { ok: true, id: 'demo', key: 'demo', precio: C.precio || 6, diagnostico: D.diagnostico }; });
     if (path === '/api/estado') {
       if (!st.status) return Promise.reject(Object.assign(new Error('No encontramos tu revisión.'), { status: 404 }));
-      return Promise.resolve({ ok: true, status: st.status, pagado: st.status !== 'diagnosed', listo: st.status === 'ready', precio: C.precio || 4.99, diagnostico: D.diagnostico, nombre: D.diagnostico.nombre_detectado });
+      return Promise.resolve({ ok: true, status: st.status, pagado: st.status !== 'diagnosed', listo: st.status === 'ready', precio: C.precio || 6, diagnostico: D.diagnostico, nombre: D.diagnostico.nombre_detectado });
     }
     if (path === '/api/pago/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO' }; });
     if (path === '/api/pago/demo') return wait(1800).then(function () { store.set('demo', { status: 'paid' }); return { ok: true }; });
@@ -165,7 +165,7 @@
       return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b><p>' + esc(f.detalle) + '</p></div></div>';
     }).join('') + '</div>';
     h += '<div class="locked"><h3>Tu informe completo trae' + (co.mejoras ? ' ' + co.mejoras + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en un par de minutos y te llega a tu correo. Cuesta menos que un almuerzo y te ahorra semanas adivinando qué falla.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único · precio de lanzamiento</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta menos que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, mercado panameño y marco legal.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     return h;
   }
 
@@ -339,7 +339,7 @@
   var config = null;
   function cargarConfig() {
     if (config) return Promise.resolve(config);
-    return api('/api/config').then(function (c) { config = c; return c; }).catch(function () { config = { precio: C.precio || 4.99, demo_pago: false, yappy: { activo: false } }; return config; });
+    return api('/api/config').then(function (c) { config = c; return c; }).catch(function () { config = { precio: C.precio || 6, demo_pago: false, yappy: { activo: false } }; return config; });
   }
 
   /* ---------- flujo de revisión ---------- */
