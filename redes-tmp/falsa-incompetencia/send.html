@@ -1,0 +1,8 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Enviando video…</title></head>
+<body style="font-family:sans-serif;padding:24px">Enviando video a LinkedIn…
+<script>
+fetch('linkedin.mp4').then(r=>r.blob()).then(b=>{
+  if(window.opener){window.opener.postMessage({mejorativaVideo:b,name:'la-falsa-incompetencia.mp4'},'https://www.linkedin.com');document.body.textContent='Video enviado ('+b.size+' bytes). Puedes cerrar esta pestaña.';}
+  else document.body.textContent='Sin ventana de LinkedIn.';
+}).catch(e=>document.body.textContent='Error: '+e);
+</script></body></html>
