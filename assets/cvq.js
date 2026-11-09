@@ -551,10 +551,12 @@
       var box = $('#pay-body');
       cargarConfig().then(function (c) {
         var demoPago = DEMO || c.demo_pago;
-        var yappyOn = demoPago || Boolean(c.yappy && c.yappy.activo);
         var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
-        var paisSel = ($('#f-pais') && $('#f-pais').value) || 'panama';
-        var manualOn = !yappyOn && Boolean(c.manual && c.manual.activo) && (paisSel === 'panama' || !paypalOn);
+        // Yappy solo para quien entra desde Panamá (país que detecta Cloudflare). Afuera, solo PayPal.
+        // Si no se sabe el país o PayPal no está activo, Yappy sigue disponible para no dejar a nadie sin pagar.
+        var enPanama = demoPago || !c.pais || c.pais === 'PA' || !paypalOn;
+        var yappyOn = enPanama && (demoPago || Boolean(c.yappy && c.yappy.activo));
+        var manualOn = enPanama && !yappyOn && Boolean(c.manual && c.manual.activo);
         if (!yappyOn && !paypalOn && !manualOn) {
           box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
