@@ -110,3 +110,28 @@
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
   targets.forEach(function(t){if(t.getBoundingClientRect().top>innerHeight){t.classList.add('pre');io.observe(t)}});
 })();
+
+/* Navegación: sección actual en móvil y presentación del menú en la primera visita */
+(function(){
+  var d=document, nav=d.querySelector('.nav'), brand=d.querySelector('.island .brand');
+  if(!nav||!brand) return;
+  var cur=nav.querySelector('a[aria-current]:not(.btn)');
+  if(cur){var h=d.createElement('span');h.className='here';h.textContent=cur.textContent.trim();h.setAttribute('aria-hidden','true');brand.insertAdjacentElement('afterend',h)}
+  nav.querySelectorAll('a[data-nav]').forEach(function(a,i){a.style.setProperty('--k',i)});
+  var KEY='mj-nav-visto', visto=false;
+  try{visto=localStorage.getItem(KEY)==='1'}catch(e){}
+  if(visto) return;
+  var root=d.documentElement; root.classList.add('nav-intro');
+  var movil=matchMedia('(max-width:1060px)').matches;
+  var hint=d.createElement('div'); hint.className='nav-hint'; hint.setAttribute('role','status');
+  hint.textContent=movil?'Toca aquí para ver todas las secciones':'Desde aquí eliges a dónde ir';
+  d.body.appendChild(hint);
+  function colocar(){var t=movil?d.querySelector('.burger'):nav;if(!t)return;var r=t.getBoundingClientRect(),hw=hint.offsetWidth,cx=r.left+r.width/2,left=Math.min(Math.max(cx,hw/2+12),innerWidth-hw/2-12);hint.style.left=left+'px';hint.style.top=(r.bottom+14)+'px';hint.style.setProperty('--ax',(cx-left+hw/2)+'px')}
+  function cerrar(){hint.classList.remove('on');setTimeout(function(){hint.remove()},600);root.classList.remove('nav-intro');try{localStorage.setItem(KEY,'1')}catch(e){};removeEventListener('scroll',alScroll)}
+  function alScroll(){if(scrollY>220)cerrar()}
+  setTimeout(function(){colocar();hint.classList.add('on')},900);
+  setTimeout(cerrar,7500);
+  addEventListener('scroll',alScroll,{passive:true});
+  nav.addEventListener('click',cerrar,{once:true});
+  addEventListener('resize',colocar);
+})();

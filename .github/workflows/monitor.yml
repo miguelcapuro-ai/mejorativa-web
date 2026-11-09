@@ -1,0 +1,49 @@
+name: Monitor de Mejorativa
+# Revisa cada 10 minutos que la web, las tiendas y el panel respondan.
+# Si algo cae, abre un aviso (issue) que GitHub manda al correo; cuando vuelve, lo cierra solo.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions:
+  issues: write
+concurrency: monitor
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Revisar sitios
+        id: chequeo
+        run: |
+          fallas=""
+          revisar() {
+            for intento in 1 2 3; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' -L -m 20 "$1")
+              [ "$code" = "200" ] && return 0
+              sleep 20
+            done
+            fallas="$fallas\n- $2 ($1) respondió $code"
+          }
+          revisar https://mejorativa.com/ "Web principal"
+          revisar https://mejorativa.com/cv-en-el-quirofano/ "CV en el Quirófano"
+          revisar https://mejorativa-cv-api.miguelcapuro.workers.dev/salud "Servidor (Doctor CV, Love y panel)"
+          revisar https://mejorativa-cv-api.miguelcapuro.workers.dev/panel/entrar "Panel"
+          revisar https://tienda.mejorativa.com/ "Tienda de ropa"
+          revisar https://tiendalove.mejorativa.com/ "Mejorativa Love"
+          printf '%b' "$fallas" > fallas.txt
+          echo "hay=$([ -n "$fallas" ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+      - name: Avisar o cerrar aviso
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          abierto=$(gh issue list --label caida --state open --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ "${{ steps.chequeo.outputs.hay }}" = "1" ]; then
+            gh label create caida --color B60205 2>/dev/null || true
+            cuerpo="Miguel, esto no está respondiendo ($(date -u +'%Y-%m-%d %H:%M UTC')):$(printf '\n')$(cat fallas.txt)"
+            if [ -z "$abierto" ]; then gh issue create --title "⚠️ Algo de Mejorativa está caído" --label caida --assignee miguelcapuro-ai --body "$cuerpo"; else gh issue comment "$abierto" --body "$cuerpo"; fi
+            exit 1
+          elif [ -n "$abierto" ]; then
+            gh issue close "$abierto" --comment "Todo volvió a responder ($(date -u +'%Y-%m-%d %H:%M UTC'))."
+          fi
