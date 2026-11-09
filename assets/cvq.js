@@ -125,6 +125,18 @@
       });
   }
 
+  /* ---------- país por zona horaria (la persona puede cambiarlo) ---------- */
+  (function () {
+    try {
+      var sel = document.getElementById('f-pais'); if (!sel) return;
+      var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      var p = /^America\/(Mexico_City|Monterrey|Merida|Cancun|Chihuahua|Hermosillo|Mazatlan|Tijuana|Matamoros|Ojinaga|Bahia_Banderas)$/.test(tz) ? 'mexico'
+        : tz === 'America/Bogota' ? 'colombia'
+        : /^(Europe\/Madrid|Africa\/Ceuta|Atlantic\/Canary)$/.test(tz) ? 'espana' : '';
+      if (p) sel.value = p;
+    } catch (e) { /* se queda en Panamá */ }
+  })();
+
   /* ---------- render del diagnóstico ---------- */
   function ring(v, cls) {
     var r = 54, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, v)) / 100);
@@ -176,7 +188,7 @@
       ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese criterio, no uno genérico.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único · precio de lanzamiento</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta menos que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, mercado panameño y marco legal.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, mercado panameño y marco legal.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     return h;
   }
 
@@ -463,7 +475,7 @@
       animarEtapas();
       track('cv_operar', { tipo: cv.tipo, linkedin_pdf: Boolean(liTexto) });
       var body = {
-        form: { vacante: x.vacante },
+        form: { vacante: x.vacante, pais: ($('#f-pais') && $('#f-pais').value) || 'panama' },
         linkedin: { url: li, texto: liTexto },
         cv: cv,
         consentimiento: { datos: true, ia: true, mayor: true },
@@ -517,7 +529,8 @@
         var demoPago = DEMO || c.demo_pago;
         var yappyOn = demoPago || Boolean(c.yappy && c.yappy.activo);
         var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
-        var manualOn = !yappyOn && !paypalOn && Boolean(c.manual && c.manual.activo);
+        var paisSel = ($('#f-pais') && $('#f-pais').value) || 'panama';
+        var manualOn = !yappyOn && Boolean(c.manual && c.manual.activo) && (paisSel === 'panama' || !paypalOn);
         if (!yappyOn && !paypalOn && !manualOn) {
           box.innerHTML = '<p>El pago en línea todavía no está activo. Escríbeme por WhatsApp y te envío tu informe.</p><a class="btn gold" href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice mi diagnóstico de CV en el Quirófano y quiero el informe completo.') + '" target="_blank" rel="noopener">Escribir por WhatsApp</a>';
           return;
@@ -526,8 +539,8 @@
         var h = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
           '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
         if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div></div>';
-        if (yappyOn && paypalOn) h += '<div class="or" role="separator"><span>¿No tienes Yappy?</span></div>';
         if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
+        if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Fuera de Panamá o sin Yappy?</span></div>';
         if (paypalOn) h += '<div class="paym" id="m-paypal">' + (yappyOn ? '' : '<p class="pp-t">Paga con PayPal.</p>') + '<div class="pp-slot" id="ppslot"></div></div>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;

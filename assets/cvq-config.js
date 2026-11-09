@@ -3,6 +3,6 @@
    Vacío: en mejorativa.com la revisión dice "Muy pronto"; en otra dirección (o con ?demo) es una demostración con un CV ficticio. */
 window.CVQ = {
   api: 'https://mejorativa-cv-api.miguelcapuro.workers.dev',
-  precio: 6,
+  precio: 12,
   whatsapp: '50763454868'
 };
