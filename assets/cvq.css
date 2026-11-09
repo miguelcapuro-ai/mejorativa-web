@@ -393,3 +393,10 @@ body[data-cvq] .dock{display:none!important}
 .manual-ok .btn{justify-self:start}
 .field[hidden]{display:none!important}
 .cvh .btn{cursor:pointer}
+.mu-lock{display:inline-flex;gap:6px;vertical-align:middle}
+.mu-lock span{display:inline-block;height:10px;border-radius:6px;background:rgba(11,31,58,.14);filter:blur(1.5px);width:90px}
+.mu-lock span+span{width:60px}
+.uno-a-uno{margin-top:16px;padding:14px 18px;border-radius:14px;background:var(--surface,#F5F6F8);font-size:.95rem;color:var(--text)}
+.uno-a-uno a{font-weight:700;color:var(--ink)}
+.rutas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.rutas{grid-template-columns:1fr}}

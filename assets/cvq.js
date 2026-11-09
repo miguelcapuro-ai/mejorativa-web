@@ -152,7 +152,7 @@
     var k = [['maquina', 'La máquina'], ['humano', 'El humano'], ['autenticidad', 'Tu voz']];
     return '<div class="ex3">' + k.map(function (x) {
       var e = (ex && ex[x[0]]) || { puntaje: 0, resumen: '' };
-      return '<div class="ex ' + nivel(e.puntaje) + '"><div class="k">' + x[1] + '</div><div class="v"><b>' + esc(e.puntaje) + '</b><span>/ 100</span></div><div class="bar"><i style="--v:' + Number(e.puntaje) + '%"></i></div><p>' + esc(e.resumen) + '</p></div>';
+      return '<div class="ex ' + nivel(e.puntaje) + '"><div class="k">' + x[1] + '</div><div class="v"><b>' + esc(e.puntaje) + '</b><span>/ 100</span></div><div class="bar"><i style="--v:' + Number(e.puntaje) + '%"></i></div>' + (e.resumen ? '<p>' + esc(e.resumen) + '</p>' : '<p class="find-lock">' + ICO.lock + '<span>Por qué sacaste este puntaje: en tu informe.</span></p>') + '</div>';
     }).join('') + '</div>';
   }
   function renderDiagnostico(diag, precio) {
@@ -165,6 +165,7 @@
     if (co.alertas_zona_roja) items.push(co.alertas_zona_roja + ' alertas de zona roja y qué hacer con cada una');
     if (co.palabras_clave_faltantes) items.push(co.palabras_clave_faltantes + ' palabras clave que hoy no aparecen en tu CV');
     items.push('Tu CV completo en formato Harvard, para descargar en Word y ajustar');
+    items.push('3 carreras o cargos que encajan con tu perfil, con la búsqueda lista en LinkedIn');
     items.push('Tu nuevo titular y tu nuevo perfil, listos para copiar');
     items.push('Tu LinkedIn operado: URL, titular y "Acerca de"');
     items.push('Las 5 preguntas difíciles que te van a hacer en la entrevista');
@@ -178,12 +179,12 @@
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
     h += '<p style="margin-top:20px"><a class="btn sm" href="#pay">Liberar mi informe · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></p>';
     h += '<h3 style="margin-top:30px">Tus 3 hallazgos más importantes</h3><div class="finds">' + (diag.hallazgos_gratis || []).map(function (f) {
-      return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b><p>' + esc(f.detalle) + '</p><p class="find-lock">' + ICO.lock + '<span>Cómo se arregla, con tu propio texto: en tu informe.</span></p></div></div>';
+      return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b>' + (f.detalle ? '<p>' + esc(f.detalle) + '</p><p class="find-lock">' + ICO.lock + '<span>Cómo se arregla, con tu propio texto: en tu informe.</span></p>' : '<p class="find-lock">' + ICO.lock + '<span>Qué encontré y cómo se arregla: en tu informe.</span></p>') + '</div></div>';
     }).join('') + '</div>';
     var mu = diag.muestra || {};
     if (mu.original && mu.reescrito) {
       var resto = co.logros_por_reescribir > 1 ? 'Esta es una sola de tus líneas. En tu informe operamos las ' + co.logros_por_reescribir + ' que hoy cuentan tareas en vez de logros.' : 'Esta es una sola de tus líneas. En tu informe operamos el CV completo.';
-      h += '<div class="muestra"><span class="label">Prueba gratis</span><h3>Mira una de tus líneas, operada.</h3><div class="mu-ab"><div class="mu-a"><small>Hoy dice</small><p>' + esc(mu.original) + '</p></div><div class="mu-b"><small>Después del quirófano</small><p>' + fmt(mu.reescrito) + '</p></div></div><p class="mu-note">' + esc(resto) + ' Donde veas <span class="ph">[corchetes]</span>, va tu dato real.</p></div>';
+      h += '<div class="muestra"><span class="label">Prueba gratis</span><h3>Mira una de tus líneas, operada.</h3><div class="mu-ab"><div class="mu-a"><small>Hoy dice</small><p>' + esc(mu.original) + '</p></div><div class="mu-b"><small>Después del quirófano</small><p>' + fmt(mu.reescrito) + (mu.recortado ? '… <span class="mu-lock" aria-hidden="true"><span></span><span></span></span></p><p class="find-lock">' + ICO.lock + '<span>La línea completa, en tu informe.</span>' : '') + '</p></div></div><p class="mu-note">' + esc(resto) + ' Donde veas <span class="ph">[corchetes]</span>, va tu dato real.</p></div>';
     }
     h += '<div class="locked"><h3>Tu informe completo trae' + (co.mejoras ? ' ' + co.mejoras + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
     h += '<div class="why"><span class="label">Por qué vale la pena</span><h3>Si esto fue gratis, imagínate tu informe.</h3><p class="why-lead">Lo que acabas de ver fue el triaje. El informe es la operación completa, línea por línea.</p><div class="why-grid">' + [
@@ -193,6 +194,7 @@
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
     h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<p class="uno-a-uno">¿Además del informe quieres revisarlo conmigo? <a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice el diagnóstico de CV en el Quirófano y me interesa una sesión 1 a 1 contigo.') + '" target="_blank" rel="noopener">Pide tu sesión 1 a 1 por WhatsApp</a>.</p>';
     return h;
   }
 
@@ -267,6 +269,12 @@
     var li = inf.linkedin || {};
     h += sec('Tu segundo quirófano', 'Tu LinkedIn.', '<div class="rep-text"><p>' + fmt(li.url) + '</p><p>' + fmt(li.coherencia) + '</p></div><p class="kw-h">Titular sugerido</p>' + copiable(li.titular_sugerido) + '<p class="kw-h">"Acerca de" sugerido</p>' + copiable(li.acerca_de_sugerido) + lista(li.recomendaciones) + '<p class="note-sm">Te van a buscar en redes antes de llamarte. ¿Están actualizadas? ¿Muestran lo que quieres que vean?</p>');
     h += sec('Ensayo general', 'Las 5 preguntas difíciles.', '<div class="qs">' + (inf.preguntas_entrevista || []).map(function (q) { return '<div><b>' + fmt(q.pregunta) + '</b><p>' + fmt(q.por_que) + '</p><p class="how">' + fmt(q.como_prepararla) + '</p></div>'; }).join('') + '</div>', 'Lo que escribiste, te lo van a preguntar. Prepáralo hoy.');
+    if ((inf.rutas_profesionales || []).length) {
+      h += sec('Hacia dónde ir', 'Carreras que encajan contigo.', '<div class="rutas">' + inf.rutas_profesionales.map(function (r) {
+        var url = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(r.busqueda || r.cargo) + (r.ubicacion ? '&location=' + encodeURIComponent(r.ubicacion) : '');
+        return '<article class="sec-card"><header><b>' + esc(r.cargo) + '</b></header><p>' + fmt(r.por_que_encaja) + '</p>' + (r.brecha ? '<p class="how"><b>Para competir:</b> ' + fmt(r.brecha) + '</p>' : '') + '<p><a class="link" href="' + url + '" target="_blank" rel="noopener">Ver ofertas en LinkedIn' + (r.ubicacion ? ' · ' + esc(r.ubicacion) : '') + '</a></p></article>';
+      }).join('') + '</div>', 'Según lo que muestra tu CV. Abre cada búsqueda, mira las ofertas de hoy y postula solo donde puedas contar evidencia.');
+    }
     h += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
     if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
     if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) {
@@ -279,7 +287,7 @@
       ]) + '<p class="no-print" style="margin-top:16px"><button class="btn gold" type="button" data-act="docx">Descargar mi CV en Word</button></p><p class="note-sm">Es una propuesta: la versión final que envíes y lo que dice son tuyos. Revísala con calma antes de usarla.</p></div>');
     }
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
-    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
+    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../negociacion/"><b>¿Te llamaron? Negocia tu oferta.</b><span>Cuando llegue la propuesta, el taller Negociar sin Romper te enseña a pedir lo que vales.</span></a><a href="' + ASSETS + '../presentaciones/"><b>Preséntate con seguridad.</b><span>Presentar sin Aburrir: para la entrevista y para lo que viene después.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
     return h;
   }
