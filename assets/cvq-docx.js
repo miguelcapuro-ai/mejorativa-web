@@ -34,12 +34,12 @@
   }
 
   /* ---------- Word ---------- */
-  var FUENTE = 'Times New Roman', DER = 10800; // tabulación a la derecha (ancho útil en twips)
+  var FUENTE = 'Calibri', AZUL = '1F3A5F', GRIS = '4B5563', DER = 10800; // tabulación a la derecha (ancho útil en twips)
   function x(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   // Texto con los [corchetes] resaltados en amarillo para que la persona los vea y los complete.
   function runs(texto, o) {
     o = o || {};
-    var rpr = '<w:rFonts w:ascii="' + FUENTE + '" w:hAnsi="' + FUENTE + '" w:cs="' + FUENTE + '"/>' + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + (o.caps ? '<w:caps/>' : '') + '<w:sz w:val="' + (o.sz || 22) + '"/>';
+    var rpr = '<w:rFonts w:ascii="' + FUENTE + '" w:hAnsi="' + FUENTE + '" w:cs="' + FUENTE + '"/>' + (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + (o.caps ? '<w:caps/>' : '') + (o.color ? '<w:color w:val="' + o.color + '"/>' : '') + (o.esp ? '<w:spacing w:val="' + o.esp + '"/>' : '') + '<w:sz w:val="' + (o.sz || 21) + '"/>';
     return String(texto == null ? '' : texto).split(/(\[[^\[\]]{1,120}\])/).filter(Boolean).map(function (t) {
       var ph = /^\[.*\]$/.test(t);
       return '<w:r><w:rPr>' + rpr + (ph ? '<w:highlight w:val="yellow"/>' : '') + '</w:rPr><w:t xml:space="preserve">' + x(t) + '</w:t></w:r>';
@@ -50,29 +50,29 @@
     var ppr = '<w:spacing w:before="' + (o.antes || 0) + '" w:after="' + (o.despues != null ? o.despues : 0) + '"/>' +
       (o.centro ? '<w:jc w:val="center"/>' : '') +
       (o.tab ? '<w:tabs><w:tab w:val="right" w:pos="' + DER + '"/></w:tabs>' : '') +
-      (o.borde ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="000000"/></w:pBdr>' : '') +
+      (o.borde ? '<w:pBdr><w:bottom w:val="single" w:sz="4" w:space="2" w:color="C9D1DC"/></w:pBdr>' : '') +
       (o.vineta ? '<w:ind w:left="360" w:hanging="220"/>' : '') + (o.keep ? '<w:keepNext/>' : '');
     return '<w:p><w:pPr>' + ppr + '</w:pPr>' + contenido + '</w:p>';
   }
   var TAB = '<w:r><w:tab/></w:r>';
-  function titulo(t) { return p(runs(t, { b: true, caps: true, sz: 22 }), { antes: 200, despues: 80, borde: true, keep: true }); }
+  function titulo(t) { return p(runs(t, { b: true, caps: true, sz: 20, color: AZUL, esp: 30 }), { antes: 240, despues: 100, borde: true, keep: true }); }
   function vineta(t) { return p(runs('•  ') + runs(t), { vineta: true, despues: 20 }); }
   function filaDoble(izq, der, oIzq, oDer) { return p(runs(izq, oIzq) + (der ? TAB + runs(der, oDer) : ''), { tab: true, keep: true }); }
 
   function cuerpo(cv) {
     var h = [];
-    h.push(p(runs(cv.nombre || '[Tu nombre completo]', { b: true, sz: 32 }), { centro: true, despues: 40 }));
-    if (cv.titular) h.push(p(runs(cv.titular, { sz: 22 }), { centro: true, despues: 20 }));
+    h.push(p(runs(cv.nombre || '[Tu nombre completo]', { b: true, sz: 40, color: AZUL, esp: 10 }), { centro: true, despues: 40 }));
+    if (cv.titular) h.push(p(runs(cv.titular, { sz: 22, color: GRIS }), { centro: true, despues: 40 }));
     var linea = [cv.ubicacion, cv.contacto].filter(Boolean).join(' · ');
-    if (linea) h.push(p(runs(linea, { sz: 20 }), { centro: true, despues: 120 }));
+    if (linea) h.push(p(runs(linea, { sz: 19, color: GRIS }), { centro: true, despues: 80 }));
     if (cv.perfil) { h.push(titulo('Perfil profesional')); h.push(p(runs(cv.perfil), { despues: 40 })); }
     function experiencia() {
       if (!cv.experiencia || !cv.experiencia.length) return;
       h.push(titulo('Experiencia profesional'));
       cv.experiencia.forEach(function (e, i) {
         if (i) h.push(p('', { despues: 60 }));
-        h.push(filaDoble(e.empresa, e.ubicacion, { b: true }, {}));
-        h.push(filaDoble(e.cargo, e.periodo, { i: true }, {}));
+        h.push(filaDoble(e.cargo, e.periodo, { b: true }, { color: GRIS }));
+        h.push(filaDoble(e.empresa, e.ubicacion, { i: true }, { i: true, color: GRIS }));
         if (e.alcance) h.push(p(runs(e.alcance), { despues: 20 }));
         (e.logros || []).forEach(function (l) { h.push(vineta(l)); });
       });
@@ -81,8 +81,8 @@
       if (!cv.formacion || !cv.formacion.length) return;
       h.push(titulo('Formación'));
       cv.formacion.forEach(function (f, i) {
-        h.push(filaDoble(f.institucion, f.ubicacion, { b: true }, {}));
-        h.push(filaDoble(f.titulo, f.periodo, { i: true }, {}));
+        h.push(filaDoble(f.titulo, f.periodo, { b: true }, { color: GRIS }));
+        h.push(filaDoble(f.institucion, f.ubicacion, { i: true }, { i: true, color: GRIS }));
         if (f.detalle) h.push(vineta(f.detalle));
         if (i < cv.formacion.length - 1) h.push(p('', { despues: 60 }));
       });
@@ -110,7 +110,7 @@
   }
 
   function archivo(cv) {
-    var estilos = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="' + FUENTE + '" w:hAnsi="' + FUENTE + '" w:cs="' + FUENTE + '"/><w:sz w:val="22"/><w:lang w:val="es-PA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="252" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>';
+    var estilos = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="' + FUENTE + '" w:hAnsi="' + FUENTE + '" w:cs="' + FUENTE + '"/><w:sz w:val="21"/><w:color w:val="1F2937"/><w:lang w:val="es-PA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="264" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>';
     return zip([
       { name: '[Content_Types].xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>' },
       { name: '_rels/.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>' },
