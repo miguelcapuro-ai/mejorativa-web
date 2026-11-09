@@ -626,8 +626,8 @@
             poll(ses, pagado, function () { $('#pay-status').innerHTML = ''; }, 3 * 24 * 3600 * 1000, 15000);
           };
           var previoManual = store.get('manual');
-          if (previoManual && previoManual.id === ses.id) { verCodigo(previoManual.codigo); return; }
-          $('#manual-btn').addEventListener('click', function () {
+          if (previoManual && previoManual.id === ses.id) verCodigo(previoManual.codigo);
+          else $('#manual-btn').addEventListener('click', function () {
             if (!correoOk()) return;
             var btn = $('#manual-btn'); btn.disabled = true;
             alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'manual' });
@@ -636,7 +636,7 @@
               verCodigo(r.codigo);
             }).catch(function (e) { btn.disabled = false; fallo(e.message); });
           });
-          return;
+          // Sin return: si PayPal está activo, su botón se monta abajo (antes quedaba el título sin botón).
         }
 
         // Pago simulado (modo demostración o servicio en pruebas)
