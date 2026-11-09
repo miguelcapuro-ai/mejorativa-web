@@ -134,6 +134,9 @@
         : tz === 'America/Bogota' ? 'colombia'
         : /^(Europe\/Madrid|Africa\/Ceuta|Atlantic\/Canary)$/.test(tz) ? 'espana' : '';
       if (p) sel.value = p;
+      var otro = document.getElementById('f-pais-otro-box');
+      var ver = function () { if (otro) otro.hidden = sel.value !== 'otro'; };
+      sel.addEventListener('change', ver); ver();
     } catch (e) { /* se queda en Panamá */ }
   })();
 
@@ -161,6 +164,7 @@
     if (co.logros_por_reescribir) items.push(co.logros_por_reescribir + ' logros reescritos con la fórmula V·Q·L·P');
     if (co.alertas_zona_roja) items.push(co.alertas_zona_roja + ' alertas de zona roja y qué hacer con cada una');
     if (co.palabras_clave_faltantes) items.push(co.palabras_clave_faltantes + ' palabras clave que hoy no aparecen en tu CV');
+    items.push('Tu CV completo en formato Harvard, para descargar en Word y ajustar');
     items.push('Tu nuevo titular y tu nuevo perfil, listos para copiar');
     items.push('Tu LinkedIn operado: URL, titular y "Acerca de"');
     items.push('Las 5 preguntas difíciles que te van a hacer en la entrevista');
@@ -193,6 +197,7 @@
   }
 
   /* ---------- render del informe ---------- */
+  var cvPropuesto = null;
   function lista(arr, cls) { return '<ul class="' + (cls || 'ticks') + '">' + (arr || []).map(function (t) { return '<li>' + ICO.delta + '<span>' + fmt(t) + '</span></li>'; }).join('') + '</ul>'; }
   function sec(label, titulo, cuerpo, lead) { return '<section class="rep-sec"><span class="label">' + esc(label) + '</span><h3>' + esc(titulo) + '</h3>' + (lead ? '<p class="lead">' + esc(lead) + '</p>' : '') + cuerpo + '</section>'; }
   function copiable(t) { return '<div class="copybox">' + fmt(t) + '<button class="cp" type="button" data-copy="' + esc(t) + '">Copiar</button></div>'; }
@@ -264,6 +269,15 @@
     h += sec('Ensayo general', 'Las 5 preguntas difíciles.', '<div class="qs">' + (inf.preguntas_entrevista || []).map(function (q) { return '<div><b>' + fmt(q.pregunta) + '</b><p>' + fmt(q.por_que) + '</p><p class="how">' + fmt(q.como_prepararla) + '</p></div>'; }).join('') + '</div>', 'Lo que escribiste, te lo van a preguntar. Prepáralo hoy.');
     h += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
     if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
+    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) {
+      cvPropuesto = inf.cv_propuesto;
+      h += sec('Tu CV, operado', 'Tu hoja de vida en formato Harvard.', '<div class="cvh"><p>Es una propuesta armada solo con tus datos y con todo lo que viste en este informe. Antes de enviarla, ajústala:</p>' + lista([
+        'Completa lo que está resaltado en amarillo con tus datos reales. Si no tienes el número exacto, usa un estimado honesto. Nunca lo inventes: en la entrevista te lo van a preguntar.',
+        'Léela en voz alta. Si una línea no suena a ti, cámbiala. La IA propone y tú decides.',
+        'Revisa nombres, fechas y cargos contra tus documentos.',
+        'Cuando quede lista, guárdala en PDF para postular, salvo que el aviso pida Word.'
+      ]) + '<p class="no-print" style="margin-top:16px"><button class="btn gold" type="button" data-act="docx">Descargar mi CV en Word</button></p><p class="note-sm">Es una propuesta: la versión final que envíes y lo que dice son tuyos. Revísala con calma antes de usarla.</p></div>');
+    }
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
     h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
@@ -283,6 +297,7 @@
       }
       var act = b.getAttribute('data-act');
       if (act === 'print') { track('cv_pdf'); window.print(); }
+      if (act === 'docx') { if (cvPropuesto && window.CVQ_DOCX) { track('cv_docx'); window.CVQ_DOCX.descargar(cvPropuesto); } return; }
       if (act === 'link') {
         var url = new URL('../informe/#' + ses.id + '.' + ses.key, location.href).href;
         if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { b.textContent = 'Enlace copiado'; });
@@ -475,7 +490,7 @@
       animarEtapas();
       track('cv_operar', { tipo: cv.tipo, linkedin_pdf: Boolean(liTexto) });
       var body = {
-        form: { vacante: x.vacante, pais: ($('#f-pais') && $('#f-pais').value) || 'panama' },
+        form: { vacante: x.vacante, pais: ($('#f-pais') && $('#f-pais').value) || 'panama', pais_otro: ($('#f-pais-otro') && $('#f-pais-otro').value.trim()) || '' },
         linkedin: { url: li, texto: liTexto },
         cv: cv,
         consentimiento: { datos: true, ia: true, mayor: true },

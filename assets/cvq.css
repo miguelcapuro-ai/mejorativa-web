@@ -390,3 +390,5 @@ body[data-cvq] .dock{display:none!important}
 .manual-ok .code{font-stretch:68%;font-weight:800;font-size:clamp(2.2rem,7vw,3rem);letter-spacing:.18em;color:#fff;line-height:1}
 .manual-ok ol{margin:0;padding-left:1.2em;color:#E7ECF3;display:grid;gap:6px}
 .manual-ok .btn{justify-self:start}
+.field[hidden]{display:none!important}
+.cvh .btn{cursor:pointer}
