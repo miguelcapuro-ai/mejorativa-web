@@ -67,6 +67,7 @@
     }
     if (path === '/api/pago/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO' }; });
     if (path === '/api/pago/demo') return wait(1800).then(function () { store.set('demo', { status: 'paid' }); return { ok: true }; });
+    if (path === '/api/pago/codigo') return wait(900).then(function () { store.set('demo', { status: 'paid' }); return { ok: true, pagado: true }; });
     if (path === '/api/paypal/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO', paypal_id: 'DEMO-CVQDEMO' }; });
     if (path === '/api/paypal/capturar') return wait(1200).then(function () { store.set('demo', { status: 'paid' }); return { ok: true, pagado: true }; });
     if (path === '/api/informe' && (!o.method || o.method === 'GET')) return Promise.resolve(st.status === 'ready' ? { ok: true, listo: true, informe: D.informe } : { ok: true, listo: false, status: st.status });
@@ -565,6 +566,7 @@
         if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
         if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Fuera de Panamá o sin Yappy?</span></div>';
         if (paypalOn) h += '<div class="paym" id="m-paypal">' + (yappyOn ? '' : '<p class="pp-t">Paga con PayPal.</p>') + '<div class="pp-slot" id="ppslot"></div></div>';
+        h += '<details class="promo"><summary>¿Tienes un código de regalo?</summary><div class="promo-row"><input id="promo" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de regalo" placeholder="Escribe tu código"><button class="btn" type="button" id="promo-btn">Usar código</button></div></details>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;
 
@@ -597,6 +599,17 @@
           $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>PayPal está revisando tu pago</b><p>A veces tarda unos minutos. Apenas lo apruebe, empiezo a redactar tu informe y te llega a tu correo. Puedes dejar esta pantalla abierta.</p></div>';
           poll(ses, pagado, function () { fallo('PayPal todavía no aprueba tu pago. Cuando lo haga, te llega el informe a tu correo.'); }, 30 * 60 * 1000);
         }
+
+        // Código de regalo (o el código maestro de Miguel): el informe sale sin cobro.
+        var pbtn = $('#promo-btn');
+        if (pbtn) pbtn.addEventListener('click', function () {
+          var cod = ($('#promo').value || '').trim();
+          if (!cod) { alerta('#e-pay', 'Escribe tu código.'); $('#promo').focus(); return; }
+          if (!correoOk()) return;
+          pbtn.disabled = true; alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'codigo' });
+          api('/api/pago/codigo', datosPago({ codigo: cod })).then(function () { pagado(); })
+            .catch(function (e) { pbtn.disabled = false; fallo(e.message); });
+        });
 
         // Pago manual: Yappy directo a Miguel, que lo confirma desde su panel.
         if (manualOn) {
