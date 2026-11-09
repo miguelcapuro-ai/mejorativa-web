@@ -511,6 +511,7 @@
         var ses = { id: r.id, key: r.key };
         store.set('ses', ses);
         track('cv_diagnostico', { puntaje: r.diagnostico.puntaje_global });
+        if (!DEMO && window.mjPixel) window.mjPixel('Lead', { content_name: 'Diagnóstico gratis · CV en el Quirófano' }, 'lead-' + r.id);
         return wait(500).then(function () { verDiagnostico(ses, r.diagnostico, r.precio); });
       }).catch(function (e) {
         pararEtapas();
@@ -596,7 +597,11 @@
             : '<div class="wait-box"><span class="spinner"></span><b>Confirma en tu app de Yappy</b><p>Te enviamos una solicitud de ' + money(precio) + ' al celular terminado en ' + esc(numero().slice(-2)) + '. Apenas la apruebes, empiezo a redactar tu informe.</p></div>';
         }
         function fallo(msg) { $('#pay-status').innerHTML = ''; alerta('#e-pay', msg); }
-        function pagado() { track('cv_pago_ok'); redactar(ses); }
+        function pagado(gratis) {
+          track('cv_pago_ok');
+          if (gratis !== true && !DEMO && window.mjPixel) window.mjPixel('Purchase', { value: Number(precio) || 0, currency: 'USD', content_name: 'Informe · CV en el Quirófano' }, 'buy-' + ses.id);
+          redactar(ses);
+        }
         function enRevision() {
           $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>PayPal está revisando tu pago</b><p>A veces tarda unos minutos. Apenas lo apruebe, empiezo a redactar tu informe y te llega a tu correo. Puedes dejar esta pantalla abierta.</p></div>';
           poll(ses, pagado, function () { fallo('PayPal todavía no aprueba tu pago. Cuando lo haga, te llega el informe a tu correo.'); }, 30 * 60 * 1000);
@@ -609,7 +614,7 @@
           if (!cod) { alerta('#e-pay', 'Escribe tu código.'); $('#promo').focus(); return; }
           if (!correoOk()) return;
           pbtn.disabled = true; alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'codigo' });
-          api('/api/pago/codigo', datosPago({ codigo: cod })).then(function () { pagado(); })
+          api('/api/pago/codigo', datosPago({ codigo: cod })).then(function () { pagado(true); })
             .catch(function (e) { pbtn.disabled = false; fallo(e.message); });
         });
 
