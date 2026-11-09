@@ -59,11 +59,11 @@
   function demoApi(path, o) {
     var D = window.CVQ_DEMO;
     var st = demoState();
-    if (path === '/api/config') return Promise.resolve({ ok: true, precio: C.precio || 6, demo_pago: true, yappy: { activo: false }, turnstile: null });
-    if (path === '/api/diagnostico') return wait(5200).then(function () { store.set('demo', { status: 'diagnosed' }); return { ok: true, id: 'demo', key: 'demo', precio: C.precio || 6, diagnostico: D.diagnostico }; });
+    if (path === '/api/config') return Promise.resolve({ ok: true, precio: C.precio || 9.99, demo_pago: true, yappy: { activo: false }, turnstile: null });
+    if (path === '/api/diagnostico') return wait(5200).then(function () { store.set('demo', { status: 'diagnosed' }); return { ok: true, id: 'demo', key: 'demo', precio: C.precio || 9.99, diagnostico: D.diagnostico }; });
     if (path === '/api/estado') {
       if (!st.status) return Promise.reject(Object.assign(new Error('No encontramos tu revisión.'), { status: 404 }));
-      return Promise.resolve({ ok: true, status: st.status, pagado: st.status !== 'diagnosed', listo: st.status === 'ready', precio: C.precio || 6, diagnostico: D.diagnostico, nombre: D.diagnostico.nombre_detectado });
+      return Promise.resolve({ ok: true, status: st.status, pagado: st.status !== 'diagnosed', listo: st.status === 'ready', precio: C.precio || 9.99, diagnostico: D.diagnostico, nombre: D.diagnostico.nombre_detectado });
     }
     if (path === '/api/pago/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO' }; });
     if (path === '/api/pago/demo') return wait(1800).then(function () { store.set('demo', { status: 'paid' }); return { ok: true }; });
@@ -386,7 +386,7 @@
   var config = null;
   function cargarConfig() {
     if (config) return Promise.resolve(config);
-    return api('/api/config').then(function (c) { config = c; return c; }).catch(function () { config = { precio: C.precio || 6, demo_pago: false, yappy: { activo: false } }; return config; });
+    return api('/api/config').then(function (c) { config = c; return c; }).catch(function () { config = { precio: C.precio || 9.99, demo_pago: false, yappy: { activo: false } }; return config; });
   }
 
   /* ---------- flujo de revisión ---------- */
