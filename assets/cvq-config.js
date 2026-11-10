@@ -4,5 +4,7 @@
 window.CVQ = {
   api: 'https://mejorativa-cv-api.miguelcapuro.workers.dev',
   precio: 9.99,
-  whatsapp: '50763454868'
+  whatsapp: '50763454868',
+  // Yappy apagado hasta tener Yappy Comercial con Botón de Pago (nov. 2026). Para activarlo: true.
+  yappy: false
 };
