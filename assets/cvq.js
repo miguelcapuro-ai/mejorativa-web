@@ -212,6 +212,8 @@
     h += '<div class="rep-cover"><div><span class="label">Informe · CV en el Quirófano</span><h2>' + (inf.nombre ? esc(inf.nombre) + ', tu' : 'Tu') + ' hoja de vida, operada.</h2><p>' + (inf.cargo_objetivo ? 'Cargo objetivo: ' + esc(inf.cargo_objetivo) + '. ' : '') + esc(fecha) + '</p></div>' + (g !== '' ? ring(g) : '') + '</div>';
     var ej = ses && ses.ejemplo;
     h += '<div class="toolbar no-print"><button class="tbtn" type="button" data-act="print">Guardar en PDF</button>' + (ses && ses.id !== 'demo' ? '<button class="tbtn" type="button" data-act="link">Copiar enlace del informe</button>' : '') + (ej ? '' : '<button class="tbtn danger" type="button" data-act="borrar">Borrar mis datos ahora</button>') + '</div>';
+    // Atajo al CV en formato Harvard (está al final del informe y es lo que la persona más busca).
+    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) h += '<a class="harvard-jump no-print" href="#cv-harvard"><span><b>Tu CV en formato Harvard está listo</b><small>Al final del informe, para descargar en Word y ajustar.</small></span><span class="go">Ver mi CV ↓</span></a>';
     if (p.examenes) h += examenes(p.examenes);
     h += sec('Apertura', 'Antes de operar.', '<div class="rep-text"><p>' + fmt(inf.apertura) + '</p><p>' + fmt(inf.diagnostico_general) + '</p></div>');
     h += sec('Lo que funciona', 'Empecemos por lo bueno.', lista(inf.lo_que_funciona) + '<div class="prio"><b>Si solo haces una cosa</b><p>' + fmt(inf.prioridad_uno) + '</p></div>');
@@ -280,6 +282,7 @@
     if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
     if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) {
       cvPropuesto = inf.cv_propuesto;
+      h += '<div id="cv-harvard" class="anchor-harvard"></div>';
       h += sec('Tu CV, operado', 'Tu hoja de vida en formato Harvard.', '<div class="cvh"><p>Es una propuesta armada solo con tus datos y con todo lo que viste en este informe. Antes de enviarla, ajústala:</p>' + lista([
         'Completa lo que está resaltado en amarillo con tus datos reales. Si no tienes el número exacto, usa un estimado honesto. Nunca lo inventes: en la entrevista te lo van a preguntar.',
         'Léela en voz alta. Si una línea no suena a ti, cámbiala. La IA propone y tú decides.',

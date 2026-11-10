@@ -429,3 +429,11 @@ body[data-cvq] .dock{display:none!important}
 .manual-ok .code{overflow-wrap:anywhere;letter-spacing:.12em}
 .pay .or span{text-align:center}
 .pay p,.pay li,.pay label{overflow-wrap:anywhere}
+/* Atajo al CV en formato Harvard (nov. 2026) */
+.harvard-jump{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:18px;background:#FBF4E4;border:1px solid #E6CF9A;color:var(--ink);text-decoration:none;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.harvard-jump:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(11,31,58,.45)}
+.harvard-jump b{display:block;font-size:1.05rem}
+.harvard-jump small{display:block;color:var(--muted);font-size:.88rem;margin-top:2px}
+.harvard-jump .go{flex:none;font-weight:700;padding:10px 18px;border-radius:999px;background:var(--gold-bright,#D2AE66);color:var(--ink)}
+.anchor-harvard{scroll-margin-top:110px}
+html{scroll-behavior:smooth}
