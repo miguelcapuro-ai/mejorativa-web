@@ -815,7 +815,7 @@
     api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) {
       if (r.listo) return pintar(r.informe);
       if (r.status === 'diagnosed') { store.set('ses', ses); location.href = '../revisar/'; return; }
-      c.innerHTML = '<div class="panel surgery"><h2>Redactando tu informe.<span class="soft">Tarda entre 2 y 5 minutos.</span></h2><div class="progress"><i id="rprog"></i></div></div>';
+      c.innerHTML = '<div class="panel surgery"><h2>Redactando tu informe.<span class="soft">Normalmente, de 2 a 5 minutos.</span></h2><div class="progress"><i id="rprog"></i></div></div>';
       return pedirInforme(ses, function (ch) { var b = $('#rprog'); if (b) b.style.setProperty('--p', Math.min(96, 6 + ch / 450) + '%'); }).then(function (inf) {
         if (inf) pintar(inf); else setTimeout(function () { location.reload(); }, 8000);
       });
