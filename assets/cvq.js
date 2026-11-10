@@ -133,6 +133,7 @@
       var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
       var p = /^America\/(Mexico_City|Monterrey|Merida|Cancun|Chihuahua|Hermosillo|Mazatlan|Tijuana|Matamoros|Ojinaga|Bahia_Banderas)$/.test(tz) ? 'mexico'
         : tz === 'America/Bogota' ? 'colombia'
+        : tz === 'America/Costa_Rica' ? 'costarica'
         : /^(Europe\/Madrid|Africa\/Ceuta|Atlantic\/Canary)$/.test(tz) ? 'espana' : '';
       if (p) sel.value = p;
       var otro = document.getElementById('f-pais-otro-box');
