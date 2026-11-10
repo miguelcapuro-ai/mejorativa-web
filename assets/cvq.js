@@ -567,8 +567,8 @@
           '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
         if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div></div>';
         if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
-        if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Fuera de Panamá o sin Yappy?</span></div>';
-        if (paypalOn) h += '<div class="paym" id="m-paypal">' + (yappyOn ? '' : '<p class="pp-t">Paga con PayPal.</p>') + '<div class="pp-slot" id="ppslot"></div></div>';
+        if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Prefieres tarjeta o PayPal?</span></div>';
+        if (paypalOn) h += '<div class="paym" id="m-paypal">' + '<p class="pp-t">Paga con tarjeta de crédito o débito, o con tu cuenta PayPal.</p><p class="fine-w" style="margin:-4px 0 10px">Para pagar con tarjeta no necesitas cuenta de PayPal: toca «Tarjeta de débito o crédito».</p>' + '<div class="pp-slot" id="ppslot"></div></div>';
         h += '<details class="promo"><summary>¿Tienes un código de regalo?</summary><div class="promo-row"><input id="promo" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de regalo" placeholder="Escribe tu código"><button class="btn" type="button" id="promo-btn">Usar código</button></div></details>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;
