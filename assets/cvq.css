@@ -407,3 +407,14 @@ body[data-cvq] .dock{display:none!important}
 .promo-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .promo-row input{flex:1 1 200px;font:inherit;padding:12px 14px;border:1px solid #C9D2DE;border-radius:12px;text-transform:uppercase;letter-spacing:.06em}
 .promo-row .btn{flex:0 0 auto}
+/* ---------- CTA principal "Operar mi CV" (acento rojo ladrillo) ---------- */
+.btn.hot{gap:18px;padding:14px 14px 14px 30px;background:linear-gradient(135deg,#DE5A40 0%,#C2412D 55%,#A8321F 100%);color:#fff;white-space:normal;text-align:left;box-shadow:0 18px 38px -14px rgba(194,65,45,.7);animation:hotpulse 2.8s ease-out infinite}
+.btn.hot .lbl{display:flex;flex-direction:column;gap:3px;line-height:1.1}
+.btn.hot .lbl b{font-size:1.22rem;font-weight:800;letter-spacing:.01em}
+.btn.hot .lbl small{font-size:.76rem;font-weight:500;opacity:.95}
+.btn.hot .arr{width:44px;height:44px;background:rgba(255,255,255,.22);flex:none}
+.btn.hot .arr .ico{width:20px;height:20px}
+.btn.hot:hover{background:linear-gradient(135deg,#E2654B 0%,#B83A26 60%,#9A2C1B 100%);box-shadow:0 22px 44px -14px rgba(194,65,45,.8)}
+@keyframes hotpulse{0%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 0 rgba(222,90,64,.5)}70%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 16px rgba(222,90,64,0)}100%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 0 rgba(222,90,64,0)}}
+@media (max-width:480px){.btn.hot{padding-left:22px}.btn.hot .lbl b{font-size:1.1rem}.btn.hot .lbl small{font-size:.72rem}}
+@media (prefers-reduced-motion:reduce){.btn.hot{animation:none}}
