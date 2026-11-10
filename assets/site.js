@@ -116,7 +116,7 @@
   var d=document, nav=d.querySelector('.nav'), brand=d.querySelector('.island .brand');
   if(!nav||!brand) return;
   var cur=nav.querySelector('a[aria-current]:not(.btn)');
-  if(cur){var h=d.createElement('span');h.className='here';h.textContent=cur.textContent.trim();h.setAttribute('aria-hidden','true');brand.insertAdjacentElement('afterend',h)}
+  if(cur){var h=d.createElement('span');h.className='here';h.textContent=cur.textContent.trim();h.setAttribute('aria-hidden','true');brand.insertAdjacentElement('afterend',h);brand.parentNode.classList.add('con-here')}
   nav.querySelectorAll('a[data-nav]').forEach(function(a,i){a.style.setProperty('--k',i)});
   var KEY='mj-nav-visto', visto=false;
   try{visto=localStorage.getItem(KEY)==='1'}catch(e){}

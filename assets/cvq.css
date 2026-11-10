@@ -418,3 +418,14 @@ body[data-cvq] .dock{display:none!important}
 @keyframes hotpulse{0%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 0 rgba(222,90,64,.5)}70%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 16px rgba(222,90,64,0)}100%{box-shadow:0 18px 38px -14px rgba(194,65,45,.7),0 0 0 0 rgba(222,90,64,0)}}
 @media (max-width:480px){.btn.hot{padding-left:22px}.btn.hot .lbl b{font-size:1.1rem}.btn.hot .lbl small{font-size:.72rem}}
 @media (prefers-reduced-motion:reduce){.btn.hot{animation:none}}
+
+/* Caja de pago responsive (nov. 2026): ningún botón ni texto puede ensanchar la caja azul */
+.pay{grid-template-columns:minmax(0,1fr)}
+.pay > *,#pay-body,#pay-body > *,.paym > *,.manual-ok > *{min-width:0;max-width:100%}
+.pay .btn{white-space:normal;text-align:center;justify-content:center;max-width:100%;line-height:1.25}
+.manual-ok .btn{justify-self:stretch}
+.pay .pp-slot,.pay .yappy-slot,.ybtn,.ppbtn{max-width:100%}
+.pay .pp-slot iframe{max-width:100%}
+.manual-ok .code{overflow-wrap:anywhere;letter-spacing:.12em}
+.pay .or span{text-align:center}
+.pay p,.pay li,.pay label{overflow-wrap:anywhere}

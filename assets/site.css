@@ -777,3 +777,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
 @keyframes navGlow{0%{box-shadow:0 14px 34px -16px rgba(11,31,58,.38),0 0 0 0 rgba(19,48,90,.45)}70%{box-shadow:0 14px 34px -16px rgba(11,31,58,.38),0 0 0 14px rgba(19,48,90,0)}100%{box-shadow:0 14px 34px -16px rgba(11,31,58,.38),0 0 0 0 rgba(19,48,90,0)}}
 @keyframes navLit{0%,100%{color:var(--muted)}30%{color:var(--navy)}}
 @media (prefers-reduced-motion:reduce){.nav-intro .island,.nav-intro .burger,.nav-intro .nav a[data-nav]{animation:none}}
+
+/* Móvil (nov. 2026): menú desplegado legible y sección actual completa en la barra */
+.sheet{justify-content:flex-start;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 104px) 24px calc(env(safe-area-inset-bottom,0px) + 32px)}
+.sheet nav{gap:0}
+.sheet a{font-size:clamp(1.35rem,5.6vw,1.9rem);line-height:1.15;padding-block:14px;border-bottom:1px solid var(--line)}
+.sheet a:last-child{border-bottom:0}
+.sheet .sheet-foot{margin-top:24px}
+@media (max-height:640px){.sheet a{padding-block:10px;font-size:clamp(1.2rem,5vw,1.6rem)}}
+@media (max-width:560px){.island.con-here .brand b{display:none}.island.con-here .here{max-width:none}.island.con-here{gap:12px}}
+@media (max-width:340px){.island.con-here .here{max-width:46vw}}
