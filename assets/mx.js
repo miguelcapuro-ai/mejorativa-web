@@ -14,7 +14,12 @@
   function yaEnviado(id) { try { return localStorage.getItem('mj_px_' + id) === '1'; } catch (e) { return false; } }
   function marcar(id) { try { localStorage.setItem('mj_px_' + id, '1'); } catch (e) { /* nada */ } }
 
+  /* Enlaces con llave de acceso (…/informe/#id.llave): ahí el píxel no se carga,
+     para que la dirección con la llave no salga del sitio. */
+  function conLlave() { return /^#[a-z0-9]{20}\.[A-Za-z0-9_-]{16,}$/.test(location.hash || ''); }
+
   function cargar() {
+    if (conLlave()) return;
     if (cargado || window.fbq) { cargado = true; return; }
     cargado = true;
     /* Código base oficial del píxel de Meta */
@@ -30,6 +35,7 @@
   window.mjPixel = function (ev, datos, id) {
     if (leer() !== 'si') return;
     if (id && yaEnviado(id)) return;
+    if (conLlave()) return;
     cargar();
     try { window.fbq('track', ev, datos || {}, id ? { eventID: id } : undefined); } catch (e) { /* nada */ }
     if (id) marcar(id);
@@ -58,7 +64,7 @@
   function iniciar() {
     var v = leer();
     if (v === 'si') cargar();
-    else if (v !== 'no') aviso();
+    else if (v !== 'no' && !conLlave()) aviso();
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
