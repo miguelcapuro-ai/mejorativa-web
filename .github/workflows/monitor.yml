@@ -28,7 +28,7 @@ jobs:
           revisar https://mejorativa.com/ "Web principal"
           revisar https://mejorativa.com/cv-en-el-quirofano/ "CV en el Quirófano"
           revisar https://mejorativa-cv-api.miguelcapuro.workers.dev/salud "Servidor (Doctor CV, Love y panel)"
-          revisar https://mejorativa-cv-api.miguelcapuro.workers.dev/panel/entrar "Panel"
+          revisar https://panel.mejorativa.com/panel/entrar "Panel"
           revisar https://panel.mejorativa.com/salud "Servidor en el dominio propio (lo usan las dos webs)"
           revisar https://tienda.mejorativa.com/ "Tienda de ropa"
           revisar https://tiendalove.mejorativa.com/ "Mejorativa Love"
