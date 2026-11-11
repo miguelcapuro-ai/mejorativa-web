@@ -153,9 +153,9 @@ button.btn{border:0;font-family:inherit;cursor:pointer}
 /* Resultado del diagnóstico */
 .result-head{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,36px);align-items:center}
 .ring{position:relative;width:clamp(120px,22vw,160px);aspect-ratio:1}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:9;shape-rendering:geometricPrecision}
-.ring .track{stroke:#E6EAF0}
+.ring .track{stroke:#E6EAF0;display:inline;width:auto;animation:none;transform:none}
 .ring.low .track{stroke:#F7DED8}.ring.mid .track{stroke:#F4E9CF}.ring.ok .track{stroke:#D8ECDF}
 .ring .val{stroke:var(--ink);stroke-linecap:round;transition:stroke-dashoffset 1.6s var(--ease)}
 .ring.low .val{stroke:#C2412D}
