@@ -91,11 +91,11 @@
           <h2>Tu hoja de vida, en la camilla.<span class="soft">Tú la subes. El quirófano la lee por ti.</span></h2>
           <div class="solo-cv" role="note"><b>Al quirófano entra un solo paciente: tu hoja de vida.</b><p>Diplomas, certificados, cartas de referencia y demás soportes se quedan en la sala de espera. Aquí no los evaluamos y solo hacen más lenta la operación. Sube tu CV solito, sin anexos.</p></div>
           <input type="file" id="cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
-          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas. Si no tienes CV, sube tu LinkedIn en PDF.</span></div>
+          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas. ¿Todavía no tienes CV? Sube tu perfil de LinkedIn en PDF y lo opero como tu hoja de vida.</span></div>
           <div class="fields">
             <div class="field full"><label for="f-pais">¿En qué país buscas trabajo?</label><select id="f-pais" name="pais"><option value="panama">Panamá</option><option value="mexico">México</option><option value="colombia">Colombia</option><option value="costarica">Costa Rica</option><option value="espana">España</option><option value="otro">Otro país</option></select><span class="hint">Opero tu CV con las reglas, las leyes y la costumbre de ese país.</span></div>
             <div class="field full" id="f-pais-otro-box" hidden><label for="f-pais-otro">¿Cuál?</label><input id="f-pais-otro" name="pais_otro" maxlength="50" autocomplete="country-name" placeholder="Por ejemplo: Chile, Estados Unidos, Guatemala"></div>
-            <div class="field full"><label for="f-li">Tu perfil de LinkedIn <small>(opcional)</small></label><input id="f-li" name="li_url" inputmode="url" autocomplete="url" maxlength="200" placeholder="linkedin.com/in/tu-nombre"></div>
+            <div class="field full"><label for="f-li">Tu perfil de LinkedIn <small>(opcional)</small></label><input id="f-li" name="li_url" inputmode="url" autocomplete="url" maxlength="200" placeholder="linkedin.com/in/tu-nombre"><span class="hint">Con el enlace reviso cómo se ve tu dirección de LinkedIn. Para leer tu perfil y compararlo con tu CV, súbelo en PDF aquí abajo.</span></div>
           </div>
           <details class="more-li"><summary>Haz el análisis más fino <small>(opcional)</small></summary>
             <div class="fields">
@@ -112,7 +112,7 @@
           </div>
           <div id="ts-box" style="margin-top:18px"></div>
           <div class="alert" id="e-cv" hidden></div>
-          <div class="actions"><span class="note-sm" style="margin:0">El diagnóstico es gratis.</span><button class="btn" type="button" id="operar">Operar mi CV <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
+          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">El diagnóstico base es gratis.</b> Si al verlo quieres ir a fondo, por $9.99 te llevas el informe completo: tu CV operado sección por sección y listo en formato Harvard.</span><button class="btn" type="button" id="operar">Operar mi CV <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
         </div>
       </form>
 
