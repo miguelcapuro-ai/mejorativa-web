@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 <link rel="preload" href="../../assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/site.css?v=n1110a">
-<link rel="stylesheet" href="../../assets/cvq.css?v=cvq15">
+<link rel="stylesheet" href="../../assets/cvq.css?v=cvq16">
 </head>
 <body data-cvq="revisar">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -91,21 +91,12 @@
           <h2>Tu hoja de vida, en la camilla.<span class="soft">Tú la subes. El quirófano la lee por ti.</span></h2>
           <div class="solo-cv" role="note"><b>Al quirófano entra un solo paciente: tu hoja de vida.</b><p>Diplomas, certificados, cartas de referencia y demás soportes se quedan en la sala de espera. Aquí no los evaluamos y solo hacen más lenta la operación. Sube tu CV solito, sin anexos.</p></div>
           <input type="file" id="cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
-          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas. ¿Todavía no tienes CV? Sube tu perfil de LinkedIn en PDF y lo opero como tu hoja de vida.</span></div>
+          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas.</span></div>
           <div class="fields">
-            <div class="field full"><label for="f-pais">¿En qué país buscas trabajo?</label><select id="f-pais" name="pais"><option value="panama">Panamá</option><option value="mexico">México</option><option value="colombia">Colombia</option><option value="costarica">Costa Rica</option><option value="espana">España</option><option value="otro">Otro país</option></select><span class="hint">Opero tu CV con las reglas, las leyes y la costumbre de ese país.</span></div>
+            <div class="field full"><label for="f-pais">¿En qué país buscas trabajo?</label><select id="f-pais" name="pais"><option value="panama">🇵🇦 Panamá</option><option value="mexico">🇲🇽 México</option><option value="colombia">🇨🇴 Colombia</option><option value="costarica">🇨🇷 Costa Rica</option><option value="espana">🇪🇸 España</option><option value="otro">🌎 Otro país</option></select><span class="hint">Opero tu CV con las reglas, las leyes y la costumbre de ese país.</span></div>
             <div class="field full" id="f-pais-otro-box" hidden><label for="f-pais-otro">¿Cuál?</label><input id="f-pais-otro" name="pais_otro" maxlength="50" autocomplete="country-name" placeholder="Por ejemplo: Chile, Estados Unidos, Guatemala"></div>
+            <div class="field full"><label for="f-vac">Una vacante que te interese <small>(opcional)</small></label><textarea id="f-vac" name="vacante" maxlength="6000" placeholder="Pega el texto de la vacante y comparo tu CV palabra por palabra."></textarea></div>
           </div>
-          <details class="more-li"><summary>Haz el análisis más fino <small>(opcional)</small></summary>
-            <div class="fields">
-              <div class="field full"><span class="lbl">Tu LinkedIn en PDF</span>
-                <input type="file" id="li-file" accept=".pdf,application/pdf" hidden>
-                <div><button type="button" class="tbtn" id="li-btn">Subir mi LinkedIn en PDF</button></div>
-                <span class="hint" id="li-ok">Así reviso tu titular, tu «Acerca de» y si cuenta la misma historia que tu CV. Se descarga desde la computadora: tu perfil de LinkedIn → Más → Guardar en PDF.</span>
-              </div>
-              <div class="field full"><label for="f-vac">Una vacante que te interese</label><textarea id="f-vac" name="vacante" maxlength="6000" placeholder="Pega el texto de la vacante y comparo tu CV palabra por palabra."></textarea></div>
-            </div>
-          </details>
           <div class="consents">
             <label class="check"><input type="checkbox" id="c-ok"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">Soy mayor de edad y autorizo a Mejorativa a revisar mi hoja de vida con inteligencia artificial (Claude, de Anthropic, en Estados Unidos). Mi archivo se borra al terminar. <a href="../../privacidad/" target="_blank" rel="noopener">Privacidad</a>.</span></label>
           </div>
@@ -183,11 +174,11 @@
 <button class="totop" type="button" aria-label="Volver arriba"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
 
 <script src="../../assets/mx.js?v=mx2" defer></script>
-<script src="../../assets/site.js?v=n1110a" defer></script>
+<script src="../../assets/site.js?v=n1110b" defer></script>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/"}},{"not":{"href_matches":"/#*"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
 
 <script src="../../assets/cvq-config.js?v=cvq7"></script>
 <script src="../../assets/cvq-docx.js?v=cvq7" defer></script>
-<script src="../../assets/cvq.js?v=cvq18" defer></script>
+<script src="../../assets/cvq.js?v=cvq19" defer></script>
 </body>
 </html>

@@ -449,25 +449,6 @@
     ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
     drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) elegir(f); });
 
-    // LinkedIn en PDF (opcional)
-    var liInput = $('#li-file'), liBtn = $('#li-btn'), liOk = $('#li-ok');
-    if (liBtn && liInput) {
-      liBtn.addEventListener('click', function () { liInput.click(); });
-      liInput.addEventListener('change', function () {
-        var file = liInput.files[0];
-        if (!file) return;
-        liTexto = '';
-        if (file.size > 5 * 1024 * 1024) { liOk.textContent = 'Ese PDF pesa más de 5 MB.'; return; }
-        liOk.textContent = 'Leyendo ' + file.name + '…';
-        file.arrayBuffer().then(leerPDF).then(function (r) {
-          if (r.texto.length > 200) { liTexto = r.texto.slice(0, 15000); liOk.textContent = '✓ ' + file.name + ' listo. Lo comparo con tu CV.'; liBtn.textContent = 'Cambiar mi LinkedIn en PDF'; }
-          else liOk.textContent = 'No pude leer texto en ese PDF. Usa el que genera LinkedIn con «Guardar en PDF».';
-        }).catch(function () {
-          liOk.textContent = DEMO ? '✓ ' + file.name + ' listo (vista previa).' : 'No pude leer ese archivo. Usa el que genera LinkedIn con «Guardar en PDF».';
-        });
-      });
-    }
-
     // Turnstile (opcional)
     function prepararTurnstile() {
       cargarConfig().then(function (c) {
@@ -493,7 +474,7 @@
 
     $('#operar').addEventListener('click', function () {
       var x = datos();
-      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word, o tu LinkedIn en PDF.'); return; }
+      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word.'); return; }
       if (!$('#c-ok').checked) { alerta('#e-cv', 'Para operar necesito tu autorización: marca la casilla.'); return; }
       var li = x.li_url.trim();
       if (li && !/linkedin\.com\/in\/[^\s]+/i.test(li)) { alerta('#e-cv', 'El enlace de LinkedIn debe verse como linkedin.com/in/tu-nombre.'); return; }
