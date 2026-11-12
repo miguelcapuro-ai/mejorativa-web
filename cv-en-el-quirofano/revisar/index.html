@@ -61,13 +61,16 @@
 .pt-escalera .p{background:var(--bg);border:1.5px dashed var(--line-strong)}
 .pt-escalera .tag{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-bright)}
 .pt-escalera .p .tag{color:var(--gold)}
-.pt-escalera b{display:block;margin-top:4px;font-size:.9rem;line-height:1.35;font-weight:600}
+.pt-escalera b{display:block;margin-top:4px;font-size:1.05rem;line-height:1.2;font-weight:700}
+.pt-escalera p{margin:4px 0 0;font-size:.86rem;line-height:1.4;color:#D6DEEA}
+.pt-escalera .p p{color:var(--muted)}
+.pt-aclara{margin-top:10px;color:var(--ink);font-size:.92rem;line-height:1.45}
 .pt-escalera .p b{color:var(--ink)}
 .pt-perdida{margin-top:14px;font-style:italic;font-weight:600;color:#B5462F;font-size:1rem}
 .pt-hall{list-style:none;counter-reset:h;margin:16px 0 0;padding:0;display:grid;gap:8px}
 .pt-hall li{counter-increment:h;display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.07)}
 .pt-hall b{color:#fff;font-size:.92rem}.pt-hall b::before{content:counter(h) ". ";color:#E8806A}
-.pt-hall span{color:#A9B6CB;letter-spacing:-1px;filter:blur(1.5px);user-select:none;font-size:.85rem}
+.pt-hall .lk{color:#A9B6CB;font-size:.8rem}.pt-hall .lk::before{content:"🔒 "}
 .pt-soc-txt{color:var(--muted);font-size:1rem;max-width:60ch}
 .pt-testi{margin:18px 0 0;padding:18px 20px;border-radius:18px;background:#EEF2F7;border-left:3px solid var(--gold)}
 .pt-testi p{font-style:italic;font-size:1.05rem;color:var(--ink)}
@@ -144,16 +147,17 @@
       <nav class="crumbs no-print" aria-label="Ruta"><ol><li><a href="../../">Inicio</a></li><li><a href="../">CV en el Quirófano</a></li><li><span aria-current="page">Revisar mi CV</span></li></ol></nav>
       <span class="pt-kind puente">CV en el Quirófano · Diagnóstico gratis</span>
       <h1 id="h1" class="display pt-h1">¿Tu CV te defiende o te hunde?</h1>
-      <p class="intro">Tu hoja de vida entra a reuniones donde tú no estás. Súbela y en un minuto ves cómo la leen la máquina, el reclutador y el detector de IA.</p>
+      <p class="intro">Tu hoja de vida entra a reuniones donde tú no estás. Súbela y en un minuto ves, gratis, cómo la leen la máquina, el reclutador y el detector de IA.</p>
       <ul class="pt-chips puente" aria-label="Lo que debes saber antes de subirla">
-        <li><b>Gratis</b><span>El diagnóstico no cuesta nada. No pedimos tarjeta.</span></li>
+        <li><b>$0</b><span>Para ver tu diagnóstico no te pedimos tarjeta.</span></li>
         <li><b>Privado</b><span>Tu archivo se borra al terminar. La IA no aprende de ti.</span></li>
-        <li><b>1 minuto</b><span>Sin formularios ni registro. Desde tu celular.</span></li>
+        <li><b>1 minuto</b><span>Sin crear cuenta. Desde tu celular.</span></li>
       </ul>
       <div class="pt-escalera puente" aria-label="Qué es gratis y qué cuesta">
-        <div class="g"><span class="tag">Gratis ahora</span><b>Tu puntaje en los 3 exámenes y tus 3 errores más graves.</b></div>
-        <div class="p"><span class="tag">Si quieres el arreglo · $9.99</span><b>Tu CV operado sección por sección, listo en formato Harvard.</b></div>
+        <div class="g"><span class="tag">Paso 1 · Gratis</span><b>Tu diagnóstico</b><p>Tu puntaje en los 3 exámenes, tus 3 errores más graves explicados y una línea de tu CV ya operada.</p></div>
+        <div class="p"><span class="tag">Paso 2 · Opcional · $9.99</span><b>Tu informe completo</b><p>Cómo arreglar cada error con tu propio texto, y tu CV operado sección por sección, listo en formato Harvard.</p></div>
       </div>
+      <p class="pt-aclara puente">Primero ves tu diagnóstico. Si te sirve y quieres ir a fondo, decides ahí si pagas el informe. Si no, te vas con tu diagnóstico y no pagas nada.</p>
       <p class="pt-perdida puente">Cada CV que mandas así es una entrevista que puede no llegar.</p>
       <a class="pt-ver link puente" href="#pt-ejemplo">Mira primero cómo se ve un diagnóstico</a>
       <p class="demo-flag" id="demo-flag" hidden>Modo demostración: ves el resultado de un CV ficticio y el pago es simulado.</p>
@@ -181,7 +185,7 @@
           </div>
           <div id="ts-box" style="margin-top:18px"></div>
           <div class="alert" id="e-cv" hidden></div>
-          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">El diagnóstico base es gratis.</b> Si al verlo quieres ir a fondo, por $9.99 te llevas el informe completo: tu CV operado sección por sección y listo en formato Harvard. Pagas con Yappy (en Panamá), tarjeta o PayPal.</span><button class="btn" type="button" id="operar">Operar mi CV <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
+          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">Ver tu diagnóstico no cuesta nada.</b> Al verlo decides si quieres el informe completo por $9.99, que pagas con Yappy (en Panamá), tarjeta o PayPal. Si no lo quieres, no pagas.</span><button class="btn" type="button" id="operar">Ver mi diagnóstico gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
         </div>
       </form>
 
@@ -199,11 +203,11 @@
             </div>
             <p class="dx">“Tu experiencia en cobros existe, pero tu hoja de vida todavía no la deja ver.”</p>
             <ol class="pt-hall" aria-label="Los 3 hallazgos más graves del CV de ejemplo">
-              <li><b>Datos sensibles en las primeras líneas</b><span aria-hidden="true">▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span></li>
-              <li><b>Tus logros están escritos como funciones</b><span aria-hidden="true">▒▒▒▒▒▒▒▒▒▒▒▒</span></li>
-              <li><b>Sin titular con el cargo que buscas</b><span aria-hidden="true">▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span></li>
+              <li><b>Datos sensibles en las primeras líneas</b><span class="lk">Cómo se arregla · en el informe</span></li>
+              <li><b>Tus logros están escritos como funciones</b><span class="lk">Cómo se arregla · en el informe</span></li>
+              <li><b>Sin titular con el cargo que buscas</b><span class="lk">Cómo se arregla · en el informe</span></li>
             </ol>
-            <p class="foot">Diagnóstico real sobre un CV ficticio. ¿Cuáles son los 3 del tuyo? Lo ves gratis en un minuto.</p>
+            <p class="foot">Diagnóstico real sobre un CV ficticio. Gratis ves tu puntaje, tus 3 errores y qué está mal en cada uno. Cómo arreglarlos con tu propio texto viene en el informe completo.</p>
           </div>
           <p class="pt-mas"><a class="btn" href="#p-cv" data-pt-subir>Ver los míos gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></p>
           <p class="pt-mas"><a class="link" href="../informe/?ejemplo=1#ejemplo">Ver un informe completo de ejemplo</a></p>
