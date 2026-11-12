@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Revisa tu CV | CV en el Quirófano · Mejorativa</title>
-<meta name="description" content="Sube tu hoja de vida y el quirófano la lee por ti. Diagnóstico gratis en menos de un minuto, sin formularios.">
+<meta name="description" content="¿Tu CV te defiende o te hunde? Súbelo y en menos de un minuto ves gratis cómo lo leen la máquina, el reclutador y el detector de IA.">
 <link rel="canonical" href="https://mejorativa.com/cv-en-el-quirofano/revisar/">
 <meta name="theme-color" content="#0B1F3A">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_PA">
 <meta property="og:site_name" content="Mejorativa">
 <meta property="og:title" content="Revisa tu CV | CV en el Quirófano · Mejorativa">
-<meta property="og:description" content="Sube tu hoja de vida y el quirófano la lee por ti. Diagnóstico gratis en menos de un minuto, sin formularios.">
+<meta property="og:description" content="¿Tu CV te defiende o te hunde? Súbelo y en menos de un minuto ves gratis cómo lo leen la máquina, el reclutador y el detector de IA.">
 <meta property="og:url" content="https://mejorativa.com/cv-en-el-quirofano/revisar/">
 <meta property="og:image" content="https://mejorativa.com/img/og-cv.jpg">
 <meta property="og:image:width" content="1200">
@@ -23,6 +23,41 @@
 <link rel="preload" href="../../assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/site.css?v=n1110a">
 <link rel="stylesheet" href="../../assets/cvq.css?v=cvq17">
+<style>
+/* Puente para quien llega desde un anuncio: explica antes de pedir el CV */
+.cvq-app .pt-kind{display:block;margin-top:14px;color:var(--gold);font-weight:600;font-size:.9rem}
+.cvq-app h1.pt-h1{margin-top:8px;font-size:clamp(2.3rem,7vw,4.4rem);line-height:.95}
+.cvq-app .intro{margin-top:14px;font-size:1.05rem}
+.pt-chips{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pt-chips li{padding:12px 12px 13px;border-radius:16px;background:#EEF2F7;border:1px solid var(--line)}
+.pt-chips b{display:block;color:var(--ink);font-size:1rem}
+.pt-chips span{display:block;margin-top:3px;color:var(--muted);font-size:.8rem;line-height:1.35}
+.pt-ver{display:inline-block;margin-top:14px;font-size:.92rem}
+.pt-luego{margin-top:14px;padding:12px 16px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.pt-luego summary{cursor:pointer;font-weight:600;color:var(--ink);font-size:.95rem}
+.pt-luego p{margin:8px 0 0;color:var(--muted);font-size:.9rem}
+.pt-luego-b{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px}
+.pt-luego-b .btn{padding:10px 18px;gap:8px}
+.pt-luego-b .btn .ico{width:18px;height:18px;fill:currentColor}
+.pt-luego-b .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong);cursor:pointer;font-family:inherit}
+.pt-sec{margin-top:clamp(48px,7vw,72px)}
+.pt-h2{font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:clamp(1.9rem,4vw,2.6rem);line-height:.95;margin-bottom:20px}
+.pt-h2 .soft{display:block;font-size:.55em;margin-top:8px;line-height:1.2}
+.pt-ex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pt-ex .n{display:block;font-stretch:68%;font-weight:800;font-size:clamp(2.4rem,5vw,3.2rem);line-height:1;color:var(--ink)}
+.pt-ex h3{margin-top:8px;font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:1.4rem;line-height:1}
+.pt-ex p{margin-top:6px;color:var(--muted);font-size:.95rem}
+.pt-src{margin-top:16px;color:var(--muted);font-size:.75rem}
+.pt-mas{margin-top:18px}
+@media (max-width:640px){
+  .cvq-app{padding-top:calc(env(safe-area-inset-top,0px) + 92px)}
+  .pt-chips{gap:8px}.pt-chips li{padding:10px 9px}.pt-chips span{font-size:.74rem}
+  .pt-ex{grid-template-columns:1fr}
+  .cvq-app #p-cv{margin-top:20px}
+}
+/* Cuando arranca la cirugía (o el diagnóstico), el puente se esconde */
+.cvq-app:has(#p-cv[hidden]) .puente{display:none!important}
+</style>
 </head>
 <body data-cvq="revisar">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -82,16 +117,30 @@
   <section class="cvq-app" aria-labelledby="h1">
     <div class="wrap">
       <nav class="crumbs no-print" aria-label="Ruta"><ol><li><a href="../../">Inicio</a></li><li><a href="../">CV en el Quirófano</a></li><li><span aria-current="page">Revisar mi CV</span></li></ol></nav>
-      <h1 id="h1" class="display" style="margin-top:14px">Al quirófano.</h1>
-      <p class="intro">Sube tu hoja de vida y listo. En menos de un minuto tienes tu diagnóstico gratis. Solo pagas si quieres el informe completo.</p>
+      <span class="pt-kind puente">CV en el Quirófano · Diagnóstico gratis</span>
+      <h1 id="h1" class="display pt-h1">¿Tu CV te defiende o te hunde?</h1>
+      <p class="intro">Tu hoja de vida entra a reuniones donde tú no estás. Súbela y en un minuto ves cómo la leen la máquina, el reclutador y el detector de IA.</p>
+      <ul class="pt-chips puente" aria-label="Lo que debes saber antes de subirla">
+        <li><b>Gratis</b><span>El diagnóstico no cuesta nada. No pedimos tarjeta.</span></li>
+        <li><b>Privado</b><span>Tu archivo se borra al terminar. La IA no aprende de ti.</span></li>
+        <li><b>1 minuto</b><span>Sin formularios ni registro. Desde tu celular.</span></li>
+      </ul>
+      <a class="pt-ver link puente" href="#pt-ejemplo">Mira primero cómo se ve un diagnóstico</a>
       <p class="demo-flag" id="demo-flag" hidden>Modo demostración: ves el resultado de un CV ficticio y el pago es simulado.</p>
 
       <form id="cvq-form" novalidate onsubmit="return false">
         <div class="panel" id="p-cv">
           <h2>Tu hoja de vida, en la camilla.<span class="soft">Tú la subes. El quirófano la lee por ti.</span></h2>
-          <div class="solo-cv" role="note"><b>Al quirófano entra un solo paciente: tu hoja de vida.</b><p>Diplomas, certificados, cartas de referencia y demás soportes se quedan en la sala de espera. Aquí no los evaluamos y solo hacen más lenta la operación. Sube tu CV solito, sin anexos.</p></div>
           <input type="file" id="cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
-          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas.</span></div>
+          <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Toca para subir tu hoja de vida</b><span>PDF o Word, hasta 2 MB y 4 páginas. Solo el CV, sin diplomas ni certificados.</span></div>
+          <details class="pt-luego">
+            <summary>¿Tu CV está en la computadora y no en el celular?</summary>
+            <p>Mándate este enlace y lo haces cuando la tengas a mano. Te toma un minuto.</p>
+            <div class="pt-luego-b">
+              <a class="btn sm" id="pt-wa" href="https://wa.me/?text=Pendiente%3A%20pasar%20mi%20CV%20por%20el%20quir%C3%B3fano%20(diagn%C3%B3stico%20gratis)%20%F0%9F%91%89%20https%3A%2F%2Fmejorativa.com%2Fcv-en-el-quirofano%2Frevisar%2F" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg> Enviármelo por WhatsApp</a>
+              <button class="btn sm ghost" type="button" id="pt-copiar">Copiar enlace</button>
+            </div>
+          </details>
           <div class="fields">
             <div class="field full"><label for="f-pais">¿En qué país buscas trabajo?</label><select id="f-pais" name="pais"><option value="panama">🇵🇦 Panamá</option><option value="mexico">🇲🇽 México</option><option value="colombia">🇨🇴 Colombia</option><option value="costarica">🇨🇷 Costa Rica</option><option value="espana">🇪🇸 España</option><option value="otro">🌎 Otro país</option></select><span class="hint">Opero tu CV con las reglas, las leyes y la costumbre de ese país.</span></div>
             <div class="field full" id="f-pais-otro-box" hidden><label for="f-pais-otro">¿Cuál?</label><input id="f-pais-otro" name="pais_otro" maxlength="50" autocomplete="country-name" placeholder="Por ejemplo: Chile, Estados Unidos, Guatemala"></div>
@@ -102,9 +151,40 @@
           </div>
           <div id="ts-box" style="margin-top:18px"></div>
           <div class="alert" id="e-cv" hidden></div>
-          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">El diagnóstico base es gratis.</b> Si al verlo quieres ir a fondo, por $9.99 te llevas el informe completo: tu CV operado sección por sección y listo en formato Harvard.</span><button class="btn" type="button" id="operar">Operar mi CV <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
+          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">El diagnóstico base es gratis.</b> Si al verlo quieres ir a fondo, por $9.99 te llevas el informe completo: tu CV operado sección por sección y listo en formato Harvard. Pagas con Yappy (en Panamá), tarjeta o PayPal.</span><button class="btn" type="button" id="operar">Operar mi CV <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
         </div>
       </form>
+
+      <div class="puente">
+        <section class="pt-sec" id="pt-ejemplo" aria-labelledby="h-ej">
+          <h2 id="h-ej" class="pt-h2">Así se ve tu diagnóstico.<span class="soft">Gratis, en menos de un minuto.</span></h2>
+          <div class="monitor" aria-label="Ejemplo de diagnóstico de una hoja de vida">
+            <div class="top-row"><span>Paciente: CV de ejemplo</span><span class="live"><i></i>En cirugía</span></div>
+            <svg class="ecg" viewBox="0 0 320 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34H58l8-10 8 10h18l6-24 10 46 8-30 6 8h40l8-8 8 8h24l6-24 10 46 8-30 6 8h88"/></svg>
+            <div class="score"><b>41</b><span>/ 100</span><em>Hoy</em></div>
+            <div class="vitals">
+              <div class="vital low"><b>La máquina (ATS)</b><span>48</span><div class="bar"><i style="--v:48%"></i></div></div>
+              <div class="vital low"><b>El humano (7 segundos)</b><span>35</span><div class="bar"><i style="--v:35%"></i></div></div>
+              <div class="vital low"><b>Tu voz (detector de IA)</b><span>40</span><div class="bar"><i style="--v:40%"></i></div></div>
+            </div>
+            <p class="dx">“Tu experiencia en cobros existe, pero tu hoja de vida todavía no la deja ver.”</p>
+            <p class="foot">Diagnóstico real sobre un CV ficticio. Con el tuyo ves también tus 3 hallazgos más graves.</p>
+          </div>
+          <p class="pt-mas"><a class="link" href="../informe/?ejemplo=1#ejemplo">Ver un informe completo de ejemplo</a></p>
+        </section>
+
+        <section class="pt-sec" aria-labelledby="h-ex">
+          <h2 id="h-ex" class="pt-h2">Tu CV presenta tres exámenes.<span class="soft">Y casi nadie sabe que los está presentando.</span></h2>
+          <div class="pt-ex">
+            <div><span class="n">46 %</span><h3>La máquina</h3><p>de los especialistas de RR. HH. en Panamá ya usa IA para reclutar. Si la máquina no puede leer tu archivo, tu talento no existe.</p></div>
+            <div><span class="n">7,4 s</span><h3>El humano</h3><p>dura el primer vistazo de un reclutador. Lo que importa tiene que verse arriba y rápido.</p></div>
+            <div><span class="n">80 %</span><h3>Tu voz</h3><p>de los gerentes de contratación dice que detecta un CV escrito por IA. Tu hoja de vida tiene que sonar a ti.</p></div>
+          </div>
+          <p class="pt-src">Fuentes: Konzerta, "IA en el trabajo" (La Estrella de Panamá); Ladders, estudio de seguimiento ocular; Resume Genius, Hiring Insights Report 2026.</p>
+          <p class="pt-mas"><a class="btn" href="#p-cv">Subir mi hoja de vida <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></p>
+          <p class="pt-mas"><a class="link" href="../">Conoce todo lo que incluye el informe</a></p>
+        </section>
+      </div>
 
       <div class="panel surgery" id="p-cirugia" hidden aria-live="polite">
         <h2>En cirugía.<span class="soft">Tarda menos de un minuto. No cierres esta pantalla.</span></h2>
@@ -182,5 +262,8 @@
 <script src="../../assets/cvq-config.js?v=cvq8"></script>
 <script src="../../assets/cvq-docx.js?v=cvq7" defer></script>
 <script src="../../assets/cvq.js?v=cvq22" defer></script>
+<script>
+(function(){var b=document.getElementById('pt-copiar');if(!b)return;b.addEventListener('click',function(){var u='https://mejorativa.com/cv-en-el-quirofano/revisar/';var ok=function(){b.textContent='¡Enlace copiado!';setTimeout(function(){b.textContent='Copiar enlace';},2500);};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok,function(){prompt('Copia este enlace:',u);});}else{prompt('Copia este enlace:',u);}});})();
+</script>
 </body>
 </html>
