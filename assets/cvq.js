@@ -179,7 +179,8 @@
     if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
-    h += '<p style="margin-top:20px"><a class="btn sm" href="#pay">Liberar mi informe · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></p>';
+    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="cta-fomo">⏳ Tu diagnóstico se borra en 24 horas. Pide tu informe hoy y llega a tu correo en minutos.</p></div>'; };
+    h += cta();
     h += '<h3 style="margin-top:30px">Tus 3 hallazgos más importantes</h3><div class="finds">' + (diag.hallazgos_gratis || []).map(function (f) {
       return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b>' + (f.detalle ? '<p>' + esc(f.detalle) + '</p><p class="find-lock">' + ICO.lock + '<span>Cómo se arregla, con tu propio texto: en tu informe.</span></p>' : '<p class="find-lock">' + ICO.lock + '<span>Qué encontré y cómo se arregla: en tu informe.</span></p>') + '</div></div>';
     }).join('') + '</div>';
@@ -189,13 +190,14 @@
       h += '<div class="muestra"><span class="label">Prueba gratis</span><h3>Mira una de tus líneas, operada.</h3><div class="mu-ab"><div class="mu-a"><small>Hoy dice</small><p>' + esc(mu.original) + '</p></div><div class="mu-b"><small>Después del quirófano</small><p>' + fmt(mu.reescrito) + (mu.recortado ? '… <span class="mu-lock" aria-hidden="true"><span></span><span></span></span></p><p class="find-lock">' + ICO.lock + '<span>La línea completa, en tu informe.</span>' : '') + '</p></div></div><p class="mu-note">' + esc(resto) + ' Donde veas <span class="ph">[corchetes]</span>, va tu dato real.</p></div>';
     }
     h += '<div class="locked"><h3>Tu informe completo trae' + (co.mejoras ? ' ' + co.mejoras + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
+    h += cta('cta-mid');
     h += '<div class="why"><span class="label">Por qué vale la pena</span><h3>Si esto fue gratis, imagínate tu informe.</h3><p class="why-lead">Lo que acabas de ver fue el triaje. El informe es la operación completa, línea por línea.</p><div class="why-grid">' + [
       ['Más de 60 reglas', 'Cada línea de tu CV pasa por las mismas reglas que uso en mi taller CV en el Quirófano: la guía de Harvard, lo que buscan los reclutadores en tu país y los datos que la ley no permite pedirte.'],
       ['La IA más potente que tenemos', 'El diagnóstico lo hizo una IA rápida. Tu informe lo opera uno de los modelos de inteligencia artificial más avanzados del mundo, y se toma su tiempo con tu hoja de vida.'],
       ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese criterio, no uno genérico.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Libera tu informe.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     h += '<p class="uno-a-uno">¿Además del informe quieres revisarlo conmigo? <a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice el diagnóstico de CV en el Quirófano y me interesa una sesión 1 a 1 contigo.') + '" target="_blank" rel="noopener">Pide tu sesión 1 a 1 por WhatsApp</a>.</p>';
     return h;
   }
@@ -737,8 +739,32 @@
       clearInterval(tPoll);
       mostrar('redactando');
       var barra = $('#rprog');
-      barra.style.setProperty('--p', '6%');
-      pedirInforme(ses, function (chars) { barra.style.setProperty('--p', Math.min(96, 6 + chars / 450) + '%'); })
+      // Avance por tiempo: la barra y los pasos se mueven siempre, aunque la IA todavía no haya escrito texto.
+      var t0 = Date.now(), porTexto = 0;
+      var PASOS = ['Leyendo tu hoja de vida línea por línea…', 'Pasando cada línea por las reglas del método…', 'Reescribiendo tus logros con la fórmula V·Q·L·P…', 'Revisando zona roja y palabras clave de tu país…', 'Armando tu CV en formato Harvard…', 'Preparando tu LinkedIn y tus preguntas de entrevista…', 'Últimos puntos de sutura: revisando todo antes de entregarlo…'];
+      var pintarAvance = function () {
+        var s = (Date.now() - t0) / 1000;
+        var porTiempo = 92 * (1 - Math.exp(-s / 150));
+        barra.style.setProperty('--p', Math.max(6, Math.min(96, Math.max(porTiempo, porTexto))) + '%');
+        var paso = $('#rpaso'); if (paso) paso.textContent = PASOS[Math.min(PASOS.length - 1, Math.floor(s / 45))];
+      };
+      pintarAvance();
+      var tAvance = setInterval(pintarAvance, 1000);
+      var esperarListo = function (limite) {
+        // Sondea hasta que el servidor tenga el informe (lo termina solo aunque se corte esta conexión).
+        return new Promise(function (ok, ko) {
+          var n = 0;
+          var t = setInterval(function () {
+            n++;
+            api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) {
+              if (r.listo) { clearInterval(t); ok(r.informe); }
+              else if (n > limite) { clearInterval(t); ko(new Error('Tu informe está tardando más de lo normal. Te llegará a tu correo apenas esté; no tienes que hacer nada.')); }
+            }).catch(function () { /* sigue */ });
+          }, 5000);
+        });
+      };
+      pedirInforme(ses, function (chars) { porTexto = Math.min(96, 6 + chars / 450); pintarAvance(); })
+        .catch(function () { return esperarListo(240); })
         .then(function (inf) {
           if (inf) return inf;
           // Otro proceso lo está redactando: esperamos a que esté listo.
@@ -753,8 +779,9 @@
             }, 5000);
           });
         })
-        .then(function (inf) { barra.style.setProperty('--p', '100%'); track('cv_informe'); verInforme(ses, inf); })
+        .then(function (inf) { clearInterval(tAvance); barra.style.setProperty('--p', '100%'); track('cv_informe'); verInforme(ses, inf); })
         .catch(function (e) {
+          clearInterval(tAvance);
           $('#r-err').hidden = false;
           $('#r-err').innerHTML = esc(e.message) + ' <a href="#" id="r-retry">Reintentar ahora</a>';
           $('#r-retry').addEventListener('click', function (ev) { ev.preventDefault(); $('#r-err').hidden = true; redactar(ses); });
