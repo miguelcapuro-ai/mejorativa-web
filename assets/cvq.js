@@ -543,8 +543,7 @@
         // Yappy solo para quien entra desde Panamá (país que detecta Cloudflare). Afuera, solo PayPal.
         // Regla estricta (nov. 2026): el botón de Yappy aparece solo si Cloudflare detecta Panamá.
         var enPanama = demoPago || c.pais === 'PA';
-        // Interruptor en cvq-config.js. Con ?probaryappy=1 en la dirección se enciende solo en esa visita (pruebas).
-        var yappyPermitido = C.yappy !== false || /[?&]probaryappy=1\b/.test(location.search);
+        var yappyPermitido = C.yappy !== false; // interruptor en cvq-config.js
         var yappyOn = yappyPermitido && enPanama && (demoPago || Boolean(c.yappy && c.yappy.activo));
         var manualOn = yappyPermitido && enPanama && !yappyOn && Boolean(c.manual && c.manual.activo);
         if (!yappyOn && !paypalOn && !manualOn) {
