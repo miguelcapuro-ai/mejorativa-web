@@ -5,6 +5,6 @@ window.CVQ = {
   api: 'https://panel.mejorativa.com',
   precio: 9.99,
   whatsapp: '50763454868',
-  // Yappy apagado hasta tener Yappy Comercial con Botón de Pago (nov. 2026). Para activarlo: true.
-  yappy: false
+  // Yappy Comercial con Botón de Pago activo desde el 11 nov 2026 (solo se muestra a quien entra desde Panamá).
+  yappy: true
 };
