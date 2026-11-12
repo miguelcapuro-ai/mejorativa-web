@@ -451,6 +451,14 @@
     ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
     drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) elegir(f); });
 
+    // Llegó desde el correo de recordatorio (?r=...): se manda con el diagnóstico para que no le lleguen más.
+    function recordatorioToken() {
+      var m = /[?&]r=([A-Za-z0-9_-]{20,64})/.exec(location.search);
+      if (m) { store.set('r', m[1]); return m[1]; }
+      return store.get('r') || undefined;
+    }
+    recordatorioToken();
+
     // Turnstile (opcional)
     function prepararTurnstile() {
       cargarConfig().then(function (c) {
@@ -490,7 +498,8 @@
         linkedin: { url: li, texto: liTexto },
         cv: cv,
         consentimiento: { datos: true, ia: true, mayor: true },
-        turnstile: tsToken
+        turnstile: tsToken,
+        recordatorio: recordatorioToken()
       };
       api('/api/diagnostico', { method: 'POST', body: body }).then(function (r) {
         pararEtapas();
