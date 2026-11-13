@@ -453,3 +453,15 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){.btn.cta-big{animation:none}}
 .pago-ok{margin:14px 0 4px;font-weight:700;color:#1E7A46}
 .rpaso{margin:10px 0 0;font-size:.95rem;color:#5B6B82;min-height:1.4em}
+/* Guardar diagnóstico por correo */
+.guardar{margin:22px 0 6px;padding:18px 20px;border:1px solid #D9DEE8;border-radius:14px;background:#F7F9FC}
+.guardar b{display:block;font-size:1.02rem;color:#0E1B3D}
+.guardar p{margin:4px 0 12px;font-size:.93rem;color:#4A5568}
+.guardar-f{display:flex;gap:8px;flex-wrap:wrap}
+.guardar-f input{flex:1 1 220px;min-width:0;padding:11px 14px;border:1px solid #C7CFDC;border-radius:10px;font:inherit;font-size:1rem}
+.guardar-f input:focus{outline:2px solid #1E4FD8;outline-offset:1px;border-color:#1E4FD8}
+.g-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.g-nov{margin-top:10px;font-size:.88rem}
+.g-msg{margin:10px 0 0;font-size:.92rem;font-weight:600}
+.g-msg.ok{color:#1B6B3A}.g-msg.err{color:#A3261B}
+.unico{display:block;margin-top:4px;font-size:.85rem;opacity:.85;font-weight:500}

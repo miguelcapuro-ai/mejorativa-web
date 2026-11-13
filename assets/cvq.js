@@ -65,6 +65,7 @@
       if (!st.status) return Promise.reject(Object.assign(new Error('No encontramos tu revisión.'), { status: 404 }));
       return Promise.resolve({ ok: true, status: st.status, pagado: st.status !== 'diagnosed', listo: st.status === 'ready', precio: C.precio || 9.99, diagnostico: D.diagnostico, nombre: D.diagnostico.nombre_detectado });
     }
+    if (path === '/api/diagnostico/guardar') return wait(700).then(function () { return { ok: true }; });
     if (path === '/api/pago/crear') return wait(600).then(function () { return { ok: true, demo: true, orderId: 'CVQDEMO' }; });
     if (path === '/api/pago/demo') return wait(1800).then(function () { store.set('demo', { status: 'paid' }); return { ok: true }; });
     if (path === '/api/pago/codigo') return wait(900).then(function () { store.set('demo', { status: 'paid' }); return { ok: true, pagado: true }; });
@@ -181,6 +182,10 @@
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
     var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="cta-fomo">⏳ Tu diagnóstico se borra en 24 horas. Pide tu informe hoy y llega a tu correo en minutos.</p></div>'; };
     h += cta();
+    h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
+      + '<div class="guardar-f"><label for="g-correo" class="g-sr">Tu correo</label><input type="email" id="g-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com"><button class="btn sm" type="button" id="g-enviar">Envíame mi diagnóstico</button></div>'
+      + '<label class="check g-nov"><input type="checkbox" id="g-nov"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">También quiero recibir novedades, talleres y ofertas de Mejorativa.</span></label>'
+      + '<p class="g-msg" id="g-msg" role="status" aria-live="polite" hidden></p></div>';
     h += '<h3 style="margin-top:30px">Tus 3 hallazgos más importantes</h3><div class="finds">' + (diag.hallazgos_gratis || []).map(function (f) {
       return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b>' + (f.detalle ? '<p>' + esc(f.detalle) + '</p><p class="find-lock">' + ICO.lock + '<span>Cómo se arregla, con tu propio texto: en tu informe.</span></p>' : '<p class="find-lock">' + ICO.lock + '<span>Qué encontré y cómo se arregla: en tu informe.</span></p>') + '</div></div>';
     }).join('') + '</div>';
@@ -197,7 +202,7 @@
       ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese criterio, no uno genérico.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único · sin suscripción</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     h += '<p class="uno-a-uno">¿Además del informe quieres revisarlo conmigo? <a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice el diagnóstico de CV en el Quirófano y me interesa una sesión 1 a 1 contigo.') + '" target="_blank" rel="noopener">Pide tu sesión 1 a 1 por WhatsApp</a>.</p>';
     return h;
   }
@@ -532,6 +537,24 @@
       animarRings(p);
       mostrar('diag');
       montarPago(ses, precio);
+      montarGuardar(ses);
+    }
+
+    // "Envíame mi diagnóstico por correo": opcional, un correo ahora y un aviso antes de que se borre.
+    function montarGuardar(ses) {
+      var btn = $('#g-enviar'), inp = $('#g-correo'), msg = $('#g-msg'), nov = $('#g-nov');
+      if (!btn) return;
+      var aviso = function (t, tipo) { msg.textContent = t; msg.className = 'g-msg ' + (tipo || ''); msg.hidden = !t; };
+      btn.addEventListener('click', function () {
+        var correo = (inp.value || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { aviso('Escribe un correo válido, por ejemplo nombre@gmail.com.', 'err'); inp.focus(); return; }
+        btn.disabled = true; aviso('');
+        api('/api/diagnostico/guardar', { method: 'POST', body: { id: ses.id, key: ses.key, correo: correo, novedades: !!(nov && nov.checked) } }).then(function () {
+          $('#guardar').querySelector('.guardar-f').hidden = true; nov.closest('label').hidden = true;
+          aviso('Listo. Te llegó a ' + correo + '. Si no lo ves, revisa en promociones o spam.', 'ok');
+          track('GuardoDiagnostico', {});
+        }).catch(function (e) { aviso(e.message, 'err'); btn.disabled = false; });
+      });
     }
 
     var tPoll = null;
