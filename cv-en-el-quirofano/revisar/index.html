@@ -67,7 +67,7 @@
 .pt-escalera{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pt-escalera > div{padding:12px 14px;border-radius:16px}
 .pt-escalera .g{background:var(--ink);color:#fff}
-.pt-escalera .p{background:var(--bg);border:1.5px dashed var(--line-strong)}
+.pt-escalera .p{background:#fff;border:1px solid var(--line)}
 .pt-escalera .tag{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-bright)}
 .pt-escalera .p .tag{color:var(--gold)}
 .pt-escalera b{display:block;margin-top:4px;font-size:1.05rem;line-height:1.2;font-weight:700}
@@ -86,7 +86,7 @@
 .pt-fijo{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;justify-content:center;align-items:center;gap:10px;padding:15px 20px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;text-decoration:none;box-shadow:0 14px 34px -10px rgba(11,31,58,.55)}
 .pt-fijo[hidden]{display:none}
 @media (min-width:761px){.pt-fijo{display:none!important}}
-@media (max-width:640px){.pt-escalera .tag{font-size:.62rem;letter-spacing:.05em}.pt-escalera b{font-size:.95rem}.pt-escalera > div{padding:10px 12px}#p-cv > h2{display:none}#p-cv .drop{margin-top:0}}
+@media (max-width:640px){#operar{width:100%;justify-content:center}.pt-escalera .tag{font-size:.62rem;letter-spacing:.05em}.pt-escalera b{font-size:.95rem}.pt-escalera > div{padding:10px 12px}#p-cv > h2{display:none}#p-cv .drop{margin-top:0}}
 .cvq-app:has(#p-cv[hidden]) ~ .pt-fijo,body:has(#p-cv[hidden]) .pt-fijo{display:none!important}
 #operar.listo{animation:ptPulso 1.6s ease-in-out 3}
 @keyframes ptPulso{0%,100%{box-shadow:0 0 0 0 rgba(11,31,58,.45)}50%{box-shadow:0 0 0 12px rgba(11,31,58,0)}}
@@ -162,8 +162,8 @@
         <li><b>1 minuto</b><span>Sin crear cuenta. Desde tu celular.</span></li>
       </ul>
       <div class="pt-escalera puente" aria-label="Qué es gratis y qué cuesta">
-        <div class="g"><span class="tag">Paso 1 · Gratis</span><b>Tu diagnóstico básico</b></div>
-        <div class="p"><span class="tag">Paso 2 · Opcional · $9.99</span><b>Tu informe completo y a fondo</b></div>
+        <div class="p"><span class="tag">Paso 1 · Gratis</span><b>Tu diagnóstico básico</b></div>
+        <div class="g"><span class="tag">Paso 2 · Opcional · $9.99</span><b>Tu informe completo y a fondo</b></div>
       </div>
       <p class="pt-aclara puente">Primero ves tu diagnóstico. Si te sirve y quieres ir a fondo, decides ahí si pagas el informe. <a class="link" href="#pt-ejemplo">Mira un ejemplo</a></p>
       <p class="demo-flag" id="demo-flag" hidden>Modo demostración: ves el resultado de un CV ficticio y el pago es simulado.</p>
@@ -196,7 +196,7 @@
           </div>
           <div id="ts-box" style="margin-top:18px"></div>
           <div class="alert" id="e-cv" hidden></div>
-          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">Tu diagnóstico es gratis.</b> El informe completo es opcional: $9.99 con Yappy (en Panamá), tarjeta o PayPal.</span><button class="btn" type="button" id="operar">Ver mi diagnóstico gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
+          <div class="actions" style="justify-content:center"><button class="btn" type="button" id="operar">Ver mi diagnóstico gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
         </div>
       </form>
 
@@ -314,7 +314,7 @@
 <button class="totop" type="button" aria-label="Volver arriba"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
 
 <script src="../../assets/mx.js?v=mx3" defer></script>
-<script src="../../assets/site.js?v=n1112a" defer></script>
+<script src="../../assets/site.js?v=n1112b" defer></script>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/"}},{"not":{"href_matches":"/#*"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
 
 <script src="../../assets/cvq-config.js?v=cvq8"></script>
