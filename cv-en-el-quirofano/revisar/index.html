@@ -178,7 +178,7 @@
             <div class="pt-rec" id="pt-rec">
               <label for="pt-correo" class="pt-sr">Tu correo</label>
               <input type="email" id="pt-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com">
-              <label class="check pt-nov"><input type="checkbox" id="pt-nov"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">También quiero recibir novedades, talleres y ofertas de Mejorativa. Me doy de baja cuando quiera.</span></label>
+              <label class="check pt-nov"><input type="checkbox" id="pt-nov"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">También quiero recibir novedades y ofertas de Mejorativa, por correo y en redes sociales.</span></label>
               <div id="pt-ts"></div>
               <button class="btn sm" type="button" id="pt-enviar">Envíame el enlace</button>
               <p class="pt-legal">Al tocar el botón aceptas recibir el enlace y hasta 2 recordatorios. Paran solos cuando haces tu diagnóstico. <a href="../../privacidad/" target="_blank" rel="noopener">Privacidad</a>.</p>
@@ -317,7 +317,7 @@
 
 <script src="../../assets/cvq-config.js?v=cvq8"></script>
 <script src="../../assets/cvq-docx.js?v=cvq7" defer></script>
-<script src="../../assets/cvq.js?v=cvq25" defer></script>
+<script src="../../assets/cvq.js?v=cvq26" defer></script>
 <script>
 (function(){
   var drop=document.getElementById('drop'),fijo=document.getElementById('pt-fijo'),pcv=document.getElementById('p-cv');
@@ -371,7 +371,7 @@
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)){aviso('Escribe un correo válido, por ejemplo nombre@gmail.com.','err');inp.focus();return;}
     if(necesitaTs&&!tsTok){aviso('Confirma que no eres un robot.','err');return;}
     btn.disabled=true;aviso('');
-    fetch(API+'/api/recordatorio',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({correo:correo,novedades:!!(nov&&nov.checked),turnstile:tsTok})})
+    fetch(API+'/api/recordatorio',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({correo:correo,novedades:!!(nov&&nov.checked),novedades_v:2,turnstile:tsTok})})
       .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
       .then(function(x){
         if(x.ok&&x.d.ok){

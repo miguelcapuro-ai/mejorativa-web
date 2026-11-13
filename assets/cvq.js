@@ -184,7 +184,7 @@
     h += cta();
     h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
       + '<div class="guardar-f"><label for="g-correo" class="g-sr">Tu correo</label><input type="email" id="g-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com"><button class="btn sm" type="button" id="g-enviar">Envíame mi diagnóstico</button></div>'
-      + '<label class="check g-nov"><input type="checkbox" id="g-nov"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">También quiero recibir novedades, talleres y ofertas de Mejorativa.</span></label>'
+      + '<label class="check g-nov"><input type="checkbox" id="g-nov"><span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">También quiero recibir novedades y ofertas de Mejorativa, por correo y en redes sociales.</span></label>'
       + '<p class="g-msg" id="g-msg" role="status" aria-live="polite" hidden></p></div>';
     h += '<h3 style="margin-top:30px">Tus 3 hallazgos más importantes</h3><div class="finds">' + (diag.hallazgos_gratis || []).map(function (f) {
       return '<div class="find"><span class="sev ' + esc(f.severidad) + '">' + esc(f.severidad) + '</span><div><b>' + esc(f.titulo) + '</b>' + (f.detalle ? '<p>' + esc(f.detalle) + '</p><p class="find-lock">' + ICO.lock + '<span>Cómo se arregla, con tu propio texto: en tu informe.</span></p>' : '<p class="find-lock">' + ICO.lock + '<span>Qué encontré y cómo se arregla: en tu informe.</span></p>') + '</div></div>';
@@ -549,7 +549,7 @@
         var correo = (inp.value || '').trim();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { aviso('Escribe un correo válido, por ejemplo nombre@gmail.com.', 'err'); inp.focus(); return; }
         btn.disabled = true; aviso('');
-        api('/api/diagnostico/guardar', { method: 'POST', body: { id: ses.id, key: ses.key, correo: correo, novedades: !!(nov && nov.checked) } }).then(function () {
+        api('/api/diagnostico/guardar', { method: 'POST', body: { id: ses.id, key: ses.key, correo: correo, novedades: !!(nov && nov.checked), novedades_v: 2 } }).then(function () {
           $('#guardar').querySelector('.guardar-f').hidden = true; nov.closest('label').hidden = true;
           aviso('Listo. Te llegó a ' + correo + '. Si no lo ves, revisa en promociones o spam.', 'ok');
           track('GuardoDiagnostico', {});
