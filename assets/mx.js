@@ -64,7 +64,16 @@
   function iniciar() {
     var v = leer();
     if (v === 'si') cargar();
-    else if (v !== 'no' && !conLlave()) aviso();
+    else if (v !== 'no' && !conLlave()) diferirAviso();
+  }
+  /* El aviso no tapa la página apenas llega la persona: sale cuando baja un poco
+     o a los 8 segundos, lo que pase primero. Hasta que acepte, el píxel no se carga. */
+  function diferirAviso() {
+    var hecho = false, t;
+    function mostrar() { if (hecho) return; hecho = true; clearTimeout(t); window.removeEventListener('scroll', alBajar); aviso(); }
+    function alBajar() { if ((window.scrollY || 0) > 240) mostrar(); }
+    t = setTimeout(mostrar, 8000);
+    window.addEventListener('scroll', alBajar, { passive: true });
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
