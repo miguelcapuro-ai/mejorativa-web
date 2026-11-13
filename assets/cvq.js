@@ -437,6 +437,12 @@
         cv = r;
         var det = r.tipo === 'pdf' ? (r.meta.paginas ? r.meta.paginas + ' página' + (r.meta.paginas > 1 ? 's' : '') + ' · ' : '') + (r.texto.length > 200 ? 'la máquina puede leer el texto' : 'casi no hay texto que una máquina pueda leer') : 'Word · ' + r.texto.length + ' caracteres';
         drop.innerHTML = '<div class="file-ok"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><div><b>' + esc(file.name) + '</b><small>' + esc(det) + '. Toca para cambiarlo.</small></div></div>';
+        // Archivo listo: lleva a la persona al último paso (aceptar y ver su diagnóstico) en vez de dejarla buscando el botón.
+        var op = $('#operar');
+        if (op) {
+          op.classList.add('listo');
+          try { op.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); } catch (e2) { /* sin scroll suave */ }
+        }
       }).catch(function (e) {
         drop.classList.remove('has');
         drop.innerHTML = drop.getAttribute('data-vacio');

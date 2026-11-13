@@ -47,7 +47,10 @@
 
   /* ===== Sorpresas · nov 2026 ===== */
   var TIENDA='https://tienda.mejorativa.com';
-  var cuentos=['El fin justifica… los miedos.','Dalo hoy… aunque sea temblando.','Cuando una puerta se cierra… yo construyo otra.','Ver para creer… creer para ver.','En mi mente… ya soy el mejor.','Nunca es tarde… llegaste con más historia y experiencia.','Más vale malo conocido… hasta que perdiste tiempo valioso allí.','El que la hace, la paga… y el que no suelta, cumple condena.','Dime con quién andas… y te diré dónde floreces.','Cada quien tiene lo que se merece… o lo que puede sostener.','A Dios rogando… y con los pies andando.','A veces tengo miedo… porque todo lo que pasa por mi mente se vuelve realidad.','El que se fue a Sevilla… yo traje la mía.','En boca cerrada… no entran descuentos.','El que busca… se encuentra.','Temblando… pero voy.','Crea fama… y échate a crecer.'];
+  /* Regla de las frases: cada una se tiene que entender sola, sin depender de la parte del refrán que se omite.
+     «Llévala puesta» solo sale con las frases que están en la tienda (enTienda); revisar la lista al sumar o quitar productos. */
+  var enTienda=['El fin justifica… los miedos.','Dalo hoy… aunque sea temblando.','Cuando una puerta se cierra… yo construyo otra.','Ver para creer… creer para ver.','En mi mente… ya soy el mejor.','Nunca es tarde… llegaste con más historia y experiencia.','El que la hace, la paga… y el que no suelta, cumple condena.','Dime con quién andas… y te diré dónde floreces.','A veces tengo miedo… porque todo lo que pasa por mi mente se vuelve realidad.','El que busca… se encuentra.'];
+  var cuentos=['El fin justifica… los miedos.','Dalo hoy… aunque sea temblando.','Cuando una puerta se cierra… yo construyo otra.','Ver para creer… creer para ver.','En mi mente… ya soy el mejor.','Nunca es tarde… llegaste con más historia y experiencia.','Más vale malo conocido… hasta que perdiste tiempo valioso allí.','El que la hace, la paga… y el que no suelta, cumple condena.','Dime con quién andas… y te diré dónde floreces.','Cada quien tiene lo que se merece… o lo que puede sostener.','A Dios rogando… y con los pies andando.','A veces tengo miedo… porque todo lo que pasa por mi mente se vuelve realidad.','El que se fue a Sevilla perdió su silla… yo traje la mía.','En boca cerrada… no entran descuentos.','El que busca… se encuentra.','Temblando… pero voy.','Crea fama… y échate a crecer.'];
   var propias=['No somos lo que decimos. Somos lo que repetimos.','Cambia el observador y cambia el resultado.','Toda conversación es una oportunidad de crear un futuro distinto.','Damos lo que somos. Ni más, ni menos.','Atrévete a ser más.'];
   function pick(a){return a[Math.floor(Math.random()*a.length)]}
 
@@ -67,7 +70,7 @@
     var lb=d.createElement('b');lb.textContent='Frase para hoy';
     var q=d.createElement('q');q.textContent=fr;
     box.appendChild(lb);box.appendChild(q);
-    if(useC){var a=d.createElement('a');a.href=TIENDA;a.target='_blank';a.rel='noopener';a.textContent='Llévala puesta';box.appendChild(a)}
+    if(useC&&enTienda.indexOf(fr)>-1){var a=d.createElement('a');a.href=TIENDA;a.target='_blank';a.rel='noopener';a.textContent='Llévala puesta';box.appendChild(a)}
     foot.insertBefore(box,foot.firstChild);
   }
 
