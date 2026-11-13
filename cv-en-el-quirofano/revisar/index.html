@@ -32,6 +32,7 @@
 .pt-chips{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .pt-chips li{padding:12px 12px 13px;border-radius:16px;background:#EEF2F7;border:1px solid var(--line)}
 .pt-chips b{display:block;color:var(--ink);font-size:1rem}
+.pt-chips .gratis{background:var(--ink);border-color:var(--ink)}.pt-chips .gratis b{color:#fff;font-size:1.35rem;letter-spacing:.04em;line-height:1.1}.pt-chips .gratis span{color:#D6DEEA}
 .pt-chips span{display:block;margin-top:3px;color:var(--muted);font-size:.8rem;line-height:1.35}
 .pt-ver{display:inline-block;margin-top:14px;font-size:.92rem}
 .pt-luego{margin-top:14px;padding:12px 16px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
@@ -48,6 +49,7 @@
 .pt-rec-msg.ok{background:#E7F4EC;color:#1E5A35!important}.pt-rec-msg.err{background:#FBEAE6;color:#8A2E1C!important}
 .pt-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .pt-sec{margin-top:clamp(48px,7vw,72px)}
+.pt-sec-ej{margin-top:22px}
 .pt-h2{font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:clamp(1.9rem,4vw,2.6rem);line-height:.95;margin-bottom:20px}
 .pt-h2 .soft{display:block;font-size:.55em;margin-top:8px;line-height:1.2}
 .pt-ex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -73,7 +75,7 @@
 .pt-escalera .p p{color:var(--muted)}
 .pt-aclara{margin-top:10px;color:var(--ink);font-size:.92rem;line-height:1.45}
 .pt-escalera .p b{color:var(--ink)}
-.pt-perdida{margin-top:14px;font-style:italic;font-weight:600;color:#B5462F;font-size:1rem}
+.pt-perdida{margin-top:28px;font-style:italic;font-weight:600;color:#B5462F;font-size:1rem}
 .pt-hall{list-style:none;counter-reset:h;margin:16px 0 0;padding:0;display:grid;gap:8px}
 .pt-hall li{counter-increment:h;display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.07)}
 .pt-hall b{color:#fff;font-size:.92rem}.pt-hall b::before{content:counter(h) ". ";color:#E8806A}
@@ -84,8 +86,11 @@
 .pt-fijo{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;justify-content:center;align-items:center;gap:10px;padding:15px 20px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;text-decoration:none;box-shadow:0 14px 34px -10px rgba(11,31,58,.55)}
 .pt-fijo[hidden]{display:none}
 @media (min-width:761px){.pt-fijo{display:none!important}}
-@media (max-width:640px){.pt-escalera{grid-template-columns:1fr}#p-cv > h2{display:none}#p-cv .drop{margin-top:0}}
+@media (max-width:640px){.pt-escalera .tag{font-size:.62rem;letter-spacing:.05em}.pt-escalera b{font-size:.95rem}.pt-escalera > div{padding:10px 12px}#p-cv > h2{display:none}#p-cv .drop{margin-top:0}}
 .cvq-app:has(#p-cv[hidden]) ~ .pt-fijo,body:has(#p-cv[hidden]) .pt-fijo{display:none!important}
+#operar.listo{animation:ptPulso 1.6s ease-in-out 3}
+@keyframes ptPulso{0%,100%{box-shadow:0 0 0 0 rgba(11,31,58,.45)}50%{box-shadow:0 0 0 12px rgba(11,31,58,0)}}
+@media (prefers-reduced-motion:reduce){#operar.listo{animation:none}}
 /* Cuando arranca la cirugía (o el diagnóstico), el puente se esconde */
 .cvq-app:has(#p-cv[hidden]) .puente{display:none!important}
 </style>
@@ -150,19 +155,17 @@
       <nav class="crumbs no-print" aria-label="Ruta"><ol><li><a href="../../">Inicio</a></li><li><a href="../">CV en el Quirófano</a></li><li><span aria-current="page">Revisar mi CV</span></li></ol></nav>
       <span class="pt-kind puente">CV en el Quirófano · Diagnóstico gratis</span>
       <h1 id="h1" class="display pt-h1">¿Tu CV te defiende o te hunde?</h1>
-      <p class="intro">Tu hoja de vida entra a reuniones donde tú no estás. Súbela y en un minuto ves, gratis, cómo la leen la máquina, el reclutador y el detector de IA.</p>
+      <p class="intro">Analiza tu hoja de vida ahora. La subes y en un minuto sabes qué ven la máquina, el reclutador y el detector de IA.</p>
       <ul class="pt-chips puente" aria-label="Lo que debes saber antes de subirla">
-        <li><b>$0</b><span>Para ver tu diagnóstico no te pedimos tarjeta.</span></li>
-        <li><b>Privado</b><span>Tu archivo se borra al terminar. La IA no aprende de ti.</span></li>
+        <li class="gratis"><b>GRATIS</b><span>Tu diagnóstico.</span></li>
+        <li><b>Privado</b><span>Tu archivo se borra al terminar.</span></li>
         <li><b>1 minuto</b><span>Sin crear cuenta. Desde tu celular.</span></li>
       </ul>
       <div class="pt-escalera puente" aria-label="Qué es gratis y qué cuesta">
-        <div class="g"><span class="tag">Paso 1 · Gratis</span><b>Tu diagnóstico</b><p>Tu puntaje en los 3 exámenes, tus 3 errores más graves explicados y una línea de tu CV ya operada.</p></div>
-        <div class="p"><span class="tag">Paso 2 · Opcional · $9.99</span><b>Tu informe completo</b><p>Cómo arreglar cada error con tu propio texto, y tu CV operado sección por sección, listo en formato Harvard.</p></div>
+        <div class="g"><span class="tag">Paso 1 · Gratis</span><b>Tu diagnóstico básico</b></div>
+        <div class="p"><span class="tag">Paso 2 · Opcional · $9.99</span><b>Tu informe completo y a fondo</b></div>
       </div>
-      <p class="pt-aclara puente">Primero ves tu diagnóstico. Si te sirve y quieres ir a fondo, decides ahí si pagas el informe. Si no, te vas con tu diagnóstico y no pagas nada.</p>
-      <p class="pt-perdida puente">Cada CV que mandas así es una entrevista que puede no llegar.</p>
-      <a class="pt-ver link puente" href="#pt-ejemplo">Mira primero cómo se ve un diagnóstico</a>
+      <p class="pt-aclara puente">Primero ves tu diagnóstico. Si te sirve y quieres ir a fondo, decides ahí si pagas el informe. <a class="link" href="#pt-ejemplo">Mira un ejemplo</a></p>
       <p class="demo-flag" id="demo-flag" hidden>Modo demostración: ves el resultado de un CV ficticio y el pago es simulado.</p>
 
       <form id="cvq-form" novalidate onsubmit="return false">
@@ -193,12 +196,13 @@
           </div>
           <div id="ts-box" style="margin-top:18px"></div>
           <div class="alert" id="e-cv" hidden></div>
-          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">Ver tu diagnóstico no cuesta nada.</b> Al verlo decides si quieres el informe completo por $9.99, que pagas con Yappy (en Panamá), tarjeta o PayPal. Si no lo quieres, no pagas.</span><button class="btn" type="button" id="operar">Ver mi diagnóstico gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
+          <div class="actions"><span class="note-sm" style="margin:0;flex:1 1 260px;max-width:34rem"><b style="color:var(--ink)">Tu diagnóstico es gratis.</b> El informe completo es opcional: $9.99 con Yappy (en Panamá), tarjeta o PayPal.</span><button class="btn" type="button" id="operar">Ver mi diagnóstico gratis <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></button></div>
         </div>
       </form>
 
       <div class="puente">
-        <section class="pt-sec" id="pt-ejemplo" aria-labelledby="h-ej">
+        <p class="pt-perdida">Cada CV que mandas así es una entrevista que puede no llegar.</p>
+        <section class="pt-sec pt-sec-ej" id="pt-ejemplo" aria-labelledby="h-ej">
           <h2 id="h-ej" class="pt-h2">Así se ve tu diagnóstico.<span class="soft">Gratis, en menos de un minuto.</span></h2>
           <div class="monitor" aria-label="Ejemplo de diagnóstico de una hoja de vida">
             <div class="top-row"><span>Paciente: CV de ejemplo</span><span class="live"><i></i>En cirugía</span></div>
@@ -310,12 +314,12 @@
 <button class="totop" type="button" aria-label="Volver arriba"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
 
 <script src="../../assets/mx.js?v=mx3" defer></script>
-<script src="../../assets/site.js?v=n1110c" defer></script>
+<script src="../../assets/site.js?v=n1112a" defer></script>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/"}},{"not":{"href_matches":"/#*"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
 
 <script src="../../assets/cvq-config.js?v=cvq8"></script>
 <script src="../../assets/cvq-docx.js?v=cvq7" defer></script>
-<script src="../../assets/cvq.js?v=cvq23" defer></script>
+<script src="../../assets/cvq.js?v=cvq24" defer></script>
 <script>
 (function(){
   var drop=document.getElementById('drop'),fijo=document.getElementById('pt-fijo'),pcv=document.getElementById('p-cv');
@@ -334,6 +338,17 @@
   if(inp) inp.addEventListener('change',function(){
     try{ if(localStorage.getItem('mj_consent_meta')==='si'&&window.fbq) window.fbq('trackCustom','SubioCV',{content_name:'CV en el Quirófano'}); }catch(e){}
   });
+})();
+(function(){
+  /* El puntaje del ejemplo cuenta de 0 a 41 cuando entra en pantalla */
+  var b=document.querySelector('#pt-ejemplo .score b');
+  if(!b||!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var fin=parseInt(b.textContent,10)||0,hecho=false;
+  new IntersectionObserver(function(es,ob){
+    if(!es[0].isIntersecting||hecho)return; hecho=true; ob.disconnect();
+    var t0=null,dur=900;
+    (function paso(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/dur);b.textContent=Math.round(fin*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(paso);})(performance.now());
+  },{threshold:.6}).observe(b);
 })();
 (function(){
   var det=document.getElementById('pt-luego'),btn=document.getElementById('pt-enviar'),inp=document.getElementById('pt-correo'),nov=document.getElementById('pt-nov'),msg=document.getElementById('pt-rec-msg'),caja=document.getElementById('pt-rec');
