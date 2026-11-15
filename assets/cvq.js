@@ -28,6 +28,8 @@
   function $(s, r) { return (r || d).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  // Números que vienen del servidor: siempre se pintan como número, nunca como texto.
+  function num(x) { x = Math.round(Number(x)); return isFinite(x) ? x : 0; }
   function fmt(s) { return esc(s).replace(/\[([^\[\]]{1,120})\]/g, '<span class="ph">[$1]</span>'); }
   // Equivalente aproximado en la moneda del país desde donde entra la persona (país que detecta Cloudflare).
   // El cobro sigue en dólares; las tasas viven en cvq-config.js (monedaLocal) con su fecha.
@@ -155,7 +157,7 @@
   /* ---------- render del diagnóstico ---------- */
   function ring(v, cls) {
     var r = 54, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, v)) / 100);
-    return '<div class="ring ' + (cls || nivel(v)) + '" role="img" aria-label="Puntaje ' + v + ' de 100"><svg viewBox="0 0 128 128"><circle class="track" cx="64" cy="64" r="' + r + '"/><circle class="val" cx="64" cy="64" r="' + r + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + c.toFixed(1) + '" data-off="' + off.toFixed(1) + '"/></svg><div class="num"><div><b>' + esc(v) + '</b><small>de 100</small></div></div></div>';
+    return '<div class="ring ' + (cls || nivel(v)) + '" role="img" aria-label="Puntaje ' + num(v) + ' de 100"><svg viewBox="0 0 128 128"><circle class="track" cx="64" cy="64" r="' + r + '"/><circle class="val" cx="64" cy="64" r="' + r + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + c.toFixed(1) + '" data-off="' + off.toFixed(1) + '"/></svg><div class="num"><div><b>' + esc(v) + '</b><small>de 100</small></div></div></div>';
   }
   function animarRings(root) {
     requestAnimationFrame(function () { requestAnimationFrame(function () { $$('.ring .val', root).forEach(function (c) { c.style.strokeDashoffset = c.getAttribute('data-off'); }); }); });
@@ -188,7 +190,7 @@
     h += '<div class="result-head" style="margin-top:24px">' + ring(diag.puntaje_global) + '<div><p class="verdict">' + esc(diag.veredicto) + '</p>' + (diag.lo_que_funciona ? '<p class="good"><b>Lo que ya funciona:</b> ' + esc(diag.lo_que_funciona) + '</p>' : '') + '</div></div>';
     if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
-    h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
+    h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + num(l.id) + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
     var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p><p class="cta-fomo">⏳ Por tu privacidad, tu diagnóstico se borra en 24 horas. Si pides tu informe hoy, te llega al correo en minutos.</p></div>'; };
     h += cta();
     h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
@@ -200,10 +202,10 @@
     }).join('') + '</div>';
     var mu = diag.muestra || {};
     if (mu.original && mu.reescrito) {
-      var resto = co.logros_por_reescribir > 1 ? 'Esta es una sola de tus líneas. En tu informe operamos las ' + co.logros_por_reescribir + ' que hoy cuentan tareas en vez de logros.' : 'Esta es una sola de tus líneas. En tu informe operamos el CV completo.';
+      var resto = num(co.logros_por_reescribir) > 1 ? 'Esta es una sola de tus líneas. En tu informe operamos las ' + num(co.logros_por_reescribir) + ' que hoy cuentan tareas en vez de logros.' : 'Esta es una sola de tus líneas. En tu informe operamos el CV completo.';
       h += '<div class="muestra"><span class="label">Prueba gratis</span><h3>Mira una de tus líneas, operada.</h3><div class="mu-ab"><div class="mu-a"><small>Hoy dice</small><p>' + esc(mu.original) + '</p></div><div class="mu-b"><small>Después del quirófano</small><p>' + fmt(mu.reescrito) + (mu.recortado ? '… <span class="mu-lock" aria-hidden="true"><span></span><span></span></span></p><p class="find-lock">' + ICO.lock + '<span>La línea completa, en tu informe.</span>' : '') + '</p></div></div><p class="mu-note">' + esc(resto) + ' Donde veas <span class="ph">[corchetes]</span>, va tu dato real.</p></div>';
     }
-    h += '<div class="locked"><h3>Tu informe completo trae' + (co.mejoras ? ' ' + co.mejoras + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
+    h += '<div class="locked"><h3>Tu informe completo trae' + (num(co.mejoras) ? ' ' + num(co.mejoras) + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
     h += cta('cta-mid');
     h += '<div class="why"><span class="label">Por qué vale la pena</span><h3>Si esto fue gratis, imagínate tu informe.</h3><p class="why-lead">Lo que acabas de ver fue el triaje. El informe es la operación completa, línea por línea.</p><div class="why-grid">' + [
       ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese mismo criterio a tu hoja de vida.'],
