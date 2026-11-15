@@ -382,21 +382,24 @@
   function procesarArchivo(file) {
     var nombre = file.name || 'archivo';
     var ext = (nombre.split('.').pop() || '').toLowerCase();
-    if (file.size > 2 * 1024 * 1024) return Promise.reject(new Error('Tu archivo pesa más de 2 MB. ¿Venía con certificados o anexos? Sube solo tu hoja de vida. Si aun así pesa mucho, guárdala de nuevo como PDF desde Word o Google Docs.'));
-    if (ext === 'doc') return Promise.reject(new Error('Los archivos .doc antiguos no se pueden leer. Guárdalo como PDF o como .docx.'));
+    function falla(motivo, msg) { return Object.assign(new Error(msg), { motivo: motivo }); }
+    if (file.size > 2 * 1024 * 1024) return Promise.reject(falla('pesado', 'Tu archivo pesa más de 2 MB. ¿Venía con certificados o anexos? Sube solo tu hoja de vida. Si aun así pesa mucho, guárdala de nuevo como PDF desde Word o Google Docs.'));
+    if (ext === 'doc') return Promise.reject(falla('doc_antiguo', 'Los archivos .doc antiguos no se pueden leer. Guárdalo como PDF o como .docx.'));
     var esPDF = ext === 'pdf' || file.type === 'application/pdf';
     var esDOCX = ext === 'docx';
-    if (!esPDF && !esDOCX) return Promise.reject(new Error('Sube tu hoja de vida en PDF o en Word (.docx).'));
+    var foto = /^(jpe?g|png|heic|heif|webp|gif)$/.test(ext) || /^image\//.test(file.type || '');
+    if (!esPDF && !esDOCX) return Promise.reject(falla(foto ? 'formato_foto' : ext === 'pages' ? 'formato_pages' : ext === 'odt' ? 'formato_odt' : 'formato_otro',
+      foto ? 'Eso parece una foto. Sube tu hoja de vida en PDF o en Word (.docx), o pega su texto en «Pegar el texto de mi CV».' : 'Sube tu hoja de vida en PDF o en Word (.docx).'));
     return file.arrayBuffer().then(function (buf) {
       if (esPDF) {
         return leerPDF(buf).catch(function () { return { paginas: null, texto: '' }; }).then(function (r) {
-          if (r.paginas && r.paginas > 4) throw new Error('Tu archivo tiene ' + r.paginas + ' páginas. ¿Venía con certificados o anexos? Sube solo tu hoja de vida, de 1 a 4 páginas.');
+          if (r.paginas && r.paginas > 4) throw falla('paginas', 'Tu archivo tiene ' + r.paginas + ' páginas. ¿Venía con certificados o anexos? Sube solo tu hoja de vida, de 1 a 4 páginas.');
           return { tipo: 'pdf', pdf_b64: aBase64(buf), texto: r.texto, meta: { paginas: r.paginas, caracteres: r.texto.length, nombre_archivo: nombre } };
         });
       }
       return leerDOCX(buf).then(function (r) {
-        if (r.texto.length < 200) throw new Error('No pudimos leer suficiente texto de tu Word. Prueba guardándolo como PDF.');
-        if (r.texto.length > 20000) throw new Error('Tu Word es muy largo para una hoja de vida. ¿Venía con certificados o anexos? Sube solo tu CV, de 1 a 4 páginas.');
+        if (r.texto.length < 200) throw falla('word_vacio', 'No pudimos leer suficiente texto de tu Word. Prueba guardándolo como PDF.');
+        if (r.texto.length > 20000) throw falla('word_largo', 'Tu Word es muy largo para una hoja de vida. ¿Venía con certificados o anexos? Sube solo tu CV, de 1 a 4 páginas.');
         return { tipo: 'docx', texto: r.texto, meta: { paginas: null, caracteres: r.texto.length, nombre_archivo: nombre } };
       });
     });
@@ -481,7 +484,7 @@
       }).catch(function (e) {
         drop.classList.remove('has');
         drop.innerHTML = drop.getAttribute('data-vacio');
-        paso('archivo_error');
+        paso('archivo_error', (e && e.motivo) || 'lectura');
         alerta('#e-cv1', e.message);
         senalar(drop);
       });
@@ -636,14 +639,15 @@
         if (window.mjPixel) window.mjPixel(evMeta, { content_name: 'Informe · CV en el Quirófano', value: Number(diagPrecio) || 0, currency: 'USD' }, que + '-' + ses.id);
       }
       Array.prototype.forEach.call(document.querySelectorAll('#diag-body .cta-big'), function (a) {
-        a.addEventListener('click', function () { marcar('quiere', 'InitiateCheckout'); });
+        a.addEventListener('click', function () { marcar('quiere', 'InitiateCheckout'); marcar('precio', 'ViewContent'); });
       });
-      var pay = $('#pay');
-      if (pay && 'IntersectionObserver' in window) {
+      // Cuenta apenas el precio del bloque de pago aparece en pantalla (el bloque completo puede ser más alto que un celular).
+      var precioEl = $('#pay .price') || $('#pay');
+      if (precioEl && 'IntersectionObserver' in window) {
         var io = new IntersectionObserver(function (es) {
           if (es.some(function (x) { return x.isIntersecting; })) { marcar('precio', 'ViewContent'); io.disconnect(); }
-        }, { threshold: 0.35 });
-        io.observe(pay);
+        }, { threshold: 0.6 });
+        io.observe(precioEl);
       }
     }
 
