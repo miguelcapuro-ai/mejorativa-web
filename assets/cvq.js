@@ -189,7 +189,7 @@
     if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
-    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p><p class="cta-fomo">⏳ Tu diagnóstico se borra en 24 horas. Pide tu informe hoy y llega a tu correo en minutos.</p></div>'; };
+    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p><p class="cta-fomo">⏳ Por tu privacidad, tu diagnóstico se borra en 24 horas. Si pides tu informe hoy, te llega al correo en minutos.</p></div>'; };
     h += cta();
     h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
       + '<div class="guardar-f"><label for="g-correo" class="g-sr">Tu correo</label><input type="email" id="g-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com"><button class="btn sm" type="button" id="g-enviar">Envíame mi diagnóstico</button></div>'
@@ -206,9 +206,9 @@
     h += '<div class="locked"><h3>Tu informe completo trae' + (co.mejoras ? ' ' + co.mejoras + ' mejoras concretas' : '') + ':</h3><ul>' + items.map(function (t) { return '<li>' + ICO.lock + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul><div class="blur" aria-hidden="true"><span style="width:92%"></span><span style="width:78%"></span><span style="width:86%"></span><span style="width:60%"></span></div></div>';
     h += cta('cta-mid');
     h += '<div class="why"><span class="label">Por qué vale la pena</span><h3>Si esto fue gratis, imagínate tu informe.</h3><p class="why-lead">Lo que acabas de ver fue el triaje. El informe es la operación completa, línea por línea.</p><div class="why-grid">' + [
+      ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese mismo criterio a tu hoja de vida.'],
       ['Más de 60 reglas', 'Cada línea de tu CV pasa por las mismas reglas que uso en mi taller CV en el Quirófano: la guía de Harvard, lo que buscan los reclutadores en tu país y los datos que la ley no permite pedirte.'],
       ['La IA más potente que tenemos', 'El diagnóstico lo hizo una IA rápida. Tu informe lo opera uno de los modelos de inteligencia artificial más avanzados del mundo, y se toma su tiempo con tu hoja de vida.'],
-      ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese criterio, no uno genérico.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
     h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único · sin suscripción</small></div><p class="precio-local" hidden></p><p class="pay-lead"><b>Te llevas tu hoja de vida nueva, en formato Harvard y en Word.</b> La ajustas con tus datos y la envías. Además, el informe te explica cómo arreglar cada error con tu propio texto.</p><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="pay-ej"><a href="' + ASSETS + '../cv-en-el-quirofano/informe/?ejemplo=1#ejemplo" target="_blank" rel="noopener">Mira un informe de ejemplo</a> <span>(se abre en otra pestaña; tu diagnóstico sigue aquí)</span></p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
@@ -545,11 +545,11 @@
     $('#operar').addEventListener('click', function () {
       var x = datos();
       paso('toco_ver');
-      if (!cv) { paso('bloqueo', 'sin_cv'); alerta('#e-cv', ''); alerta('#e-cv1', 'Falta el paso 1: sube tu CV, pega su texto o elige «Lo hago después» y te lo mando al correo.'); senalar(drop); return; }
-      if (!$('#c-ok').checked) { paso('bloqueo', 'sin_autorizacion'); alerta('#e-cv', 'Marca la casilla de autorización y vuelve a tocar «Ver mi diagnóstico gratis».'); senalar($('#c-ok').closest('.check')); return; }
+      if (!cv) { paso('bloqueo', 'sin_cv'); alerta('#e-cv', ''); alerta('#e-cv1', 'Te falta el paso 1: sube tu CV, pega su texto o elige «Lo hago después» y te mando el enlace al correo.'); senalar(drop); return; }
+      if (!$('#c-ok').checked) { paso('bloqueo', 'sin_autorizacion'); alerta('#e-cv', 'Te falta un toque: marca la casilla de autorización y vuelve a tocar «Ver mi diagnóstico gratis».'); senalar($('#c-ok').closest('.check')); return; }
       var li = x.li_url.trim();
       if (li && !/linkedin\.com\/in\/[^\s]+/i.test(li)) { alerta('#e-cv', 'El enlace de LinkedIn debe verse como linkedin.com/in/tu-nombre.'); return; }
-      if (config && config.turnstile && !tsToken) { paso('bloqueo', 'sin_captcha'); alerta('#e-cv', 'Falta confirmar que no eres un robot: toca el recuadro de verificación y espera el visto bueno.'); senalar($('#ts-box')); return; }
+      if (config && config.turnstile && !tsToken) { paso('bloqueo', 'sin_captcha'); alerta('#e-cv', 'Te falta confirmar que no eres un robot: toca el recuadro de verificación, espera el visto bueno y vuelve a tocar «Ver mi diagnóstico gratis».'); senalar($('#ts-box')); return; }
       alerta('#e-cv', '');
       mostrar('cirugia');
       animarEtapas();
