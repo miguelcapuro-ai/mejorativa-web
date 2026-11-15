@@ -465,3 +465,12 @@ html{scroll-behavior:smooth}
 .g-msg{margin:10px 0 0;font-size:.92rem;font-weight:600}
 .g-msg.ok{color:#1B6B3A}.g-msg.err{color:#A3261B}
 .unico{display:block;margin-top:4px;font-size:.85rem;opacity:.85;font-weight:500}
+
+/* Bloque de pago: lo tangible primero, precio local y ejemplo */
+.pay .precio-local{color:#E7ECF3;font-size:.95rem;margin:-6px 0 12px}
+.cta-local{color:var(--muted);font-size:.9rem;margin:8px 0 0}
+.pay .pay-lead{color:#fff;font-size:1.05rem;line-height:1.5}
+.pay .pay-lead b{color:var(--gold-bright)}
+.pay .pay-ej{margin:4px 0 14px}
+.pay .pay-ej a{color:#fff;font-weight:700;text-decoration:underline}
+.pay .pay-ej span{color:#A9B6CB;font-size:.85rem}
