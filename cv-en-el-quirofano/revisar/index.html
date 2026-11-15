@@ -180,9 +180,9 @@
       <nav class="crumbs no-print" aria-label="Ruta"><ol><li><a href="../../">Inicio</a></li><li><a href="../">CV en el Quirófano</a></li><li><span aria-current="page">Revisar mi CV</span></li></ol></nav>
       <span class="pt-kind puente">CV en el Quirófano · Diagnóstico gratis</span>
       <h1 id="h1" class="display pt-h1">¿Tu CV te defiende o te hunde?</h1>
-      <p class="intro"><b>Gratis, en 1 minuto y desde tu celular.</b> Subes tu hoja de vida y ves qué ven la máquina, el reclutador y el detector de IA.</p>
+      <p class="intro"><b>Gratis, en 1 minuto y desde tu celular.</b> Subes tu hoja de vida y ves lo mismo que ven la máquina, el reclutador y el detector de IA.</p>
       <ul class="pt-chips puente" aria-label="Lo que debes saber antes de subirla">
-        <li class="gratis"><b>GRATIS</b><span>Tu diagnóstico.</span></li>
+        <li class="gratis"><b>GRATIS</b><span>Tu diagnóstico. Sin tarjeta.</span></li>
         <li><b>Privado</b><span>Tu archivo se borra al terminar.</span></li>
         <li><b>1 minuto</b><span>Sin crear cuenta. Desde tu celular.</span></li>
       </ul>
@@ -195,7 +195,7 @@
           <input type="file" id="cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
           <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir hoja de vida"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><b>Subir mi CV</b><span>PDF o Word, hasta 4 páginas. Si está en tu correo, en Google Drive o en iCloud, lo buscas desde aquí.</span><em class="pt-elegir">Elegir mi archivo</em></div>
           <div class="alert" id="e-cv1" hidden role="alert"></div>
-          <p class="pt-o">¿No lo tienes en PDF o Word?</p>
+          <p class="pt-o">¿No lo tienes a mano? Elige una de estas tres:</p>
           <details class="pt-luego pt-pegar" id="pt-pegar">
             <summary><span class="pt-luego-ico" aria-hidden="true">✎</span><span><b>Pegar el texto de mi CV</b><small>Si lo tienes en un correo, en Google Docs o en notas.</small></span></summary>
             <label for="cv-texto" class="pt-sr">Texto de tu hoja de vida</label>
@@ -203,18 +203,18 @@
             <p class="pt-pegar-est" id="cv-texto-est" aria-live="polite"></p>
           </details>
           <details class="pt-luego pt-li" id="pt-li">
-            <summary><span class="pt-luego-ico pt-ico-li" aria-hidden="true">in</span><span><b>Sacarlo de mi LinkedIn</b><small>Si tu LinkedIn está al día, te sirve como CV.</small></span></summary>
+            <summary><span class="pt-luego-ico pt-ico-li" aria-hidden="true">in</span><span><b>Sacarlo de mi LinkedIn</b><small>Si tu LinkedIn está al día, te sirve como CV. Toma un minuto.</small></span></summary>
             <ol class="pt-pasos-li">
               <li>Abre LinkedIn en la computadora o en el navegador del celular (Chrome o Safari). La app de LinkedIn no tiene esta opción.</li>
               <li>Entra a tu perfil y toca <b>«Más»</b>. En algunas versiones dice <b>«Recursos»</b>.</li>
               <li>Elige <b>«Guardar como PDF»</b>. Se descarga tu perfil en PDF.</li>
               <li>Vuelve aquí y súbelo con <b>«Subir mi CV»</b>.</li>
             </ol>
-            <p>En el celular, si no ves «Más», pide la versión de escritorio en el menú del navegador. Si se te complica, usa «Lo hago después» y lo haces desde la computadora.</p>
+            <p>En el celular, si no ves «Más», pide la versión de escritorio en el menú del navegador. Si se te complica, no pasa nada: elige «Lo hago después» y lo haces tranquilo desde la computadora.</p>
           </details>
           <details class="pt-luego pt-luego-grande" id="pt-luego">
-            <summary><span class="pt-luego-ico" aria-hidden="true">✉</span><span><b>No lo tengo a mano: lo hago después</b><small>Te mando el enlace a tu correo para hacerlo desde la computadora.</small></span></summary>
-            <p>Déjame tu correo y te mando el enlace. Si se te pasa, te lo recuerdo a los 2 días y a la semana. Nada más.</p>
+            <summary><span class="pt-luego-ico" aria-hidden="true">✉</span><span><b>Mejor lo hago después</b><small>Te mando el enlace a tu correo y lo haces cuando tengas tu CV.</small></span></summary>
+            <p>Déjame tu correo y en un minuto te llega el enlace. Si se te pasa, te lo recuerdo a los 2 días y a la semana. Nada más.</p>
             <div class="pt-rec" id="pt-rec">
               <label for="pt-correo" class="pt-sr">Tu correo</label>
               <input type="email" id="pt-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com">
@@ -363,7 +363,7 @@
 
 <script src="../../assets/cvq-config.js?v=cvq9"></script>
 <script src="../../assets/cvq-docx.js?v=cvq7" defer></script>
-<script src="../../assets/cvq.js?v=cvq30" defer></script>
+<script src="../../assets/cvq.js?v=cvq31" defer></script>
 <script>
 (function(){
   var drop=document.getElementById('drop'),fijo=document.getElementById('pt-fijo'),pcv=document.getElementById('p-cv');
