@@ -430,6 +430,25 @@
     }
     function alerta(id, msg) { var a = $(id); if (!a) return; a.innerHTML = msg ? esc(msg) : ''; a.hidden = !msg; }
 
+    // Embudo antes del diagnóstico (panel, sin cookies): cada paso se manda una sola vez por visita.
+    var pasosDados = {};
+    function paso(nombre, motivo) {
+      var k = nombre + (motivo || '');
+      if (DEMO || pasosDados[k]) return;
+      pasosDados[k] = true;
+      api('/api/paso', { method: 'POST', body: motivo ? { paso: nombre, motivo: motivo } : { paso: nombre } }).catch(function () { /* medir nunca rompe nada */ });
+    }
+    // Lleva a la persona justo a lo que le falta y lo resalta un momento.
+    function senalar(el) {
+      if (!el) return;
+      try { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); } catch (e) { /* nada */ }
+      el.classList.remove('pt-falta'); void el.offsetWidth; el.classList.add('pt-falta');
+      setTimeout(function () { el.classList.remove('pt-falta'); }, 2600);
+    }
+    [['#pt-luego', 'abrio_luego'], ['#pt-li', 'abrio_linkedin'], ['#pt-pegar', 'abrio_pegar']].forEach(function (x) {
+      var d = $(x[0]); if (d) d.addEventListener('toggle', function () { if (d.open) paso(x[1]); });
+    });
+
     // Lo opcional se recuerda mientras la pestaña esté abierta (nunca el archivo)
     var form = $('#cvq-form');
     function datos() {
@@ -443,24 +462,28 @@
     // Hoja de vida
     var drop = $('#drop'), input = $('#cv-file');
     function elegir(file) {
-      alerta('#e-cv', '');
+      alerta('#e-cv', ''); alerta('#e-cv1', '');
       drop.classList.add('has');
       drop.innerHTML = '<div class="file-ok"><span class="spinner" style="width:28px;height:28px;border-width:2.5px"></span><div><b>Leyendo tu archivo…</b><small>' + esc(file.name) + '</small></div></div>';
       cv = null;
       procesarArchivo(file).then(function (r) {
         cv = r;
+        paso('cv_listo');
         var det = r.tipo === 'pdf' ? (r.meta.paginas ? r.meta.paginas + ' página' + (r.meta.paginas > 1 ? 's' : '') + ' · ' : '') + (r.texto.length > 200 ? 'la máquina puede leer el texto' : 'casi no hay texto que una máquina pueda leer') : 'Word · ' + r.texto.length + ' caracteres';
         drop.innerHTML = '<div class="file-ok"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><div><b>' + esc(file.name) + '</b><small>' + esc(det) + '. Toca para cambiarlo.</small></div></div>';
         // Archivo listo: lleva a la persona al último paso (aceptar y ver su diagnóstico) en vez de dejarla buscando el botón.
         var op = $('#operar');
         if (op) {
           op.classList.add('listo');
-          try { op.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); } catch (e2) { /* sin scroll suave */ }
+          var p2 = $('#paso-2') || op;
+          try { p2.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } catch (e2) { /* sin scroll suave */ }
         }
       }).catch(function (e) {
         drop.classList.remove('has');
         drop.innerHTML = drop.getAttribute('data-vacio');
-        alerta('#e-cv', e.message);
+        paso('archivo_error');
+        alerta('#e-cv1', e.message);
+        senalar(drop);
       });
     }
     drop.setAttribute('data-vacio', drop.innerHTML);
@@ -478,7 +501,8 @@
       if (input.files && input.files[0]) return; // si subió archivo, manda el archivo
       if (t.length >= 200) {
         cv = { tipo: 'texto', texto: t, meta: { paginas: null, caracteres: t.length, nombre_archivo: 'Texto pegado' } };
-        if (est) { est.textContent = 'Listo: ' + t.length + ' caracteres. Marca la casilla y toca «Ver mi diagnóstico gratis».'; est.className = 'pt-pegar-est ok'; }
+        paso('cv_listo');
+        if (est) { est.textContent = 'Listo: ' + t.length + ' caracteres. Ahora el paso 2: marca la casilla y toca «Ver mi diagnóstico gratis».'; alerta('#e-cv1', ''); est.className = 'pt-pegar-est ok'; }
         var op = $('#operar'); if (op) op.classList.add('listo');
         if (!pegado.dataset.avisado) { pegado.dataset.avisado = '1'; try { if (localStorage.getItem('mj_consent_meta') === 'si' && window.fbq) window.fbq('trackCustom', 'SubioCV', { content_name: 'CV en el Quirófano', modo: 'texto' }); } catch (e3) { /* nada */ } }
       } else {
@@ -520,11 +544,12 @@
 
     $('#operar').addEventListener('click', function () {
       var x = datos();
-      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word, o pega su texto.'); return; }
-      if (!$('#c-ok').checked) { alerta('#e-cv', 'Para operar necesito tu autorización: marca la casilla.'); return; }
+      paso('toco_ver');
+      if (!cv) { paso('bloqueo', 'sin_cv'); alerta('#e-cv', ''); alerta('#e-cv1', 'Falta el paso 1: sube tu CV, pega su texto o elige «Lo hago después» y te lo mando al correo.'); senalar(drop); return; }
+      if (!$('#c-ok').checked) { paso('bloqueo', 'sin_autorizacion'); alerta('#e-cv', 'Marca la casilla de autorización y vuelve a tocar «Ver mi diagnóstico gratis».'); senalar($('#c-ok').closest('.check')); return; }
       var li = x.li_url.trim();
       if (li && !/linkedin\.com\/in\/[^\s]+/i.test(li)) { alerta('#e-cv', 'El enlace de LinkedIn debe verse como linkedin.com/in/tu-nombre.'); return; }
-      if (config && config.turnstile && !tsToken) { alerta('#e-cv', 'Confirma que no eres un robot.'); return; }
+      if (config && config.turnstile && !tsToken) { paso('bloqueo', 'sin_captcha'); alerta('#e-cv', 'Falta confirmar que no eres un robot: toca el recuadro de verificación y espera el visto bueno.'); senalar($('#ts-box')); return; }
       alerta('#e-cv', '');
       mostrar('cirugia');
       animarEtapas();

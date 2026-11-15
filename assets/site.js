@@ -121,6 +121,8 @@
   var cur=nav.querySelector('a[aria-current]:not(.btn)');
   if(cur){var h=d.createElement('span');h.className='here';h.textContent=cur.textContent.trim();h.setAttribute('aria-hidden','true');brand.insertAdjacentElement('afterend',h);brand.parentNode.classList.add('con-here')}
   nav.querySelectorAll('a[data-nav]').forEach(function(a,i){a.style.setProperty('--k',i)});
+  // En «Revisar mi CV» (llegan desde anuncios) el aviso del menú tapaba el formulario: ahí no se muestra.
+  if(d.querySelector('.cvq-app')) return;
   var KEY='mj-nav-visto', visto=false;
   try{visto=localStorage.getItem(KEY)==='1'}catch(e){}
   if(visto) return;
