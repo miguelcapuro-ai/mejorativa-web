@@ -83,7 +83,7 @@
       .catch(function () { throw new Error('No pudimos conectar. Revisa tu internet e intenta de nuevo.'); })
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) {
-          if (!r.ok || j.ok === false) { var e = new Error(j.mensaje || 'Algo falló de nuestro lado. Intenta de nuevo.'); e.code = j.error; e.status = r.status; throw e; }
+          if (!r.ok || j.ok === false) { var e = new Error(j.mensaje || 'Algo falló de nuestro lado. Intenta de nuevo.'); e.code = j.error; e.status = r.status; e.data = j; throw e; }
           return j;
         });
       });
@@ -539,10 +539,42 @@
       }).catch(function (e) {
         pararEtapas();
         mostrar('cv');
-        alerta('#e-cv', e.message);
+        var pend = e.code === 'ia' && e.data && e.data.pendiente;
+        alerta('#e-cv', pend ? '' : e.message);
+        if (pend) ofrecerCorreo(pend);
         if (window.turnstile) { try { window.turnstile.reset(); } catch (er) { /* nada */ } tsToken = null; }
       });
     });
+
+    // La IA no pudo terminar en el momento: en vez de dejar a la persona con un error, se le ofrece
+    // dejar su correo. El servidor reintenta solo y le manda el enlace a su diagnóstico cuando esté listo.
+    function ofrecerCorreo(pend) {
+      var viejo = $('#pend-box'); if (viejo) viejo.remove();
+      var box = document.createElement('div');
+      box.className = 'guardar'; box.id = 'pend-box';
+      box.innerHTML = '<b>El quirófano está lleno en este momento.</b>' +
+        '<p>Tu hoja de vida ya está en la fila. Déjame tu correo y te mando tu diagnóstico apenas esté listo, normalmente en unos minutos. Solo uso tu correo para esto.</p>' +
+        '<div class="guardar-f"><input type="email" id="pend-correo" placeholder="tu@correo.com" autocomplete="email" inputmode="email" aria-label="Tu correo">' +
+        '<button class="btn" type="button" id="pend-enviar">Envíamelo</button></div>' +
+        '<p class="g-msg" id="pend-msg" hidden></p>' +
+        '<p id="pend-otra" style="margin:10px 0 0;font-size:.85rem">¿Prefieres esperar aquí? Vuelve a tocar «Ver mi diagnóstico gratis» en un minuto.</p>';
+      var e = $('#e-cv'); e.parentNode.insertBefore(box, e.nextSibling);
+      var inp = $('#pend-correo'), btn = $('#pend-enviar'), msg = $('#pend-msg');
+      var aviso = function (t, tipo) { msg.textContent = t; msg.className = 'g-msg ' + (tipo || ''); msg.hidden = !t; };
+      track('cv_pendiente_ofrecido', {});
+      btn.addEventListener('click', function () {
+        var correo = (inp.value || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { aviso('Escribe un correo válido, por ejemplo nombre@gmail.com.', 'err'); inp.focus(); return; }
+        btn.disabled = true; aviso('');
+        api('/api/diagnostico/pendiente', { method: 'POST', body: { id: pend.id, key: pend.key, correo: correo } }).then(function () {
+          box.querySelector('.guardar-f').hidden = true; $('#pend-otra').hidden = true;
+          aviso('Listo. Te llega a ' + correo + ' apenas esté listo. Si no lo ves, revisa en promociones o spam.', 'ok');
+          track('cv_pendiente_correo', {});
+          if (!DEMO && window.mjPixel) window.mjPixel('Lead', { content_name: 'Diagnóstico gratis por correo · CV en el Quirófano' }, 'lead-p-' + pend.id);
+        }).catch(function (er) { aviso(er.message, 'err'); btn.disabled = false; });
+      });
+    }
+    $('#operar').addEventListener('click', function () { var b = $('#pend-box'); if (b) b.remove(); }, true);
 
     // Diagnóstico y pago
     var diagActual = null;
