@@ -44,15 +44,15 @@
   function aviso() {
     var css = d.createElement('style');
     css.textContent =
-      '.mj-cc{position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;max-width:560px;margin:0 auto;background:#fff;border:2px solid #13305A;border-radius:18px;box-shadow:0 12px 40px rgba(11,31,58,.22);padding:16px 18px;font-family:inherit;font-size:15px;line-height:1.45;color:#26303F}' +
-      '.mj-cc p{margin:0 0 12px}.mj-cc a{color:#1F4E80;text-decoration:underline}' +
-      '.mj-cc .b{display:flex;gap:10px;flex-wrap:wrap}.mj-cc button{flex:1;min-width:120px;border-radius:12px;padding:11px 14px;font-family:inherit;font-weight:700;font-size:15px;line-height:1;cursor:pointer}' +
+      '.mj-cc{position:fixed;left:10px;right:10px;bottom:10px;z-index:9999;max-width:560px;margin:0 auto;background:#fff;border:1.5px solid #13305A;border-radius:14px;box-shadow:0 8px 28px rgba(11,31,58,.2);padding:10px 12px;font-family:inherit;font-size:13px;line-height:1.35;color:#26303F;display:flex;align-items:center;gap:10px}' +
+      '.mj-cc p{margin:0;flex:1}.mj-cc a{color:#1F4E80;text-decoration:underline}' +
+      '.mj-cc .b{display:flex;gap:6px;flex:0 0 auto}.mj-cc button{border-radius:10px;padding:9px 11px;font-family:inherit;font-weight:700;font-size:13px;line-height:1;cursor:pointer;white-space:nowrap}' +
       '.mj-cc .si{background:#13305A;color:#fff;border:2px solid #13305A}.mj-cc .no{background:#fff;color:#13305A;border:2px solid #C3CCDA}';
     d.head.appendChild(css);
     var box = d.createElement('div');
     box.className = 'mj-cc'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Cookies de Meta');
-    box.innerHTML = '<p>¿Nos dejas usar cookies de Meta para saber si nuestros anuncios te sirven? Solo se activan si aceptas. <a href="/cookies/">Más información</a>.</p>' +
-      '<div class="b"><button type="button" class="si">Acepto</button><button type="button" class="no">No, gracias</button></div>';
+    box.innerHTML = '<p>¿Cookies de Meta para saber si nuestros anuncios te sirven? Solo si aceptas. <a href="/cookies/">Más información</a>.</p>' +
+      '<div class="b"><button type="button" class="si">Acepto</button><button type="button" class="no">No</button></div>';
     d.body.appendChild(box);
     box.querySelector('.si').addEventListener('click', function () { guardar('si'); box.remove(); cargar(); });
     box.querySelector('.no').addEventListener('click', function () { guardar('no'); box.remove(); });
