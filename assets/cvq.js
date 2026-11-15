@@ -462,6 +462,22 @@
     ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
     drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) elegir(f); });
 
+    // Sin archivo: también puede pegar el texto de su hoja de vida.
+    var pegado = $('#cv-texto'), est = $('#cv-texto-est');
+    if (pegado) pegado.addEventListener('input', function () {
+      var t = String(pegado.value || '').replace(/\r/g, '').trim();
+      if (input.files && input.files[0]) return; // si subió archivo, manda el archivo
+      if (t.length >= 200) {
+        cv = { tipo: 'texto', texto: t, meta: { paginas: null, caracteres: t.length, nombre_archivo: 'Texto pegado' } };
+        if (est) { est.textContent = 'Listo: ' + t.length + ' caracteres. Marca la casilla y toca «Ver mi diagnóstico gratis».'; est.className = 'pt-pegar-est ok'; }
+        var op = $('#operar'); if (op) op.classList.add('listo');
+        if (!pegado.dataset.avisado) { pegado.dataset.avisado = '1'; try { if (localStorage.getItem('mj_consent_meta') === 'si' && window.fbq) window.fbq('trackCustom', 'SubioCV', { content_name: 'CV en el Quirófano', modo: 'texto' }); } catch (e3) { /* nada */ } }
+      } else {
+        if (cv && cv.tipo === 'texto') cv = null;
+        if (est) { est.textContent = t ? 'Pega un poco más: falta texto para revisarlo (' + t.length + ' de 200 caracteres como mínimo).' : ''; est.className = 'pt-pegar-est'; }
+      }
+    });
+
     // Llegó desde el correo de recordatorio (?r=...): se manda con el diagnóstico para que no le lleguen más.
     function recordatorioToken() {
       var m = /[?&]r=([A-Za-z0-9_-]{20,64})/.exec(location.search);
@@ -495,7 +511,7 @@
 
     $('#operar').addEventListener('click', function () {
       var x = datos();
-      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word.'); return; }
+      if (!cv) { alerta('#e-cv', 'Sube tu hoja de vida en PDF o Word, o pega su texto.'); return; }
       if (!$('#c-ok').checked) { alerta('#e-cv', 'Para operar necesito tu autorización: marca la casilla.'); return; }
       var li = x.li_url.trim();
       if (li && !/linkedin\.com\/in\/[^\s]+/i.test(li)) { alerta('#e-cv', 'El enlace de LinkedIn debe verse como linkedin.com/in/tu-nombre.'); return; }
