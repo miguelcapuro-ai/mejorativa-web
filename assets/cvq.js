@@ -29,6 +29,15 @@
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function fmt(s) { return esc(s).replace(/\[([^\[\]]{1,120})\]/g, '<span class="ph">[$1]</span>'); }
+  // Equivalente aproximado en la moneda del país desde donde entra la persona (país que detecta Cloudflare).
+  // El cobro sigue en dólares; las tasas viven en cvq-config.js (monedaLocal) con su fecha.
+  function precioLocal(pais, usd) {
+    var ml = C.monedaLocal || {}, t = pais && ml.paises && ml.paises[pais], m = t && ml.monedas && ml.monedas[t];
+    if (!m || !m.tasa || !(Number(usd) > 0)) return '';
+    var paso = m.redondeo || 1, v = Math.round((Number(usd) * m.tasa) / paso) * paso;
+    var txt = String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return 'Unos ' + (m.antes || '') + txt + (m.despues || '') + ' ' + m.nombre + '.';
+  }
   function money(n) { var v = Number(n || 0); return '$' + (v % 1 ? v.toFixed(2) : String(v)); }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function track(ev, data) { try { if (window.umami) window.umami.track(ev, data); } catch (e) { /* nada */ } }
@@ -164,10 +173,10 @@
     var si = lat.filter(function (l) { return l.cumple === 'si'; }).length;
     var co = diag.conteos || {};
     var items = [];
+    items.push('Tu hoja de vida nueva en formato Harvard, en Word: la ajustas y la envías');
     if (co.logros_por_reescribir) items.push(co.logros_por_reescribir + ' logros reescritos con la fórmula V·Q·L·P');
     if (co.alertas_zona_roja) items.push(co.alertas_zona_roja + ' alertas de zona roja y qué hacer con cada una');
     if (co.palabras_clave_faltantes) items.push(co.palabras_clave_faltantes + ' palabras clave que hoy no aparecen en tu CV');
-    items.push('Tu CV completo en formato Harvard, para descargar en Word y ajustar');
     items.push('3 carreras o cargos que encajan con tu perfil, con la búsqueda lista en LinkedIn');
     items.push('Tu nuevo titular y tu nuevo perfil, listos para copiar');
     items.push('Tu LinkedIn operado: URL, titular y "Acerca de"');
@@ -180,7 +189,7 @@
     if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + l.id + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
-    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="cta-fomo">⏳ Tu diagnóstico se borra en 24 horas. Pide tu informe hoy y llega a tu correo en minutos.</p></div>'; };
+    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p><p class="cta-fomo">⏳ Tu diagnóstico se borra en 24 horas. Pide tu informe hoy y llega a tu correo en minutos.</p></div>'; };
     h += cta();
     h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
       + '<div class="guardar-f"><label for="g-correo" class="g-sr">Tu correo</label><input type="email" id="g-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com"><button class="btn sm" type="button" id="g-enviar">Envíame mi diagnóstico</button></div>'
@@ -202,7 +211,7 @@
       ['Experiencia humana detrás', 'El método lo armé yo, Miguel Capuro, revisando hojas de vida reales en vivo y con lo que dicen los reclutadores. La IA aplica ese criterio, no uno genérico.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único · sin suscripción</small></div><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único · sin suscripción</small></div><p class="precio-local" hidden></p><p class="pay-lead"><b>Te llevas tu hoja de vida nueva, en formato Harvard y en Word.</b> La ajustas con tus datos y la envías. Además, el informe te explica cómo arreglar cada error con tu propio texto.</p><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="pay-ej"><a href="' + ASSETS + '../cv-en-el-quirofano/informe/?ejemplo=1#ejemplo" target="_blank" rel="noopener">Mira un informe de ejemplo</a> <span>(se abre en otra pestaña; tu diagnóstico sigue aquí)</span></p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     h += '<p class="uno-a-uno">¿Además del informe quieres revisarlo conmigo? <a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice el diagnóstico de CV en el Quirófano y me interesa una sesión 1 a 1 contigo.') + '" target="_blank" rel="noopener">Pide tu sesión 1 a 1 por WhatsApp</a>.</p>';
     return h;
   }
@@ -299,7 +308,7 @@
       ]) + '<p class="no-print" style="margin-top:16px"><button class="btn gold" type="button" data-act="docx">Descargar mi CV en Word</button></p><p class="note-sm">Es una propuesta: la versión final que envíes y lo que dice son tuyos. Revísala con calma antes de usarla.</p></div>');
     }
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
-    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $90 la hora.</span></a><a href="' + ASSETS + '../negociacion/"><b>¿Te llamaron? Negocia tu oferta.</b><span>Cuando llegue la propuesta, el taller Negociar sin Romper te enseña a pedir lo que vales.</span></a><a href="' + ASSETS + '../presentaciones/"><b>Preséntate con seguridad.</b><span>Presentar sin Aburrir: para la entrevista y para lo que viene después.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
+    h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $100 la hora.</span></a><a href="' + ASSETS + '../negociacion/"><b>¿Te llamaron? Negocia tu oferta.</b><span>Cuando llegue la propuesta, el taller Negociar sin Romper te enseña a pedir lo que vales.</span></a><a href="' + ASSETS + '../presentaciones/"><b>Preséntate con seguridad.</b><span>Presentar sin Aburrir: para la entrevista y para lo que viene después.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
     return h;
   }
@@ -578,14 +587,39 @@
 
     // Diagnóstico y pago
     var diagActual = null;
+    var diagPrecio = null;
     function verDiagnostico(ses, diag, precio) {
       var p = $('#p-diag');
       diagActual = diag;
+      diagPrecio = precio;
       $('#diag-body').innerHTML = renderDiagnostico(diag, precio);
       animarRings(p);
       mostrar('diag');
       montarPago(ses, precio);
       montarGuardar(ses);
+      medirInteres(ses);
+    }
+
+    // Embudo después del diagnóstico: quién llega a ver el precio y quién toca «Quiero mi informe».
+    // Se cuenta en el panel (sin cookies) y, si la persona aceptó las cookies de Meta, también en el píxel.
+    function medirInteres(ses) {
+      var hecho = {};
+      function marcar(que, evMeta) {
+        if (hecho[que] || DEMO) return;
+        hecho[que] = true;
+        api('/api/interes', { method: 'POST', body: { id: ses.id, key: ses.key, que: que } }).catch(function () { /* medir nunca rompe nada */ });
+        if (window.mjPixel) window.mjPixel(evMeta, { content_name: 'Informe · CV en el Quirófano', value: Number(diagPrecio) || 0, currency: 'USD' }, que + '-' + ses.id);
+      }
+      Array.prototype.forEach.call(document.querySelectorAll('#diag-body .cta-big'), function (a) {
+        a.addEventListener('click', function () { marcar('quiere', 'InitiateCheckout'); });
+      });
+      var pay = $('#pay');
+      if (pay && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (es) {
+          if (es.some(function (x) { return x.isIntersecting; })) { marcar('precio', 'ViewContent'); io.disconnect(); }
+        }, { threshold: 0.35 });
+        io.observe(pay);
+      }
     }
 
     // "Envíame mi diagnóstico por correo": opcional, un correo ahora y un aviso antes de que se borre.
@@ -624,6 +658,8 @@
     function montarPago(ses, precio) {
       var box = $('#pay-body');
       cargarConfig().then(function (c) {
+        var local = precioLocal(c.pais || (DEMO && (location.search.match(/[?&]pais=([A-Z]{2})/) || [])[1]) || '', precio);
+        Array.prototype.forEach.call(document.querySelectorAll('#diag-body .precio-local'), function (el) { el.textContent = local && !el.classList.contains('cta-local') ? local + ' Se cobra en dólares; tu banco hace la conversión.' : local; el.hidden = !local; });
         var demoPago = DEMO || c.demo_pago;
         var paypalOn = demoPago || Boolean(c.paypal && c.paypal.activo && c.paypal.client_id);
         // Yappy solo para quien entra desde Panamá (país que detecta Cloudflare). Afuera, solo PayPal.
