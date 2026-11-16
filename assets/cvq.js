@@ -225,25 +225,37 @@
   function copiable(t) { return '<div class="copybox">' + fmt(t) + '<button class="cp" type="button" data-copy="' + esc(t) + '">Copiar</button></div>'; }
   // Pestañas del informe: el contenido completo, repartido para que se lea por partes y no abrume.
   // Al imprimir o guardar en PDF se ven todas, una tras otra.
+  // Índice del informe: las 6 partes a la vista, cada una con lo que trae (en cifras reales del informe),
+  // para que la persona vea de un vistazo todo lo que recibió y lea por partes sin saturarse.
+  // Al imprimir o guardar en PDF se ven todas, una tras otra.
+  function nn(x) { return (x || []).length; }
   var TABS = [
-    ['resumen', 'Resumen', 'Lo esencial: qué funciona, qué arreglar primero y tu plan de 48 horas.'],
-    ['cv', 'Tu CV, línea por línea', 'Titular, perfil, cada sección y tus logros reescritos, listos para copiar.'],
-    ['riesgos', 'Riesgos y ATS', 'Lo que te puede costar la entrevista y cómo te lee la máquina.'],
-    ['linkedin', 'LinkedIn', 'Tu titular y tu «Acerca de», listos para copiar.'],
-    ['entrevista', 'Entrevista', 'Las preguntas difíciles que vienen y hacia dónde apuntar.'],
-    ['harvard', 'Tu CV Harvard', 'Tu hoja de vida nueva, para descargar en Word.']
+    ['resumen', 'Tu diagnóstico', function () { return 'Lo urgente y tu plan de 48 horas'; }, 'Qué ya funciona, qué arreglar primero y qué hacer en las próximas 48 horas.'],
+    ['cv', 'Tu CV, operado', function (inf) {
+      var l = (inf.experiencia || []).reduce(function (s, j) { return s + nn(j.logros); }, 0);
+      return (l ? l + ' logros reescritos' : nn(inf.secciones) + ' secciones operadas') + ', listos para copiar';
+    }, 'Tu nuevo titular, tu perfil, cada sección y tus logros reescritos. Copia y pega.'],
+    ['riesgos', 'Lo que te descarta', function (inf) {
+      var z = nn(inf.zona_roja), k = nn((inf.ats || {}).palabras_clave_faltantes);
+      return [z ? z + (z === 1 ? ' alerta' : ' alertas') + ' de zona roja' : '', k ? k + ' palabras clave que faltan' : ''].filter(Boolean).join(' · ') || 'Cómo te lee la máquina';
+    }, 'Lo que puede sacarte del proceso antes de la entrevista, y cómo te lee el sistema de filtro (ATS).'],
+    ['linkedin', 'Tu LinkedIn', function () { return 'Titular y «Acerca de», listos'; }, 'Te buscan en LinkedIn antes de llamarte. Aquí lo dejas igual de fuerte que tu CV.'],
+    ['entrevista', 'Tu entrevista', function (inf) {
+      var q = nn(inf.preguntas_entrevista), r = nn(inf.rutas_profesionales);
+      return [q ? q + ' preguntas difíciles' : '', r ? r + ' cargos que encajan contigo' : ''].filter(Boolean).join(' · ') || 'Lo que te van a preguntar';
+    }, 'Lo que te van a preguntar, cómo prepararlo y hacia qué cargos apuntar.'],
+    ['harvard', 'Tu CV nuevo', function () { return 'Formato Harvard, en Word'; }, 'Tu hoja de vida armada con todo lo anterior. La descargas, la ajustas y la envías.']
   ];
-  function pestanas(T) {
+  function pestanas(T, inf) {
     var tabs = TABS.filter(function (t) { return T[t[0]]; });
-    var h = '<div class="rtabs-wrap" id="rtabs-top"><p class="rtabs-guia no-print">Tu informe está en ' + tabs.length + ' partes. Empieza por el resumen y avanza a tu ritmo.</p><div class="rtabs no-print" role="tablist" aria-label="Partes de tu informe">';
-    h += tabs.map(function (t, i) { return '<button class="rtab" type="button" role="tab" id="rtab-' + t[0] + '" aria-controls="rpan-' + t[0] + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-tab="' + t[0] + '"><span class="n">' + (i + 1) + '</span>' + esc(t[1]) + '</button>'; }).join('');
+    var h = '<div class="rtabs-wrap" id="rtabs-top"><div class="rtabs-head no-print"><span class="label">Lo que trae tu informe</span><p>' + tabs.length + ' partes. Toca la que quieras ver; te recomiendo empezar por la 1.</p></div><div class="rtabs no-print" role="tablist" aria-label="Partes de tu informe">';
+    h += tabs.map(function (t, i) { return '<button class="rtab" type="button" role="tab" id="rtab-' + t[0] + '" aria-controls="rpan-' + t[0] + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-tab="' + t[0] + '"><span class="n">' + (i + 1) + '</span><span class="tx"><b>' + esc(t[1]) + '</b><small>' + esc(t[2](inf)) + '</small></span></button>'; }).join('');
     h += '</div>';
     h += tabs.map(function (t, i) {
       var sig = tabs[i + 1];
-      return '<div class="rpanel" role="tabpanel" id="rpan-' + t[0] + '" aria-labelledby="rtab-' + t[0] + '" tabindex="-1"' + (i === 0 ? '' : ' hidden') + '><p class="rpanel-intro no-print"><b>' + (i + 1) + ' de ' + tabs.length + ' · ' + esc(t[1]) + '.</b> ' + esc(t[2]) + '</p>' + T[t[0]] +
-        (sig ? '<p class="rpanel-next no-print"><button class="btn gold" type="button" data-tab-ir="' + sig[0] + '">Siguiente: ' + esc(sig[1]) + ' →</button></p>' : '') + '</div>';
+      return '<div class="rpanel" role="tabpanel" id="rpan-' + t[0] + '" aria-labelledby="rtab-' + t[0] + '" tabindex="-1"' + (i === 0 ? '' : ' hidden') + '><p class="rpanel-intro no-print"><b>Parte ' + (i + 1) + ' de ' + tabs.length + ' · ' + esc(t[1]) + '.</b> ' + esc(t[3]) + '</p>' + T[t[0]] +
+        '<div class="rpanel-next no-print">' + (sig ? '<button class="btn gold" type="button" data-tab-ir="' + sig[0] + '">Sigue con la parte ' + (i + 2) + ': ' + esc(sig[1]) + ' →</button>' : '') + '<button class="rpanel-all" type="button" data-tab-ir="' + t[0] + '">Ver las ' + tabs.length + ' partes ↑</button></div></div>';
     }).join('');
-    // Las pestañas y sus paneles van en el mismo contenedor para que la barra quede fija mientras se lee.
     return h + '</div>';
   }
   function renderInforme(inf, ses) {
@@ -256,7 +268,7 @@
     var ej = ses && ses.ejemplo;
     h += '<div class="toolbar no-print"><button class="tbtn" type="button" data-act="print">Guardar en PDF</button>' + (ses && ses.id !== 'demo' ? '<button class="tbtn" type="button" data-act="link">Copiar enlace del informe</button>' : '') + (ej ? '' : '<button class="tbtn danger" type="button" data-act="borrar">Borrar mis datos ahora</button>') + '</div>';
     // Atajo al CV en formato Harvard (está al final del informe y es lo que la persona más busca).
-    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) h += '<a class="harvard-jump no-print" href="#cv-harvard" data-tab-ir="harvard"><span><b>Tu CV en formato Harvard está listo</b><small>En la pestaña «Tu CV Harvard», para descargar en Word y ajustar.</small></span><span class="go">Ver mi CV →</span></a>';
+    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) h += '<a class="harvard-jump no-print" href="#cv-harvard" data-tab-ir="harvard"><span><b>Tu CV en formato Harvard está listo</b><small>Es la parte 6 de tu informe: la descargas en Word y la ajustas.</small></span><span class="go">Ver mi CV →</span></a>';
     if (p.examenes) h += examenes(p.examenes);
     T.resumen += sec('Apertura', 'Antes de operar.', '<div class="rep-text"><p>' + fmt(inf.apertura) + '</p><p>' + fmt(inf.diagnostico_general) + '</p></div>');
     T.resumen += sec('Lo que funciona', 'Empecemos por lo bueno.', lista(inf.lo_que_funciona) + '<div class="prio"><b>Si solo haces una cosa</b><p>' + fmt(inf.prioridad_uno) + '</p></div>');
@@ -333,7 +345,7 @@
         'Cuando quede lista, guárdala en PDF para postular, salvo que el aviso pida Word.'
       ]) + '<p class="no-print" style="margin-top:16px"><button class="btn gold" type="button" data-act="docx">Descargar mi CV en Word</button></p><p class="note-sm">Es una propuesta: la versión final que envíes y lo que dice son tuyos. Revísala con calma antes de usarla.</p></div>');
     }
-    h += pestanas(T);
+    h += pestanas(T, inf);
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
     h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $100 la hora.</span></a><a href="' + ASSETS + '../negociacion/"><b>¿Te llamaron? Negocia tu oferta.</b><span>Cuando llegue la propuesta, el taller Negociar sin Romper te enseña a pedir lo que vales.</span></a><a href="' + ASSETS + '../presentaciones/"><b>Preséntate con seguridad.</b><span>Presentar sin Aburrir: para la entrevista y para lo que viene después.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
@@ -346,8 +358,6 @@
       if (!tab) return;
       Array.prototype.forEach.call(root.querySelectorAll('.rtab'), function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
       Array.prototype.forEach.call(root.querySelectorAll('.rpanel'), function (p) { p.hidden = p.id !== 'rpan-' + k; });
-      var barra = tab.parentNode;
-      barra.scrollTo({ left: tab.offsetLeft - (barra.clientWidth - tab.offsetWidth) / 2, behavior: 'smooth' });
       var top = root.querySelector('#rtabs-top');
       // «Siguiente» y «Ver mi CV» siempre llevan al inicio de la parte nueva; tocar una pestaña solo sube si ya pasaste la barra.
       if (top && (subir || top.getBoundingClientRect().top < 0)) top.scrollIntoView({ block: 'start' });
