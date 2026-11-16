@@ -75,6 +75,8 @@ h1 span{display:block;margin-top:.32em;font-stretch:100%;font-weight:300;font-st
 .tn-btn[disabled]{opacity:.6;cursor:progress}
 .tn-btn-wa{background:#1E7A4D}
 .tn-btn-wa:hover{background:#17633E}
+.tn-permiso{margin-top:12px;font-size:.84rem;line-height:1.4;color:var(--text)}
+.tn-permiso a{color:inherit}
 .tn-fine{margin-top:10px;font-size:.8rem;line-height:1.4;color:var(--muted)}
 .tn-hola{margin-top:8px;font-size:.95rem}
 .tn-yslot{margin-top:14px;min-height:48px}

@@ -53,7 +53,7 @@
   function registrar() {
     var correo = $('tn-correo').value.trim(), wa = $('tn-wa').value.trim();
     error('tn-e1', ''); $('tn-b1').disabled = true;
-    api('/taller/api/interes', { correo: correo, whatsapp: wa, turnstile: tsToken }).then(function (r) {
+    api('/taller/api/interes', { correo: correo, whatsapp: wa, permiso_v: 3, turnstile: tsToken }).then(function (r) {
       ses = { id: r.id, key: r.key, wa: wa.replace(/\D/g, '').replace(/^507/, '') }; guardar(ses);
       pixel('Lead', { content_name: 'Taller de Negociación Inteligente 19 dic' }, 'tn19-lead-' + r.id);
       if (r.agotado || cfg.agotado) { guardar(null); mensaje('<b>Los 14 cupos ya se llenaron.</b> Ya tengo tu correo: si se libera uno, te escribo.'); return; }
