@@ -511,3 +511,20 @@ html{scroll-behavior:smooth}
   .rtabs-wrap{margin:0}
   .rpanel[hidden]{display:block!important}
 }
+
+/* Barra fija de compra en el celular (nov. 2026): aparece con el diagnóstico cuando ni el botón de arriba
+   ni el bloque de pago están a la vista. Tapa la barra de contacto mientras se muestra. */
+.cta-fija{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;justify-content:center;align-items:center;gap:8px;padding:15px 20px;border-radius:999px;background:var(--gold-bright);color:var(--ink);font-weight:800;font-size:1.02rem;text-decoration:none;box-shadow:0 14px 34px -10px rgba(11,31,58,.55);text-align:center;line-height:1.2}
+.cta-fija[hidden]{display:none}
+.cta-fija s{opacity:.6;font-weight:600}
+@media (min-width:761px){.cta-fija{display:none!important}}
+body:has(#p-diag[hidden]) .cta-fija{display:none!important}
+@media (max-width:760px){body:has(.cta-fija:not([hidden])) .dock{display:none!important}}
+/* Precio especial que llega por correo */
+.pay .price s,.cta-big s{opacity:.55;font-weight:600}
+.pay .price s{font-size:.5em;margin-right:6px;vertical-align:.25em}
+.pay .oferta-nota{color:var(--gold-bright);font-weight:700;margin:-4px 0 0}
+.cta-oferta{color:var(--gold);font-weight:700;font-size:.92rem;margin:0}
+.recorte-nota{background:#FFF7E6;border:1px solid #EBD3A0;color:var(--ink);border-radius:14px;padding:12px 14px;font-size:.95rem;margin:0 0 18px}
+/* Mientras el aviso de cookies está abierto (abajo), la barra sube para no quedar tapada. */
+@media (max-width:760px){body:has(.mj-cc) .cta-fija{bottom:calc(110px + env(safe-area-inset-bottom,0px))}}

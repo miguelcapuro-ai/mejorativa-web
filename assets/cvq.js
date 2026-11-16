@@ -169,6 +169,16 @@
       return '<div class="ex ' + nivel(e.puntaje) + '"><div class="k">' + x[1] + '</div><div class="v"><b>' + esc(e.puntaje) + '</b><span>/ 100</span></div><div class="bar"><i style="--v:' + Number(e.puntaje) + '%"></i></div>' + (e.resumen ? '<p>' + esc(e.resumen) + '</p>' : '<p class="find-lock">' + ICO.lock + '<span>Por qué sacaste este puntaje: en tu informe.</span></p>') + '</div>';
     }).join('') + '</div>';
   }
+  // Precio especial que llega por correo (nov. 2026): el servidor manda precio (el que se cobra), precio_normal
+  // y oferta_hasta. Sin oferta, solo precio. Lo fija verDiagnostico antes de pintar.
+  var ofertaActual = null;
+  function fijarOferta(info) {
+    ofertaActual = info && info.precio_normal && info.oferta_hasta && info.oferta_hasta * 1000 > Date.now() ? { normal: info.precio_normal, hasta: info.oferta_hasta } : null;
+  }
+  function precioTxt(precio) { return ofertaActual ? '<s>' + money(ofertaActual.normal) + '</s> ' + money(precio) : money(precio); }
+  function ofertaHasta() {
+    try { return new Date(ofertaActual.hasta * 1000).toLocaleString('es-PA', { weekday: 'long', hour: 'numeric', minute: '2-digit' }).replace(/\.$/, ''); } catch (e) { return ''; }
+  }
   function renderDiagnostico(diag, precio) {
     var n = diag.nombre_detectado || '';
     var lat = diag.latidos || [];
@@ -191,7 +201,7 @@
     if (diag.cargo_objetivo_inferido) h += '<p class="aim">Lo leí pensando en: <b>' + esc(diag.cargo_objetivo_inferido) + '</b></p>';
     h += examenes(diag.examenes);
     h += '<div class="beats"><div class="dots" aria-hidden="true">' + lat.map(function (l) { return '<i class="' + esc(l.cumple) + '" title="Latido ' + num(l.id) + '"></i>'; }).join('') + '</div><span>' + (si ? 'Cumples <b>' + si + ' de 7</b> latidos completos. El informe te dice cómo cumplir los demás.' : 'Hoy tu CV no cumple <b>ninguno de los 7 latidos</b> completo. Todos tienen arreglo y el informe te dice cómo.') + '</span></div>';
-    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay">Quiero mi informe completo · ' + money(precio) + ' <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p><p class="cta-fomo">⏳ Por tu privacidad, tu diagnóstico se borra en 24 horas. Si pides tu informe hoy, te llega al correo en minutos.</p></div>'; };
+    var cta = function (extra) { return '<div class="cta-buy' + (extra ? ' ' + extra : '') + '"><a class="btn gold cta-big" href="#pay"><span>Quiero mi informe completo · ' + precioTxt(precio) + '</span> <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><p class="precio-local cta-local" hidden></p>' + (ofertaActual ? '<p class="cta-oferta">Precio especial hasta el ' + esc(ofertaHasta()) + '.</p>' : '') + '<p class="cta-fomo">⏳ Por tu privacidad, tu diagnóstico se borra en 24 horas. Si pides tu informe hoy, te llega al correo en minutos.</p></div>'; };
     h += cta();
     h += '<div class="guardar" id="guardar"><b>¿Lo terminas después?</b><p>Te mando tu diagnóstico al correo y te aviso una sola vez antes de que se borre.</p>'
       + '<div class="guardar-f"><label for="g-correo" class="g-sr">Tu correo</label><input type="email" id="g-correo" autocomplete="email" inputmode="email" maxlength="200" placeholder="tucorreo@gmail.com"><button class="btn sm" type="button" id="g-enviar">Envíame mi diagnóstico</button></div>'
@@ -213,7 +223,7 @@
       ['La IA más potente que tenemos', 'El diagnóstico lo hizo una IA rápida. Tu informe lo opera uno de los modelos de inteligencia artificial más avanzados del mundo, y se toma su tiempo con tu hoja de vida.'],
       ['Rieles que no se saltan', 'Trabaja solo con los datos de tu CV. No inventa logros ni cifras: donde falta un dato, te lo marca para que pongas el tuyo.']
     ].map(function (w) { return '<div class="why-i"><b>' + esc(w[0]) + '</b><p>' + esc(w[1]) + '</p></div>'; }).join('') + '</div></div>';
-    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + money(precio) + '<small>pago único · sin suscripción</small></div><p class="precio-local" hidden></p><p class="pay-lead"><b>Te llevas tu hoja de vida nueva, en formato Harvard y en Word.</b> La ajustas con tus datos y la envías. Además, el informe te explica cómo arreglar cada error con tu propio texto.</p><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="pay-ej"><a href="' + ASSETS + '../cv-en-el-quirofano/informe/?ejemplo=1#ejemplo" target="_blank" rel="noopener">Mira un informe de ejemplo</a> <span>(se abre en otra pestaña; tu diagnóstico sigue aquí)</span></p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
+    h += '<div class="pay" id="pay"><span class="label" style="color:#A9B6CB">Informe completo</span><h3>Tu informe completo te espera.</h3><div class="price">' + precioTxt(precio) + '<small>pago único · sin suscripción</small></div>' + (ofertaActual ? '<p class="oferta-nota">Precio especial que te llegó por correo, hasta el ' + esc(ofertaHasta()) + '.</p>' : '') + '<p class="precio-local" hidden></p><p class="pay-lead"><b>Te llevas tu hoja de vida nueva, en formato Harvard y en Word.</b> La ajustas con tus datos y la envías. Además, el informe te explica cómo arreglar cada error con tu propio texto.</p><p>Lo ves aquí mismo en unos minutos y te llega a tu correo. Cuesta lo que un almuerzo y te ahorra semanas adivinando qué falla.</p><p class="pay-ej"><a href="' + ASSETS + '../cv-en-el-quirofano/informe/?ejemplo=1#ejemplo" target="_blank" rel="noopener">Mira un informe de ejemplo</a> <span>(se abre en otra pestaña; tu diagnóstico sigue aquí)</span></p><p class="fine-w" style="margin-top:-4px">Tu informe lo opera el modelo de inteligencia artificial más avanzado que tenemos, con los rieles del método: guía de Harvard, el mercado y las leyes del país donde buscas trabajo.</p><div id="pay-body"></div><p class="fine-w">Al pagar aceptas los <a href="' + ASSETS + '../terminos/" target="_blank" rel="noopener">términos</a>. Si tu informe no se entrega, te devolvemos el dinero.</p></div>';
     h += '<p class="uno-a-uno">¿Además del informe quieres revisarlo conmigo? <a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, hice el diagnóstico de CV en el Quirófano y me interesa una sesión 1 a 1 contigo.') + '" target="_blank" rel="noopener">Pide tu sesión 1 a 1 por WhatsApp</a>.</p>';
     return h;
   }
@@ -418,12 +428,14 @@
     for (var i = 0; i < bytes.length; i += CH) s += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
     return btoa(s);
   }
+  // Hasta 10 páginas (nov. 2026). Si el PDF trae más, el servidor revisa solo las primeras 10 y la página lo avisa.
+  var MAX_PAG = 10, MAX_WORD = 40000;
   function leerPDF(buf) {
     return import(ASSETS + 'vendor/pdf.min.js').then(function (pdfjs) {
       pdfjs.GlobalWorkerOptions.workerSrc = ASSETS + 'vendor/pdf.worker.min.js';
       return pdfjs.getDocument({ data: new Uint8Array(buf.slice(0)), isEvalSupported: false }).promise.then(function (doc) {
         var n = doc.numPages, textos = [], p = Promise.resolve();
-        for (var i = 1; i <= Math.min(n, 8); i++) {
+        for (var i = 1; i <= Math.min(n, MAX_PAG); i++) {
           (function (k) {
             p = p.then(function () { return doc.getPage(k); }).then(function (pg) { return pg.getTextContent(); }).then(function (tc) {
               textos.push(tc.items.map(function (it) { return (it.str || '') + (it.hasEOL ? '\n' : ' '); }).join(''));
@@ -452,14 +464,15 @@
     return file.arrayBuffer().then(function (buf) {
       if (esPDF) {
         return leerPDF(buf).catch(function () { return { paginas: null, texto: '' }; }).then(function (r) {
-          if (r.paginas && r.paginas > 4) throw falla('paginas', 'Tu archivo tiene ' + r.paginas + ' páginas. ¿Venía con certificados o anexos? Sube solo tu hoja de vida, de 1 a 4 páginas.');
           return { tipo: 'pdf', pdf_b64: aBase64(buf), texto: r.texto, meta: { paginas: r.paginas, caracteres: r.texto.length, nombre_archivo: nombre } };
         });
       }
       return leerDOCX(buf).then(function (r) {
         if (r.texto.length < 200) throw falla('word_vacio', 'No pudimos leer suficiente texto de tu Word. Prueba guardándolo como PDF.');
-        if (r.texto.length > 20000) throw falla('word_largo', 'Tu Word es muy largo para una hoja de vida. ¿Venía con certificados o anexos? Sube solo tu CV, de 1 a 4 páginas.');
-        return { tipo: 'docx', texto: r.texto, meta: { paginas: null, caracteres: r.texto.length, nombre_archivo: nombre } };
+        // Word muy largo: se revisa el comienzo (unas 10 páginas) en vez de rechazarlo.
+        var largo = r.texto.length > MAX_WORD;
+        var t = largo ? r.texto.slice(0, MAX_WORD) : r.texto;
+        return { tipo: 'docx', texto: t, largo: largo, meta: { paginas: null, caracteres: t.length, nombre_archivo: nombre } };
       });
     });
   }
@@ -532,6 +545,8 @@
         cv = r;
         paso('cv_listo');
         var det = r.tipo === 'pdf' ? (r.meta.paginas ? r.meta.paginas + ' página' + (r.meta.paginas > 1 ? 's' : '') + ' · ' : '') + (r.texto.length > 200 ? 'la máquina puede leer el texto' : 'casi no hay texto que una máquina pueda leer') : 'Word · ' + r.texto.length + ' caracteres';
+        if (r.tipo === 'pdf' && r.meta.paginas > MAX_PAG) det += '. Reviso las primeras ' + MAX_PAG + ' páginas: si trae certificados o anexos, no hacen falta';
+        if (r.largo) det += '. Es muy largo: reviso el comienzo, unas ' + MAX_PAG + ' páginas';
         drop.innerHTML = '<div class="file-ok"><svg class="ico" aria-hidden="true"><use href="#i-cv"/></svg><div><b>' + esc(file.name) + '</b><small>' + esc(det) + '. Toca para cambiarlo.</small></div></div>';
         // Archivo listo: lleva a la persona al último paso (aceptar y ver su diagnóstico) en vez de dejarla buscando el botón.
         var op = $('#operar');
@@ -631,7 +646,7 @@
         store.set('ses', ses);
         track('cv_diagnostico', { puntaje: r.diagnostico.puntaje_global });
         if (!DEMO && window.mjPixel) window.mjPixel('Lead', { content_name: 'Diagnóstico gratis · CV en el Quirófano' }, 'lead-' + r.id);
-        return wait(500).then(function () { verDiagnostico(ses, r.diagnostico, r.precio); });
+        return wait(500).then(function () { verDiagnostico(ses, r.diagnostico, r.precio, r); });
       }).catch(function (e) {
         pararEtapas();
         mostrar('cv');
@@ -675,16 +690,57 @@
     // Diagnóstico y pago
     var diagActual = null;
     var diagPrecio = null;
-    function verDiagnostico(ses, diag, precio) {
+    function verDiagnostico(ses, diag, precio, info) {
       var p = $('#p-diag');
       diagActual = diag;
       diagPrecio = precio;
+      fijarOferta(info);
       $('#diag-body').innerHTML = renderDiagnostico(diag, precio);
+      // Archivo de más de 10 páginas: el servidor revisó solo las primeras (nov. 2026).
+      if (info && info.recorte && info.recorte.paginas) {
+        var nota = document.createElement('p');
+        nota.className = 'recorte-nota';
+        nota.textContent = 'Tu archivo tenía ' + Number(info.recorte.paginas) + ' páginas: revisé las primeras ' + Number(info.recorte.revisadas || 10) + '. Si tu hoja de vida termina antes, no hace falta subir certificados ni anexos.';
+        $('#diag-body').insertBefore(nota, $('#diag-body').firstChild);
+      }
       animarRings(p);
       mostrar('diag');
       montarPago(ses, precio);
       montarGuardar(ses);
       medirInteres(ses);
+      montarBarraCompra(ses, precio);
+    }
+
+    // Barra fija de compra en el celular (nov. 2026): 17 de 29 personas leían su diagnóstico y nunca llegaban al
+    // bloque de pago. Aparece cuando ni el primer botón de compra ni el bloque de pago están a la vista.
+    function montarBarraCompra(ses, precio) {
+      var bar = $('#cta-fija');
+      if (!bar) {
+        bar = document.createElement('a');
+        bar.id = 'cta-fija'; bar.className = 'cta-fija'; bar.href = '#pay'; bar.hidden = true;
+        document.body.appendChild(bar);
+      }
+      bar.innerHTML = '<span>Quiero mi informe · ' + precioTxt(precio) + '</span> <span aria-hidden="true">→</span>';
+      if (!bar.getAttribute('data-on')) {
+        bar.setAttribute('data-on', '1');
+        bar.addEventListener('click', function (e) {
+          var pay = $('#pay');
+          if (pay) { e.preventDefault(); try { pay.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); } catch (er) { location.hash = 'pay'; } }
+          if (bar._marcar) bar._marcar();
+        });
+      }
+      if (!('IntersectionObserver' in window)) return;
+      if (bar._io) bar._io.disconnect();
+      var arriba = $('#diag-body .cta-buy'), pago = $('#pay'), visto = {};
+      var ver = function () { bar.hidden = Boolean(visto.arriba || visto.pago) || $('#p-diag').hidden; };
+      bar._io = new IntersectionObserver(function (es) {
+        es.forEach(function (x) { visto[x.target === pago ? 'pago' : 'arriba'] = x.isIntersecting; });
+        ver();
+      }, { threshold: 0 });
+      // Al principio el diagnóstico arranca arriba: la barra espera a que la persona baje.
+      visto.arriba = true;
+      if (arriba) bar._io.observe(arriba);
+      if (pago) bar._io.observe(pago);
     }
 
     // Embudo después del diagnóstico: quién llega a ver el precio y quién toca «Quiero mi informe».
@@ -700,6 +756,10 @@
       Array.prototype.forEach.call(document.querySelectorAll('#diag-body .cta-big'), function (a) {
         a.addEventListener('click', function () { marcar('quiere', 'InitiateCheckout'); marcar('precio', 'ViewContent'); });
       });
+      // La barra fija del celular cuenta igual que los botones (se conecta en montarBarraCompra).
+      var barra = $('#cta-fija') || document.createElement('a');
+      if (!barra.id) { barra.id = 'cta-fija'; barra.className = 'cta-fija'; barra.href = '#pay'; barra.hidden = true; document.body.appendChild(barra); }
+      barra._marcar = function () { marcar('quiere', 'InitiateCheckout'); marcar('precio', 'ViewContent'); };
       // Cuenta apenas el precio del bloque de pago aparece en pantalla (el bloque completo puede ser más alto que un celular).
       var precioEl = $('#pay .price') || $('#pay');
       if (precioEl && 'IntersectionObserver' in window) {
@@ -1037,7 +1097,7 @@
     api('/api/estado', { query: { id: ses.id, key: ses.key } }).then(function (s) {
       if (s.listo) return api('/api/informe', { query: { id: ses.id, key: ses.key } }).then(function (r) { verInforme(ses, r.informe); });
       if (s.pagado) return redactar(ses);
-      verDiagnostico(ses, s.diagnostico, s.precio);
+      verDiagnostico(ses, s.diagnostico, s.precio, s);
     }).catch(function () { store.del('ses'); mostrar('cv'); });
   }
 
