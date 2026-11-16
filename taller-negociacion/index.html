@@ -19,7 +19,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="taller.css?v=t2">
+<link rel="stylesheet" href="taller.css?v=t3">
 </head>
 <body>
 <header class="tn-top">
@@ -62,6 +62,7 @@
     <div class="tn-card">
       <p class="tn-bono">Bono de $40 por habernos visto en Sales Booster</p>
       <p class="tn-price" id="tn-pay-h"><s>$120</s><strong>$80</strong><span>por persona · pago único</span></p>
+      <p class="tn-gift">Cupo transferible: también lo puedes regalar.</p>
       <p class="tn-left" id="tn-left" hidden></p>
 
       <div id="tn-cargando" class="tn-note">Cargando…</div>
@@ -71,8 +72,8 @@
         <p class="tn-step"><b>1</b> Guarda tu bono <i>2 Paga cuando quieras</i></p>
         <label for="tn-correo">Tu correo</label>
         <input id="tn-correo" name="correo" type="email" autocomplete="email" inputmode="email" maxlength="200" required placeholder="nombre@correo.com">
-        <label for="tn-wa">WhatsApp <em>(opcional)</em></label>
-        <input id="tn-wa" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="6000-0000">
+        <label for="tn-wa">Tu WhatsApp</label>
+        <input id="tn-wa" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" required placeholder="6000-0000">
         <div id="tn-ts" class="tn-ts"></div>
         <p class="tn-err" id="tn-e1" role="alert"></p>
         <button class="tn-btn" id="tn-b1" type="submit">Guardar mi bono de $40</button>
@@ -90,7 +91,7 @@
         <p class="tn-err" id="tn-e2" role="alert"></p>
         <div id="tn-yslot" class="tn-yslot"></div>
         <p class="tn-wait" id="tn-wait" hidden><span class="tn-spin" aria-hidden="true"></span>Abre tu app de Yappy y aprueba el pago de <b>$80</b>. Esta página se actualiza sola.</p>
-        <p class="tn-fine">Tocas el botón, te llega la solicitud a tu Yappy y la apruebas. Tu cupo queda confirmado en ese momento. <a href="../terminos/">Términos</a></p>
+        <p class="tn-fine">Tocas el botón, te llega la solicitud a tu Yappy y la apruebas. Tu cupo queda confirmado en ese momento. El cupo es transferible y puede ser un regalo; no hay devoluciones. <a href="../terminos/">Términos</a></p>
       </div>
 
       <!-- Pagado -->
@@ -99,6 +100,7 @@
         <h2>Tu cupo está confirmado</h2>
         <p>Nos vemos el <b>sábado 19 de diciembre a las 9:00 a. m.</b> en Sitio Cürrao, Bella Vista.</p>
         <p>Te envié la confirmación a tu correo. Trae una negociación tuya que tengas pendiente: con esa vamos a trabajar.</p>
+        <p>Tu cupo es transferible: si no puedes venir, puede usarlo otra persona, o lo puedes regalar. Solo avísame a nombre de quién queda. No hay devoluciones.</p>
         <p class="tn-fine" id="tn-conf"></p>
         <a class="tn-btn tn-btn-wa" href="https://wa.me/50763454868?text=Hola%20Miguel%2C%20ya%20pagu%C3%A9%20mi%20cupo%20del%20taller%20del%2019%20de%20diciembre." rel="noopener">Escribirme por WhatsApp</a>
       </div>
@@ -115,7 +117,7 @@
   <p><a href="../">mejorativa.com</a> · <a href="../privacidad/">Privacidad</a> · <a href="../terminos/">Términos</a> · <a href="../cookies/">Cookies</a></p>
 </footer>
 
-<script src="taller.js?v=t2" defer></script>
+<script src="taller.js?v=t3" defer></script>
 <script src="../assets/mx.js?v=mx4" defer></script>
 </body>
 </html>

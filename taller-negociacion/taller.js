@@ -67,6 +67,8 @@
     ev.preventDefault();
     var correo = $('tn-correo').value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { error('tn-e1', 'Revisa tu correo: ahí te guardo el bono.'); $('tn-correo').focus(); return; }
+    var waN = $('tn-wa').value.replace(/\D/g, '');
+    if (waN.length < 8 || waN.length > 15) { error('tn-e1', 'Escribe tu WhatsApp con todos sus números: por ahí te aviso del taller.'); $('tn-wa').focus(); return; }
     // La verificación anti-robots corre sola en segundo plano: si aún no termina, el registro sale apenas termine.
     if (cfg.turnstile && !tsToken) { pendiente = true; $('tn-b1').disabled = true; error('tn-e1', ''); setTimeout(function () { if (pendiente) { pendiente = false; $('tn-b1').disabled = false; error('tn-e1', 'Te falta la verificación anti-robots: complétala en el recuadro y vuelve a tocar el botón.'); } }, 12000); return; }
     registrar();

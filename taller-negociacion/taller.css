@@ -51,6 +51,7 @@ h1 span{display:block;margin-top:.32em;font-stretch:100%;font-weight:300;font-st
 .tn-price s{font-size:1.35rem;color:var(--muted);text-decoration-thickness:2px;text-decoration-color:var(--brick)}
 .tn-price strong{font-stretch:68%;font-weight:800;font-size:4.2rem;line-height:.9;font-variant-numeric:lining-nums}
 .tn-price span{font-size:.9rem;color:var(--muted)}
+.tn-gift{margin-top:6px;font-size:.9rem;color:var(--muted)}
 .tn-left{margin-top:8px;color:var(--brick);font-weight:700;font-size:.95rem}
 .tn-step{margin:18px 0 4px;padding-top:16px;border-top:1px solid var(--line);font-size:.86rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tn-step b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:.78rem}
