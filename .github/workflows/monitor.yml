@@ -32,6 +32,7 @@ jobs:
           revisar https://panel.mejorativa.com/salud "Servidor en el dominio propio (lo usan las dos webs)"
           revisar https://tienda.mejorativa.com/ "Tienda de ropa"
           revisar https://tiendalove.mejorativa.com/ "Mejorativa Love"
+          revisar https://mejorativa.com/img/firma/logo.png "Logo de la firma de correo (img/firma, no borrar)"
           printf '%b' "$fallas" > fallas.txt
           echo "hay=$([ -n "$fallas" ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
       - name: Avisar o cerrar aviso
