@@ -223,53 +223,77 @@
   function lista(arr, cls) { return '<ul class="' + (cls || 'ticks') + '">' + (arr || []).map(function (t) { return '<li>' + ICO.delta + '<span>' + fmt(t) + '</span></li>'; }).join('') + '</ul>'; }
   function sec(label, titulo, cuerpo, lead) { return '<section class="rep-sec"><span class="label">' + esc(label) + '</span><h3>' + esc(titulo) + '</h3>' + (lead ? '<p class="lead">' + esc(lead) + '</p>' : '') + cuerpo + '</section>'; }
   function copiable(t) { return '<div class="copybox">' + fmt(t) + '<button class="cp" type="button" data-copy="' + esc(t) + '">Copiar</button></div>'; }
+  // Pestañas del informe: el contenido completo, repartido para que se lea por partes y no abrume.
+  // Al imprimir o guardar en PDF se ven todas, una tras otra.
+  var TABS = [
+    ['resumen', 'Resumen', 'Lo esencial: qué funciona, qué arreglar primero y tu plan de 48 horas.'],
+    ['cv', 'Tu CV, línea por línea', 'Titular, perfil, cada sección y tus logros reescritos, listos para copiar.'],
+    ['riesgos', 'Riesgos y ATS', 'Lo que te puede costar la entrevista y cómo te lee la máquina.'],
+    ['linkedin', 'LinkedIn', 'Tu titular y tu «Acerca de», listos para copiar.'],
+    ['entrevista', 'Entrevista', 'Las preguntas difíciles que vienen y hacia dónde apuntar.'],
+    ['harvard', 'Tu CV Harvard', 'Tu hoja de vida nueva, para descargar en Word.']
+  ];
+  function pestanas(T) {
+    var tabs = TABS.filter(function (t) { return T[t[0]]; });
+    var h = '<div class="rtabs-wrap" id="rtabs-top"><p class="rtabs-guia no-print">Tu informe está en ' + tabs.length + ' partes. Empieza por el resumen y avanza a tu ritmo.</p><div class="rtabs no-print" role="tablist" aria-label="Partes de tu informe">';
+    h += tabs.map(function (t, i) { return '<button class="rtab" type="button" role="tab" id="rtab-' + t[0] + '" aria-controls="rpan-' + t[0] + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-tab="' + t[0] + '"><span class="n">' + (i + 1) + '</span>' + esc(t[1]) + '</button>'; }).join('');
+    h += '</div>';
+    h += tabs.map(function (t, i) {
+      var sig = tabs[i + 1];
+      return '<div class="rpanel" role="tabpanel" id="rpan-' + t[0] + '" aria-labelledby="rtab-' + t[0] + '" tabindex="-1"' + (i === 0 ? '' : ' hidden') + '><p class="rpanel-intro no-print"><b>' + (i + 1) + ' de ' + tabs.length + ' · ' + esc(t[1]) + '.</b> ' + esc(t[2]) + '</p>' + T[t[0]] +
+        (sig ? '<p class="rpanel-next no-print"><button class="btn gold" type="button" data-tab-ir="' + sig[0] + '">Siguiente: ' + esc(sig[1]) + ' →</button></p>' : '') + '</div>';
+    }).join('');
+    // Las pestañas y sus paneles van en el mismo contenedor para que la barra quede fija mientras se lee.
+    return h + '</div>';
+  }
   function renderInforme(inf, ses) {
     var p = inf.puntajes || {};
     var g = p.global != null ? p.global : '';
     var fecha = inf.generado ? new Date(inf.generado * 1000).toLocaleDateString('es-PA', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
     var h = '';
+    var T = { resumen: '', cv: '', riesgos: '', linkedin: '', entrevista: '', harvard: '' };
     h += '<div class="rep-cover"><div><span class="label">Informe · CV en el Quirófano</span><h2>' + (inf.nombre ? esc(inf.nombre) + ', tu' : 'Tu') + ' hoja de vida, operada.</h2><p>' + (inf.cargo_objetivo ? 'Cargo objetivo: ' + esc(inf.cargo_objetivo) + '. ' : '') + esc(fecha) + '</p></div>' + (g !== '' ? ring(g) : '') + '</div>';
     var ej = ses && ses.ejemplo;
     h += '<div class="toolbar no-print"><button class="tbtn" type="button" data-act="print">Guardar en PDF</button>' + (ses && ses.id !== 'demo' ? '<button class="tbtn" type="button" data-act="link">Copiar enlace del informe</button>' : '') + (ej ? '' : '<button class="tbtn danger" type="button" data-act="borrar">Borrar mis datos ahora</button>') + '</div>';
     // Atajo al CV en formato Harvard (está al final del informe y es lo que la persona más busca).
-    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) h += '<a class="harvard-jump no-print" href="#cv-harvard"><span><b>Tu CV en formato Harvard está listo</b><small>Al final del informe, para descargar en Word y ajustar.</small></span><span class="go">Ver mi CV ↓</span></a>';
+    if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) h += '<a class="harvard-jump no-print" href="#cv-harvard" data-tab-ir="harvard"><span><b>Tu CV en formato Harvard está listo</b><small>En la pestaña «Tu CV Harvard», para descargar en Word y ajustar.</small></span><span class="go">Ver mi CV →</span></a>';
     if (p.examenes) h += examenes(p.examenes);
-    h += sec('Apertura', 'Antes de operar.', '<div class="rep-text"><p>' + fmt(inf.apertura) + '</p><p>' + fmt(inf.diagnostico_general) + '</p></div>');
-    h += sec('Lo que funciona', 'Empecemos por lo bueno.', lista(inf.lo_que_funciona) + '<div class="prio"><b>Si solo haces una cosa</b><p>' + fmt(inf.prioridad_uno) + '</p></div>');
+    T.resumen += sec('Apertura', 'Antes de operar.', '<div class="rep-text"><p>' + fmt(inf.apertura) + '</p><p>' + fmt(inf.diagnostico_general) + '</p></div>');
+    T.resumen += sec('Lo que funciona', 'Empecemos por lo bueno.', lista(inf.lo_que_funciona) + '<div class="prio"><b>Si solo haces una cosa</b><p>' + fmt(inf.prioridad_uno) + '</p></div>');
     if (inf.avisos && inf.avisos.length) {
-      h += sec('Antes de postular', 'Lo que debes saber de esta vacante.', lista(inf.avisos));
+      T.resumen += sec('Antes de postular', 'Lo que debes saber de esta vacante.', lista(inf.avisos));
     }
-    h += sec('Signos vitales', 'Los 7 latidos de tu CV.', '<div class="beat-list">' + (inf.latidos || []).map(function (l) {
+    T.resumen += sec('Signos vitales', 'Los 7 latidos de tu CV.', '<div class="beat-list">' + (inf.latidos || []).map(function (l) {
       var t = { si: 'Sí', parcial: '½', no: 'No' }[l.cumple] || '';
       return '<div class="beat"><span class="st ' + esc(l.cumple) + '">' + t + '</span><div><b>' + esc(LATIDOS[l.id - 1] || ('Latido ' + l.id)) + '</b><p>' + fmt(l.evidencia) + '</p>' + (l.como_arreglarlo ? '<p class="fix">' + fmt(l.como_arreglarlo) + '</p>' : '') + '</div></div>';
     }).join('') + '</div>');
     if (inf.espejo && inf.espejo.length) {
-      h += sec('El espejo', 'Lo que tú viste y lo que vio el quirófano.', '<div class="mirror">' + inf.espejo.map(function (m) {
+      T.resumen += sec('El espejo', 'Lo que tú viste y lo que vio el quirófano.', '<div class="mirror">' + inf.espejo.map(function (m) {
         return '<div><div class="you"><small>Tú marcaste · ' + esc(LATIDOS[m.latido_id - 1] || '') + '</small>' + fmt(m.tu_viste) + '</div><div class="we"><small>El quirófano vio</small>' + fmt(m.el_quirofano_vio) + '</div></div>';
       }).join('') + '</div>', 'Nada es como lo recuerdas. Tampoco tu hoja de vida.');
     }
-    h += sec('Tus primeras líneas', 'Tu nuevo titular y tu nuevo perfil.', '<p class="kw-h">Titular</p>' + copiable(inf.nuevo_titular) + '<p class="kw-h">Perfil profesional</p>' + copiable(inf.nuevo_perfil) + '<p class="note-sm">Donde veas <span class="ph">[corchetes]</span>, pon tu dato real. Si no lo tienes exacto, usa un estimado honesto. Nunca lo inventes: en la entrevista te lo van a preguntar.</p>');
-    h += sec('Cirugía', 'Sección por sección.', '<div class="secs">' + (inf.secciones || []).map(function (s) {
+    T.cv += sec('Tus primeras líneas', 'Tu nuevo titular y tu nuevo perfil.', '<p class="kw-h">Titular</p>' + copiable(inf.nuevo_titular) + '<p class="kw-h">Perfil profesional</p>' + copiable(inf.nuevo_perfil) + '<p class="note-sm">Donde veas <span class="ph">[corchetes]</span>, pon tu dato real. Si no lo tienes exacto, usa un estimado honesto. Nunca lo inventes: en la entrevista te lo van a preguntar.</p>');
+    T.cv += sec('Cirugía', 'Sección por sección.', '<div class="secs">' + (inf.secciones || []).map(function (s) {
       return '<article class="sec-card"><header><b>' + esc(s.titulo || SECCIONES[s.id] || s.id) + '</b><span class="estado ' + esc(s.estado) + '">' + esc(ESTADOS[s.estado] || s.estado) + '</span></header><p>' + fmt(s.diagnostico) + '</p>' + lista(s.recomendaciones, '') +
         (s.antes || s.despues ? '<div class="ba2">' + (s.antes ? '<div class="a"><small>Hoy</small>' + fmt(s.antes) + '</div>' : '') + (s.despues ? '<div class="d"><small>Operado</small>' + fmt(s.despues) + '</div>' : '') + '</div>' : '') + '</article>';
     }).join('') + '</div>');
     if (inf.coherencia && inf.coherencia.length) {
-      h += sec('Coherencia', 'Lo que no cuadra.', '<div class="secs">' + inf.coherencia.map(function (c) { return '<article class="sec-card"><p>' + fmt(c.hallazgo) + '</p><p class="how">' + fmt(c.como_corregir) + '</p></article>'; }).join('') + '</div>', 'Un reclutador desconfiado lee buscando contradicciones. Que no encuentre ninguna.');
+      T.cv += sec('Coherencia', 'Lo que no cuadra.', '<div class="secs">' + inf.coherencia.map(function (c) { return '<article class="sec-card"><p>' + fmt(c.hallazgo) + '</p><p class="how">' + fmt(c.como_corregir) + '</p></article>'; }).join('') + '</div>', 'Un reclutador desconfiado lee buscando contradicciones. Que no encuentre ninguna.');
     }
     if (inf.experiencia && inf.experiencia.length) {
-      h += sec('La cirugía mayor', 'Tus logros, operados.', (inf.experiencia || []).map(function (j) {
+      T.cv += sec('La cirugía mayor', 'Tus logros, operados.', (inf.experiencia || []).map(function (j) {
         return '<div class="job"><header><b>' + esc(j.cargo) + '</b><span>' + esc(j.empresa) + (j.periodo ? ' · ' + esc(j.periodo) : '') + '</span></header><p>' + fmt(j.comentario) + '</p>' + (j.logros || []).map(function (l) {
           return '<div class="logro"><div class="o">' + esc(l.original) + '</div><div class="r"><span>' + fmt(l.reescrito) + '</span><button class="cp" type="button" data-copy="' + esc(l.reescrito) + '">Copiar</button></div>' + (l.datos_por_confirmar && l.datos_por_confirmar.length ? '<div class="need">' + l.datos_por_confirmar.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') + '</div>';
         }).join('') + '</div>';
       }).join(''), 'Fórmula V·Q·L·P: verbo en pasado, qué hiciste, qué cambió gracias a ti y cuándo. Un adjetivo es una promesa. Un resultado es una prueba.');
     }
     if (inf.zona_roja && inf.zona_roja.length) {
-      h += sec('Zona roja', 'Lo que te puede costar la entrevista.', '<div class="risk">' + inf.zona_roja.map(function (z) {
+      T.riesgos += sec('Zona roja', 'Lo que te puede costar la entrevista.', '<div class="risk">' + inf.zona_roja.map(function (z) {
         return '<div><span class="x">' + ICO.x + '</span><div><b>' + esc(z.dato) + '</b><p>' + fmt(z.donde) + '. ' + fmt(z.por_que) + '</p><p class="do">' + fmt(z.que_hacer) + '</p></div></div>';
       }).join('') + '</div>', 'Tu hoja de vida responde una sola pregunta: ¿puedes hacer este trabajo? Lo demás es ruido o riesgo.');
     }
     var a = inf.ats || {};
-    h += sec('Rayos X', 'Cómo te lee la máquina.', '<span class="legi ' + esc(a.legibilidad) + '">Legibilidad ' + esc(a.legibilidad || '') + '</span><div class="rep-text"><p>' + fmt(a.explicacion) + '</p></div>' +
+    T.riesgos += sec('Rayos X', 'Cómo te lee la máquina.', '<span class="legi ' + esc(a.legibilidad) + '">Legibilidad ' + esc(a.legibilidad || '') + '</span><div class="rep-text"><p>' + fmt(a.explicacion) + '</p></div>' +
       (a.secciones_no_estandar && a.secciones_no_estandar.length ? '<p class="kw-h">Secciones que conviene renombrar</p>' + lista(a.secciones_no_estandar, '') : '') +
       (a.palabras_clave_presentes && a.palabras_clave_presentes.length ? '<p class="kw-h">Palabras clave que ya tienes</p><div class="kw si">' + a.palabras_clave_presentes.map(function (k) { return '<span>' + esc(k) + '</span>'; }).join('') + '</div>' : '') +
       (a.palabras_clave_faltantes && a.palabras_clave_faltantes.length ? '<p class="kw-h">Palabras clave que te faltan</p><div class="kw no">' + a.palabras_clave_faltantes.map(function (k) { return '<span>' + esc(k) + '</span>'; }).join('') + '</div>' : '') +
@@ -277,38 +301,39 @@
       '<p class="note-sm">La prueba de oro: abre tu PDF, Ctrl+A, copia y pega en el Bloc de notas. Si sale desordenado, así te lee el ATS.</p>');
     var au = inf.autenticidad || {};
     if (au.comentario || (au.frases_genericas && au.frases_genericas.length)) {
-      h += sec('Tu voz', 'Lo que suena a plantilla.', '<div class="rep-text"><p>' + fmt(au.comentario) + '</p></div>' + (au.frases_genericas || []).map(function (f) {
+      T.riesgos += sec('Tu voz', 'Lo que suena a plantilla.', '<div class="rep-text"><p>' + fmt(au.comentario) + '</p></div>' + (au.frases_genericas || []).map(function (f) {
         return '<div class="ba2"><div class="a"><small>Suena a plantilla</small>' + fmt(f.frase) + '</div><div class="d"><small>Con evidencia</small>' + fmt(f.alternativa) + '</div></div>';
       }).join('') + (au.consejos_redaccion && au.consejos_redaccion.length ? '<p class="kw-h">Para que suene a ti</p>' + lista(au.consejos_redaccion) : ''));
     }
     var hi = inf.historia || {};
     if (hi.aplica) {
-      h += sec('Tu historia', 'Pausas, saltos y crecimiento.', '<div class="rep-text"><p>' + fmt(hi.analisis) + '</p></div>' + (hi.respuesta_20_segundos ? '<p class="kw-h">Tu respuesta de 20 segundos para la entrevista</p>' + copiable(hi.respuesta_20_segundos) : ''), 'Lo que escondes te controla. Lo que nombras, lo transformas.');
+      T.entrevista += sec('Tu historia', 'Pausas, saltos y crecimiento.', '<div class="rep-text"><p>' + fmt(hi.analisis) + '</p></div>' + (hi.respuesta_20_segundos ? '<p class="kw-h">Tu respuesta de 20 segundos para la entrevista</p>' + copiable(hi.respuesta_20_segundos) : ''), 'Lo que escondes te controla. Lo que nombras, lo transformas.');
     }
     if (inf.sesgos && inf.sesgos.length) {
-      h += sec('Lo que nadie te dice', 'Los sesgos que tu CV puede activar.', '<div class="secs">' + inf.sesgos.map(function (s) { return '<article class="sec-card"><header><b>' + esc(s.sesgo) + '</b></header><p>' + fmt(s.jugada) + '</p></article>'; }).join('') + '</div>', 'Los sesgos no se combaten escondiéndote. Se desactivan con evidencia.');
+      T.riesgos += sec('Lo que nadie te dice', 'Los sesgos que tu CV puede activar.', '<div class="secs">' + inf.sesgos.map(function (s) { return '<article class="sec-card"><header><b>' + esc(s.sesgo) + '</b></header><p>' + fmt(s.jugada) + '</p></article>'; }).join('') + '</div>', 'Los sesgos no se combaten escondiéndote. Se desactivan con evidencia.');
     }
     var li = inf.linkedin || {};
-    h += sec('Tu segundo quirófano', 'Tu LinkedIn.', '<div class="rep-text"><p>' + fmt(li.url) + '</p><p>' + fmt(li.coherencia) + '</p></div><p class="kw-h">Titular sugerido</p>' + copiable(li.titular_sugerido) + '<p class="kw-h">"Acerca de" sugerido</p>' + copiable(li.acerca_de_sugerido) + lista(li.recomendaciones) + '<p class="note-sm">Te van a buscar en redes antes de llamarte. ¿Están actualizadas? ¿Muestran lo que quieres que vean?</p>');
-    h += sec('Ensayo general', 'Las 5 preguntas difíciles.', '<div class="qs">' + (inf.preguntas_entrevista || []).map(function (q) { return '<div><b>' + fmt(q.pregunta) + '</b><p>' + fmt(q.por_que) + '</p><p class="how">' + fmt(q.como_prepararla) + '</p></div>'; }).join('') + '</div>', 'Lo que escribiste, te lo van a preguntar. Prepáralo hoy.');
+    T.linkedin += sec('Tu segundo quirófano', 'Tu LinkedIn.', '<div class="rep-text"><p>' + fmt(li.url) + '</p><p>' + fmt(li.coherencia) + '</p></div><p class="kw-h">Titular sugerido</p>' + copiable(li.titular_sugerido) + '<p class="kw-h">"Acerca de" sugerido</p>' + copiable(li.acerca_de_sugerido) + lista(li.recomendaciones) + '<p class="note-sm">Te van a buscar en redes antes de llamarte. ¿Están actualizadas? ¿Muestran lo que quieres que vean?</p>');
+    T.entrevista += sec('Ensayo general', 'Las 5 preguntas difíciles.', '<div class="qs">' + (inf.preguntas_entrevista || []).map(function (q) { return '<div><b>' + fmt(q.pregunta) + '</b><p>' + fmt(q.por_que) + '</p><p class="how">' + fmt(q.como_prepararla) + '</p></div>'; }).join('') + '</div>', 'Lo que escribiste, te lo van a preguntar. Prepáralo hoy.');
     if ((inf.rutas_profesionales || []).length) {
-      h += sec('Hacia dónde ir', 'Carreras que encajan contigo.', '<div class="rutas">' + inf.rutas_profesionales.map(function (r) {
+      T.entrevista += sec('Hacia dónde ir', 'Carreras que encajan contigo.', '<div class="rutas">' + inf.rutas_profesionales.map(function (r) {
         var url = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(r.busqueda || r.cargo) + (r.ubicacion ? '&location=' + encodeURIComponent(r.ubicacion) : '');
         return '<article class="sec-card"><header><b>' + esc(r.cargo) + '</b></header><p>' + fmt(r.por_que_encaja) + '</p>' + (r.brecha ? '<p class="how"><b>Para competir:</b> ' + fmt(r.brecha) + '</p>' : '') + '<p><a class="link" href="' + url + '" target="_blank" rel="noopener">Ver ofertas en LinkedIn' + (r.ubicacion ? ' · ' + esc(r.ubicacion) : '') + '</a></p></article>';
       }).join('') + '</div>', 'Según lo que muestra tu CV. Abre cada búsqueda, mira las ofertas de hoy y postula solo donde puedas contar evidencia.');
     }
-    h += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
-    if (inf.aviso_ia) h += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
+    T.resumen += sec('Receta médica', 'Tus próximas 48 horas.', '<ol class="rx">' + (inf.receta_48h || []).map(function (r) { return '<li><div><b>' + fmt(r.paso) + '</b><p>' + fmt(r.detalle) + '</p></div></li>'; }).join('') + '</ol>', 'Lo que no se hace en 48 horas, normalmente no se hace.');
+    if (inf.aviso_ia) T.resumen += '<p class="note-sm" style="margin-top:28px">' + esc(inf.aviso_ia) + '</p>';
     if (inf.cv_propuesto && inf.cv_propuesto.nombre !== undefined) {
       cvPropuesto = inf.cv_propuesto;
-      h += '<div id="cv-harvard" class="anchor-harvard"></div>';
-      h += sec('Tu CV, operado', 'Tu hoja de vida en formato Harvard.', '<div class="cvh"><p>Es una propuesta armada solo con tus datos y con todo lo que viste en este informe. Antes de enviarla, ajústala:</p>' + lista([
+      T.harvard += '<div id="cv-harvard" class="anchor-harvard"></div>';
+      T.harvard += sec('Tu CV, operado', 'Tu hoja de vida en formato Harvard.', '<div class="cvh"><p>Es una propuesta armada solo con tus datos y con todo lo que viste en este informe. Antes de enviarla, ajústala:</p>' + lista([
         'Completa lo que está resaltado en amarillo con tus datos reales. Si no tienes el número exacto, usa un estimado honesto. Nunca lo inventes: en la entrevista te lo van a preguntar.',
         'Léela en voz alta. Si una línea no suena a ti, cámbiala. La IA propone y tú decides.',
         'Revisa nombres, fechas y cargos contra tus documentos.',
         'Cuando quede lista, guárdala en PDF para postular, salvo que el aviso pida Word.'
       ]) + '<p class="no-print" style="margin-top:16px"><button class="btn gold" type="button" data-act="docx">Descargar mi CV en Word</button></p><p class="note-sm">Es una propuesta: la versión final que envíes y lo que dice son tuyos. Revísala con calma antes de usarla.</p></div>');
     }
+    h += pestanas(T);
     h += '<div class="signoff"><blockquote>' + fmt(inf.cierre) + '</blockquote><div class="who"><img src="' + ASSETS + '../img/miguel-capuro-160.webp" alt="" width="52" height="52"><div><b>Miguel Capuro</b><span>Líder de Mejorativa · Damos lo que somos. Ni más, ni menos.</span></div></div></div>';
     h += '<div class="next no-print"><a href="https://wa.me/' + (C.whatsapp || '50763454868') + '?text=' + encodeURIComponent('Hola Miguel, ya tengo mi informe de CV en el Quirófano y quiero una sesión 1 a 1 para revisarlo juntos.') + '" target="_blank" rel="noopener"><b>¿Lo revisamos juntos?</b><span>Una sesión 1 a 1 con Miguel para tu CV, tu LinkedIn o tu próxima entrevista. $100 la hora.</span></a><a href="' + ASSETS + '../negociacion/"><b>¿Te llamaron? Negocia tu oferta.</b><span>Cuando llegue la propuesta, el taller Negociar sin Romper te enseña a pedir lo que vales.</span></a><a href="' + ASSETS + '../presentaciones/"><b>Preséntate con seguridad.</b><span>Presentar sin Aburrir: para la entrevista y para lo que viene después.</span></a><a href="' + ASSETS + '../empresas/"><b>¿Tu equipo necesita esto?</b><span>CV en el Quirófano en vivo para tu empresa, universidad o club.</span></a></div>';
     h += '<p class="note-sm">Este informe lo preparó una inteligencia artificial con el método CV en el Quirófano de Mejorativa. Revísalo con criterio: cada línea de tu CV la tienes que poder defender en la entrevista. No garantiza un empleo.</p>';
@@ -316,7 +341,29 @@
   }
 
   function conectarInforme(root, ses) {
+    function irTab(k, foco, subir) {
+      var tab = root.querySelector('.rtab[data-tab="' + k + '"]');
+      if (!tab) return;
+      Array.prototype.forEach.call(root.querySelectorAll('.rtab'), function (t) { var on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
+      Array.prototype.forEach.call(root.querySelectorAll('.rpanel'), function (p) { p.hidden = p.id !== 'rpan-' + k; });
+      var barra = tab.parentNode;
+      barra.scrollTo({ left: tab.offsetLeft - (barra.clientWidth - tab.offsetWidth) / 2, behavior: 'smooth' });
+      var top = root.querySelector('#rtabs-top');
+      // «Siguiente» y «Ver mi CV» siempre llevan al inicio de la parte nueva; tocar una pestaña solo sube si ya pasaste la barra.
+      if (top && (subir || top.getBoundingClientRect().top < 0)) top.scrollIntoView({ block: 'start' });
+      if (foco) tab.focus();
+      track('cv_informe_tab', { tab: k });
+    }
+    root.addEventListener('keydown', function (e) {
+      var t = e.target.closest && e.target.closest('.rtab');
+      if (!t || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+      var all = Array.prototype.slice.call(root.querySelectorAll('.rtab'));
+      var i = all.indexOf(t) + (e.key === 'ArrowRight' ? 1 : -1);
+      e.preventDefault(); irTab(all[(i + all.length) % all.length].getAttribute('data-tab'), true);
+    });
     root.addEventListener('click', function (e) {
+      var tb = e.target.closest('[data-tab],[data-tab-ir]');
+      if (tb) { e.preventDefault(); irTab(tb.getAttribute('data-tab') || tb.getAttribute('data-tab-ir'), false, tb.hasAttribute('data-tab-ir')); return; }
       var b = e.target.closest('[data-copy],[data-act]');
       if (!b) return;
       if (b.hasAttribute('data-copy')) {
@@ -706,10 +753,15 @@
         var cargoInf = (diagActual && diagActual.cargo_objetivo_inferido) || '';
         var h = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
           '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
-        if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Te llega la solicitud de pago a tu app. Tienes 5 minutos para aprobarla.</span></div><div class="yappy-slot" id="yslot"></div></div>';
+        // Paso intermedio (nov. 2026): los botones de pago no aparecen hasta que la persona decide seguir.
+        // Antes, con el correo y el número autocompletados, un toque sin querer al botón de Yappy enviaba la solicitud de cobro.
+        h += '<div class="pay-gate" id="pay-gate"><button class="btn gold" type="button" id="pay-seguir">Continuar al pago</button><p class="fine-w">Todavía no se cobra nada. En el siguiente paso eliges cómo pagar.</p></div>';
+        h += '<div class="pay-metodos" id="pay-metodos" hidden><div class="pay-resumen" id="pay-resumen"></div>';
+        if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Al tocar el botón azul te llega una solicitud a tu app. Solo se cobra si tú la apruebas (tienes 5 minutos).</span></div><div class="yappy-slot" id="yslot"></div></div>';
         if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
         if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Prefieres tarjeta o PayPal?</span></div>';
         if (paypalOn) h += '<div class="paym" id="m-paypal">' + '<p class="pp-t">Paga con tarjeta de crédito o débito, o con tu cuenta PayPal.</p><p class="fine-w" style="margin:-4px 0 10px">Para pagar con tarjeta no necesitas cuenta de PayPal: toca «Tarjeta de débito o crédito».</p>' + '<div class="pp-slot" id="ppslot"></div></div>';
+        h += '</div>';
         h += '<details class="promo"><summary>¿Tienes un código de regalo?</summary><div class="promo-row"><input id="promo" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de regalo" placeholder="Escribe tu código"><button class="btn" type="button" id="promo-btn">Usar código</button></div></details>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;
@@ -759,129 +811,149 @@
             .catch(function (e) { pbtn.disabled = false; fallo(e.message); });
         });
 
-        // Pago manual: Yappy directo a Miguel, que lo confirma desde su panel.
-        if (manualOn) {
-          var wa = C.whatsapp || '50763454868';
-          var verCodigo = function (codigo) {
-            var yappy = c.manual.yappy;
-            var texto = 'Hola Miguel, ya pagué mi informe de CV en el Quirófano. Mi código es ' + codigo + '.';
-            $('#m-manual').innerHTML = '<div class="manual-ok"><span class="label" style="color:#A9B6CB">Tu código</span><div class="code">' + esc(codigo) + '</div>' +
-              '<ol><li>' + (yappy ? 'Envía <b>' + money(precio) + '</b> por Yappy a <b>' + esc(yappy) + '</b>.' : 'Escríbeme por WhatsApp y te paso el Yappy para enviar <b>' + money(precio) + '</b>.') + '</li>' +
-              '<li>Mándame el comprobante por WhatsApp con tu código.</li></ol>' +
-              '<a class="btn gold" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(texto) + '" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>' +
-              '<p class="fine-w">Apenas confirme tu pago, tu informe aparece en esta pantalla y te llega a tu correo. Si cierras esta página, igual te llega.</p></div>';
-            $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>Esperando la confirmación de tu pago</b></div>';
-            poll(ses, pagado, function () { $('#pay-status').innerHTML = ''; }, 3 * 24 * 3600 * 1000, 15000);
-          };
-          var previoManual = store.get('manual');
-          if (previoManual && previoManual.id === ses.id) verCodigo(previoManual.codigo);
-          else $('#manual-btn').addEventListener('click', function () {
-            if (!correoOk()) return;
-            var btn = $('#manual-btn'); btn.disabled = true;
-            alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'manual' });
-            api('/api/pago/manual', datosPago({})).then(function (r) {
-              store.set('manual', { id: ses.id, codigo: r.codigo });
-              verCodigo(r.codigo);
-            }).catch(function (e) { btn.disabled = false; fallo(e.message); });
-          });
-          // Sin return: si PayPal está activo, su botón se monta abajo (antes quedaba el título sin botón).
+        var metodosListos = false;
+        function abrirMetodos(auto) {
+          if (!auto && !correoOk()) return;
+          alerta('#e-pay', '');
+          $('#pay-gate').hidden = true;
+          $('#pay-metodos').hidden = false;
+          $('#pay-resumen').innerHTML = auto ? '' : '<p><b>Tu informe completo: ' + money(precio) + '</b>, pago único.' + (cargo() ? ' Enfocado en ' + esc(cargo()) + '.' : '') + ' Te llega a <b>' + esc(correo()) + '</b>. <button class="pay-cambiar" type="button" id="pay-cambiar">Cambiar</button></p>';
+          var cb = $('#pay-cambiar');
+          if (cb) cb.addEventListener('click', function () { $('#pay-metodos').hidden = true; $('#pay-gate').hidden = false; $('#mail').focus(); });
+          if (!auto) { track('cv_pago_continuar'); $('#pay-metodos').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          if (metodosListos) return;
+          metodosListos = true;
+          montarMetodos();
         }
+        $('#pay-seguir').addEventListener('click', function () { abrirMetodos(false); });
+        // Quien ya pidió su código de pago manual vuelve directo a ver sus instrucciones.
+        if (manualOn && store.get('manual') && store.get('manual').id === ses.id) abrirMetodos(true);
 
-        // Pago simulado (modo demostración o servicio en pruebas)
-        if (demoPago) {
-          var botones = [];
-          var simular = function (btn, metodo) {
-            botones.push(btn);
-            btn.addEventListener('click', function () {
+        function montarMetodos() {
+          // Pago manual: Yappy directo a Miguel, que lo confirma desde su panel.
+          if (manualOn) {
+            var wa = C.whatsapp || '50763454868';
+            var verCodigo = function (codigo) {
+              var yappy = c.manual.yappy;
+              var texto = 'Hola Miguel, ya pagué mi informe de CV en el Quirófano. Mi código es ' + codigo + '.';
+              $('#m-manual').innerHTML = '<div class="manual-ok"><span class="label" style="color:#A9B6CB">Tu código</span><div class="code">' + esc(codigo) + '</div>' +
+                '<ol><li>' + (yappy ? 'Envía <b>' + money(precio) + '</b> por Yappy a <b>' + esc(yappy) + '</b>.' : 'Escríbeme por WhatsApp y te paso el Yappy para enviar <b>' + money(precio) + '</b>.') + '</li>' +
+                '<li>Mándame el comprobante por WhatsApp con tu código.</li></ol>' +
+                '<a class="btn gold" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(texto) + '" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>' +
+                '<p class="fine-w">Apenas confirme tu pago, tu informe aparece en esta pantalla y te llega a tu correo. Si cierras esta página, igual te llega.</p></div>';
+              $('#pay-status').innerHTML = '<div class="wait-box"><span class="spinner"></span><b>Esperando la confirmación de tu pago</b></div>';
+              poll(ses, pagado, function () { $('#pay-status').innerHTML = ''; }, 3 * 24 * 3600 * 1000, 15000);
+            };
+            var previoManual = store.get('manual');
+            if (previoManual && previoManual.id === ses.id) verCodigo(previoManual.codigo);
+            else $('#manual-btn').addEventListener('click', function () {
               if (!correoOk()) return;
-              if (metodo === 'yappy' && !numeroOk()) return;
-              alerta('#e-pay', ''); botones.forEach(function (x) { x.disabled = true; }); track('cv_pago_click', { metodo: metodo });
-              var libre = function () { botones.forEach(function (x) { x.disabled = false; }); };
-              var orden;
-              api(metodo === 'paypal' ? '/api/paypal/crear' : '/api/pago/crear', datosPago(metodo === 'yappy' ? { telefono: numero() } : {}))
-                .then(function (r) {
-                  orden = r;
-                  esperando(metodo);
-                  var sim = metodo === 'paypal' ? window.CVQ_simPayPal : window.CVQ_simYappy;
-                  return sim ? sim(metodo === 'paypal' ? correo() : numero(), precio) : true;
-                })
-                .then(function (aprobado) {
-                  if (!aprobado) { libre(); fallo(metodo === 'paypal' ? 'Cancelaste el pago en PayPal. Puedes intentarlo de nuevo.' : 'El pago no se aprobó en la app. Puedes intentarlo de nuevo.'); return; }
-                  if (metodo === 'paypal') return api('/api/paypal/capturar', datosPago({ paypal_id: orden.paypal_id })).then(pagado);
-                  return api('/api/pago/demo', { method: 'POST', body: { id: ses.id, key: ses.key } }).then(pagado);
-                })
-                .catch(function (e) { libre(); fallo(e.message); });
+              var btn = $('#manual-btn'); btn.disabled = true;
+              alerta('#e-pay', ''); track('cv_pago_click', { metodo: 'manual' });
+              api('/api/pago/manual', datosPago({})).then(function (r) {
+                store.set('manual', { id: ses.id, codigo: r.codigo });
+                verCodigo(r.codigo);
+              }).catch(function (e) { btn.disabled = false; fallo(e.message); });
             });
-          };
-          var nuevoBoton = function (clase, texto, slot) { var b = d.createElement('button'); b.className = clase; b.type = 'button'; b.textContent = texto; $(slot).appendChild(b); return b; };
-          if (yappyOn) simular(nuevoBoton('ybtn', 'Pagar ' + money(precio) + ' con Yappy', '#yslot'), 'yappy');
-          if (paypalOn) simular(nuevoBoton('ppbtn', 'Pagar ' + money(precio) + ' con PayPal', '#ppslot'), 'paypal');
-          $('#pay-status').insertAdjacentHTML('beforebegin', '<p class="fine-w">Pago simulado. En la web real aquí aparecen los botones oficiales de Yappy y PayPal, y el cobro es de verdad.</p>');
-          return;
-        }
+            // Sin return: si PayPal está activo, su botón se monta abajo (antes quedaba el título sin botón).
+          }
 
-        // Yappy
-        if (yappyOn) {
-          loadScript(c.yappy.cdn, true).then(function () {
-            var btn = d.createElement('btn-yappy');
-            btn.setAttribute('theme', 'blue');
-            btn.setAttribute('rounded', 'true');
-            $('#yslot').appendChild(btn);
-            btn.addEventListener('isYappyOnline', function (e) {
-              if (e && e.detail === false) alerta('#e-pay', 'Yappy no está disponible en este momento. Intenta en unos minutos' + (paypalOn ? ' o paga con PayPal.' : ' o escríbeme por WhatsApp.'));
-            });
-            btn.addEventListener('eventClick', function () {
-              if (!correoOk() || !numeroOk()) return;
-              alerta('#e-pay', '');
-              track('cv_pago_click', { metodo: 'yappy' });
-              btn.isButtonLoading = true;
-              api('/api/pago/crear', datosPago({ telefono: numero() })).then(function (r) {
-                btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
-                btn.isButtonLoading = false;
-                esperando('yappy');
-                poll(ses, pagado, fallo);
-              }).catch(function (e) { btn.isButtonLoading = false; fallo(e.message); });
-            });
-            btn.addEventListener('eventSuccess', function () { esperando('yappy'); poll(ses, pagado, fallo, 90 * 1000); });
-            btn.addEventListener('eventError', function () { /* el estado real llega por el IPN: el sondeo decide */ });
-          }).catch(function () {
-            alerta('#e-pay', 'No pudimos cargar el botón de Yappy. Revisa tu conexión y recarga la página.');
-          });
-        }
+          // Pago simulado (modo demostración o servicio en pruebas)
+          if (demoPago) {
+            var botones = [];
+            var simular = function (btn, metodo) {
+              botones.push(btn);
+              btn.addEventListener('click', function () {
+                if (!correoOk()) return;
+                if (metodo === 'yappy' && !numeroOk()) return;
+                alerta('#e-pay', ''); botones.forEach(function (x) { x.disabled = true; }); track('cv_pago_click', { metodo: metodo });
+                var libre = function () { botones.forEach(function (x) { x.disabled = false; }); };
+                var orden;
+                api(metodo === 'paypal' ? '/api/paypal/crear' : '/api/pago/crear', datosPago(metodo === 'yappy' ? { telefono: numero() } : {}))
+                  .then(function (r) {
+                    orden = r;
+                    esperando(metodo);
+                    var sim = metodo === 'paypal' ? window.CVQ_simPayPal : window.CVQ_simYappy;
+                    return sim ? sim(metodo === 'paypal' ? correo() : numero(), precio) : true;
+                  })
+                  .then(function (aprobado) {
+                    if (!aprobado) { libre(); fallo(metodo === 'paypal' ? 'Cancelaste el pago en PayPal. Puedes intentarlo de nuevo.' : 'El pago no se aprobó en la app. Puedes intentarlo de nuevo.'); return; }
+                    if (metodo === 'paypal') return api('/api/paypal/capturar', datosPago({ paypal_id: orden.paypal_id })).then(pagado);
+                    return api('/api/pago/demo', { method: 'POST', body: { id: ses.id, key: ses.key } }).then(pagado);
+                  })
+                  .catch(function (e) { libre(); fallo(e.message); });
+              });
+            };
+            var nuevoBoton = function (clase, texto, slot) { var b = d.createElement('button'); b.className = clase; b.type = 'button'; b.textContent = texto; $(slot).appendChild(b); return b; };
+            if (yappyOn) simular(nuevoBoton('ybtn', 'Pagar ' + money(precio) + ' con Yappy', '#yslot'), 'yappy');
+            if (paypalOn) simular(nuevoBoton('ppbtn', 'Pagar ' + money(precio) + ' con PayPal', '#ppslot'), 'paypal');
+            $('#pay-status').insertAdjacentHTML('beforebegin', '<p class="fine-w">Pago simulado. En la web real aquí aparecen los botones oficiales de Yappy y PayPal, y el cobro es de verdad.</p>');
+            return;
+          }
 
-        // PayPal: el navegador solo aprueba; el servicio captura y verifica el cobro.
-        if (paypalOn) {
-          var sdk = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.paypal.client_id) + '&currency=USD&intent=capture&components=buttons&disable-funding=paylater,venmo';
-          loadScript(sdk).then(function () {
-            var ultimoError = '';
-            window.paypal.Buttons({
-              style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
-              onClick: function (data, actions) {
-                if (!correoOk()) return actions.reject();
-                alerta('#e-pay', ''); ultimoError = '';
-                track('cv_pago_click', { metodo: 'paypal' });
-                return actions.resolve();
-              },
-              createOrder: function () {
-                return api('/api/paypal/crear', datosPago({})).then(function (r) { return r.paypal_id; })
-                  .catch(function (e) { ultimoError = e.message; throw e; });
-              },
-              onApprove: function (data, actions) {
-                esperando('paypal');
-                return api('/api/paypal/capturar', datosPago({ paypal_id: data.orderID })).then(function (r) {
-                  if (r.pendiente) { enRevision(); return; }
-                  pagado();
-                }).catch(function (e) {
-                  if (e.code === 'paypal_declinado') { fallo(e.message); return actions.restart(); }
-                  fallo(e.message);
-                });
-              },
-              onCancel: function () { fallo('Cancelaste el pago en PayPal. Puedes intentarlo de nuevo cuando quieras.'); },
-              onError: function () { fallo(ultimoError || ('PayPal no pudo procesar el pago. Intenta de nuevo' + (yappyOn ? ' o paga con Yappy.' : '.'))); }
-            }).render('#ppslot');
-          }).catch(function () {
-            $('#ppslot').innerHTML = '<p class="fine-w">No pudimos cargar PayPal. Revisa tu conexión' + (yappyOn ? ' o paga con Yappy.' : ' y recarga la página.') + '</p>';
-          });
+          // Yappy
+          if (yappyOn) {
+            loadScript(c.yappy.cdn, true).then(function () {
+              var btn = d.createElement('btn-yappy');
+              btn.setAttribute('theme', 'blue');
+              btn.setAttribute('rounded', 'true');
+              $('#yslot').appendChild(btn);
+              btn.addEventListener('isYappyOnline', function (e) {
+                if (e && e.detail === false) alerta('#e-pay', 'Yappy no está disponible en este momento. Intenta en unos minutos' + (paypalOn ? ' o paga con PayPal.' : ' o escríbeme por WhatsApp.'));
+              });
+              btn.addEventListener('eventClick', function () {
+                if (!correoOk() || !numeroOk()) return;
+                alerta('#e-pay', '');
+                track('cv_pago_click', { metodo: 'yappy' });
+                btn.isButtonLoading = true;
+                api('/api/pago/crear', datosPago({ telefono: numero() })).then(function (r) {
+                  btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
+                  btn.isButtonLoading = false;
+                  esperando('yappy');
+                  poll(ses, pagado, fallo);
+                }).catch(function (e) { btn.isButtonLoading = false; fallo(e.message); });
+              });
+              btn.addEventListener('eventSuccess', function () { esperando('yappy'); poll(ses, pagado, fallo, 90 * 1000); });
+              btn.addEventListener('eventError', function () { /* el estado real llega por el IPN: el sondeo decide */ });
+            }).catch(function () {
+              alerta('#e-pay', 'No pudimos cargar el botón de Yappy. Revisa tu conexión y recarga la página.');
+            });
+          }
+
+          // PayPal: el navegador solo aprueba; el servicio captura y verifica el cobro.
+          if (paypalOn) {
+            var sdk = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.paypal.client_id) + '&currency=USD&intent=capture&components=buttons&disable-funding=paylater,venmo';
+            loadScript(sdk).then(function () {
+              var ultimoError = '';
+              window.paypal.Buttons({
+                style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 48 },
+                onClick: function (data, actions) {
+                  if (!correoOk()) return actions.reject();
+                  alerta('#e-pay', ''); ultimoError = '';
+                  track('cv_pago_click', { metodo: 'paypal' });
+                  return actions.resolve();
+                },
+                createOrder: function () {
+                  return api('/api/paypal/crear', datosPago({})).then(function (r) { return r.paypal_id; })
+                    .catch(function (e) { ultimoError = e.message; throw e; });
+                },
+                onApprove: function (data, actions) {
+                  esperando('paypal');
+                  return api('/api/paypal/capturar', datosPago({ paypal_id: data.orderID })).then(function (r) {
+                    if (r.pendiente) { enRevision(); return; }
+                    pagado();
+                  }).catch(function (e) {
+                    if (e.code === 'paypal_declinado') { fallo(e.message); return actions.restart(); }
+                    fallo(e.message);
+                  });
+                },
+                onCancel: function () { fallo('Cancelaste el pago en PayPal. Puedes intentarlo de nuevo cuando quieras.'); },
+                onError: function () { fallo(ultimoError || ('PayPal no pudo procesar el pago. Intenta de nuevo' + (yappyOn ? ' o paga con Yappy.' : '.'))); }
+              }).render('#ppslot');
+            }).catch(function () {
+              $('#ppslot').innerHTML = '<p class="fine-w">No pudimos cargar PayPal. Revisa tu conexión' + (yappyOn ? ' o paga con Yappy.' : ' y recarga la página.') + '</p>';
+            });
+          }
         }
       });
     }

@@ -475,3 +475,33 @@ html{scroll-behavior:smooth}
 .pay .pay-ej{margin:4px 0 14px}
 .pay .pay-ej a{color:#fff;font-weight:700;text-decoration:underline}
 .pay .pay-ej span{color:#A9B6CB;font-size:.85rem}
+
+/* Pago en dos pasos: primero «Continuar al pago», después los botones oficiales (nov. 2026) */
+.pay-gate{display:grid;gap:8px;justify-items:start}
+.pay-gate .btn{min-width:min(100%,320px)}
+.pay-metodos{display:grid;gap:16px;scroll-margin-top:96px}
+.pay-resumen:empty{display:none}
+.pay-resumen p{margin:0;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#E3E8F0;font-size:.95rem;line-height:1.5}
+.pay-resumen b{color:#fff}
+.pay-cambiar{font:inherit;font-size:.88rem;font-weight:600;background:none;border:0;padding:0 0 0 4px;color:var(--gold-bright);text-decoration:underline;cursor:pointer}
+
+/* Informe por pestañas: se lee por partes; al imprimir se ven todas */
+.rtabs-wrap{margin-top:clamp(28px,4vw,40px);scroll-margin-top:76px}
+.rtabs-guia{margin:0 0 10px;color:var(--muted);font-size:.92rem}
+.rtabs{position:sticky;top:84px;z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px;border-radius:18px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);box-shadow:0 14px 30px -24px rgba(11,31,58,.5)}
+.rtabs::-webkit-scrollbar{display:none}
+.rtab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.92rem;font-weight:600;white-space:nowrap;padding:10px 14px;border-radius:12px;border:0;background:transparent;color:var(--muted);cursor:pointer;transition:background .25s var(--ease),color .25s var(--ease)}
+.rtab .n{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface);color:var(--ink);font-size:.78rem}
+.rtab:hover{color:var(--ink);background:var(--surface)}
+.rtab[aria-selected="true"]{background:var(--ink);color:#fff}
+.rtab[aria-selected="true"] .n{background:var(--gold-bright);color:var(--ink)}
+.rtab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.rpanel{outline:none}
+.rpanel-intro{margin:22px 0 0;padding:14px 16px;border-radius:14px;background:var(--surface);color:var(--text);font-size:.95rem}
+.rpanel > .rep-sec:first-of-type{margin-top:28px}
+.rpanel-next{margin-top:clamp(32px,4vw,44px);display:flex;justify-content:flex-end}
+@media (max-width:640px){.rpanel-next .btn{width:100%;justify-content:center}}
+@media print{
+  .rtabs-wrap{margin:0}
+  .rpanel[hidden]{display:block!important}
+}
