@@ -13,8 +13,9 @@
 
   function ver(id, si) { $(id).hidden = !si; }
   function error(id, t) { $(id).textContent = t || ''; }
-  function guardar(v) { try { if (v) sessionStorage.setItem(KEY, JSON.stringify(v)); else sessionStorage.removeItem(KEY); } catch (e) { /* sin almacenamiento: sigue en memoria */ } }
-  function leer() { try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+  // Se guarda en este navegador para que quien se registró hoy pueda volver otro día directo al pago.
+  function guardar(v) { try { if (v) localStorage.setItem(KEY, JSON.stringify(v)); else localStorage.removeItem(KEY); } catch (e) { /* sin almacenamiento: sigue en memoria */ } }
+  function leer() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
   function pixel(ev, datos, id) { try { if (window.mjPixel) window.mjPixel(ev, datos, id); } catch (e) { /* nada */ } }
 
   function api(ruta, cuerpo) {
@@ -38,32 +39,37 @@
   // ---------- Paso 1 ----------
   function paso1() {
     ver('tn-cargando', false); ver('tn-f2', false); ver('tn-msg', false); ver('tn-f1', true);
-    if (cfg.agotado) $('tn-b1').textContent = 'Avísame si se libera un cupo';
+    if (cfg.agotado) { $('tn-b1').textContent = 'Avísame si se libera un cupo'; $('tn-f1').querySelector('.tn-step').hidden = true; }
     if (cfg.turnstile && tsId === null) {
       window.tnTsListo = function () {
-        tsId = window.turnstile.render('#tn-ts', { sitekey: cfg.turnstile, language: 'es', callback: function (t) { tsToken = t; error('tn-e1', ''); }, 'expired-callback': function () { tsToken = null; } });
+        tsId = window.turnstile.render('#tn-ts', { sitekey: cfg.turnstile, language: 'es', appearance: 'interaction-only', callback: function (t) { tsToken = t; error('tn-e1', ''); if (pendiente) { pendiente = false; registrar(); } }, 'expired-callback': function () { tsToken = null; } });
       };
       script('https://challenges.cloudflare.com/turnstile/v0/api.js?onload=tnTsListo&render=explicit').catch(function () {
         error('tn-e1', 'No cargó la verificación anti-robots. Recarga la página.');
       });
     }
   }
-  $('tn-f1').addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var nombre = $('tn-nombre').value.trim(), correo = $('tn-correo').value.trim();
-    if (nombre.length < 2) { error('tn-e1', 'Escribe tu nombre, así sale en tu certificado.'); $('tn-nombre').focus(); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { error('tn-e1', 'Revisa tu correo: ahí te llega la confirmación.'); $('tn-correo').focus(); return; }
-    if (cfg.turnstile && !tsToken) { error('tn-e1', 'Te falta la verificación: espera el visto bueno del recuadro y vuelve a tocar el botón.'); return; }
+  var pendiente = false;
+  function registrar() {
+    var correo = $('tn-correo').value.trim(), wa = $('tn-wa').value.trim();
     error('tn-e1', ''); $('tn-b1').disabled = true;
-    api('/taller/api/interes', { nombre: nombre, correo: correo, novedades: $('tn-nov').checked, turnstile: tsToken }).then(function (r) {
-      ses = { id: r.id, key: r.key, nombre: nombre }; guardar(ses);
+    api('/taller/api/interes', { correo: correo, whatsapp: wa, turnstile: tsToken }).then(function (r) {
+      ses = { id: r.id, key: r.key, wa: wa.replace(/\D/g, '').replace(/^507/, '') }; guardar(ses);
       pixel('Lead', { content_name: 'Taller de Negociación Inteligente 19 dic' }, 'tn19-lead-' + r.id);
-      if (r.agotado || cfg.agotado) { guardar(null); mensaje('<b>Los 14 cupos ya se llenaron.</b> Tengo tus datos, ' + esc(nombre.split(' ')[0]) + ': si se libera uno, te escribo.'); return; }
+      if (r.agotado || cfg.agotado) { guardar(null); mensaje('<b>Los 14 cupos ya se llenaron.</b> Ya tengo tu correo: si se libera uno, te escribo.'); return; }
       paso2();
     }).catch(function (e) {
       $('tn-b1').disabled = false; error('tn-e1', e.message);
       if (window.turnstile && tsId !== null) { try { window.turnstile.reset(tsId); } catch (x) { /* nada */ } tsToken = null; }
     });
+  }
+  $('tn-f1').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var correo = $('tn-correo').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { error('tn-e1', 'Revisa tu correo: ahí te guardo el bono.'); $('tn-correo').focus(); return; }
+    // La verificación anti-robots corre sola en segundo plano: si aún no termina, el registro sale apenas termine.
+    if (cfg.turnstile && !tsToken) { pendiente = true; $('tn-b1').disabled = true; error('tn-e1', ''); setTimeout(function () { if (pendiente) { pendiente = false; $('tn-b1').disabled = false; error('tn-e1', 'Te falta la verificación anti-robots: complétala en el recuadro y vuelve a tocar el botón.'); } }, 12000); return; }
+    registrar();
   });
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -75,7 +81,7 @@
   });
   function paso2() {
     ver('tn-cargando', false); ver('tn-f1', false); ver('tn-msg', false); ver('tn-f2', true);
-    $('tn-hola').textContent = 'Listo, ' + ses.nombre.split(' ')[0] + '. Falta el pago y tu cupo queda confirmado.';
+    if (ses.wa && /^6\d{7}$/.test(ses.wa) && !$('tn-tel').value) $('tn-tel').value = ses.wa.slice(0, 4) + '-' + ses.wa.slice(4);
     if (!cfg.yappy) { $('tn-yslot').innerHTML = '<p class="tn-note">El pago por Yappy no está disponible en este momento. ' + enlaceWA('Hola Miguel, quiero pagar mi cupo del taller del 19 de diciembre.') + ' y lo resolvemos.</p>'; return; }
     if ($('tn-yslot').firstChild) return;
     script(cfg.yappy.cdn, true).then(function () {
@@ -84,10 +90,11 @@
       $('tn-yslot').appendChild(btn);
       btn.addEventListener('isYappyOnline', function (e) { if (e && e.detail === false) error('tn-e2', 'Yappy no está disponible en este momento. Intenta en unos minutos.'); });
       btn.addEventListener('eventClick', function () {
+        if ($('tn-nombre').value.trim().length < 2) { error('tn-e2', 'Escribe tu nombre y apellido: así sale en tu certificado.'); $('tn-nombre').focus(); return; }
         if (!/^6\d{7}$/.test(telefono())) { error('tn-e2', 'Escribe tu número de celular de Yappy: 8 dígitos, empieza con 6.'); $('tn-tel').focus(); return; }
         error('tn-e2', ''); btn.isButtonLoading = true;
         pixel('InitiateCheckout', { value: cfg.precio, currency: 'USD' });
-        api('/taller/api/yappy/crear', { id: ses.id, key: ses.key, telefono: telefono() }).then(function (r) {
+        api('/taller/api/yappy/crear', { id: ses.id, key: ses.key, nombre: $('tn-nombre').value.trim(), telefono: telefono() }).then(function (r) {
           btn.eventPayment({ transactionId: r.transactionId, documentName: r.documentName, token: r.token });
           btn.isButtonLoading = false;
           esperar();

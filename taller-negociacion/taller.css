@@ -57,6 +57,7 @@ h1 span{display:block;margin-top:.32em;font-stretch:100%;font-weight:300;font-st
 .tn-step i{font-style:normal;font-weight:500;color:var(--muted)}
 .tn-step b + i,.tn-step i:last-child{margin-left:auto}
 .tn-card label{display:block;margin-top:12px;font-size:.86rem;font-weight:700;color:var(--ink)}
+.tn-card label em{font-style:normal;font-weight:400;color:var(--muted)}
 .tn-card input[type=text],.tn-card input[type=email],.tn-card input[type=tel]{width:100%;margin-top:5px;padding:13px 14px;border:1.5px solid #C3CCDA;border-radius:12px;font:inherit;font-size:1rem;color:var(--ink);background:#fff}
 .tn-card input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px var(--sky-2)}
 .tn-tel{display:flex;align-items:stretch;gap:8px;margin-top:5px}
