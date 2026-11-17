@@ -337,7 +337,8 @@ button.btn{border:0;font-family:inherit;cursor:pointer}
 .signoff .who img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:50% 20%}
 .signoff .who b{display:block;color:var(--ink)}
 .signoff .who span{color:var(--muted);font-size:.9rem}
-.next{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.next{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:900px){.next{grid-template-columns:1fr 1fr}}
 .next > a{display:block;padding:22px;border-radius:20px;border:1px solid var(--line);text-decoration:none;color:inherit;transition:border-color .3s var(--ease)}
 .next > a:hover{border-color:var(--ink)}
 .next b{display:block;color:var(--ink);font-size:1.1rem;margin-bottom:6px}
