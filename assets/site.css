@@ -788,3 +788,5 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
 @media (max-height:640px){.sheet a{padding-block:10px;font-size:clamp(1.2rem,5vw,1.6rem)}}
 @media (max-width:560px){.island.con-here .brand b{display:none}.island.con-here .here{max-width:none}.island.con-here{gap:12px}}
 @media (max-width:340px){.island.con-here .here{max-width:46vw}}
+
+.rel{padding-block:clamp(36px,4vw,56px);border-top:1px solid var(--line)}.rel h2{font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}.rel ul{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0;padding:0;list-style:none}.rel li{font-size:.98rem}
