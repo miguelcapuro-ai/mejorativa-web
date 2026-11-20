@@ -259,6 +259,86 @@
       </div>
     </div>
   </section>
+  <section class="rv" aria-labelledby="h-rv">
+    <style>
+      .rv{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 85% -10%,#1d3f73 0%,#0B1F3A 55%,#071427 100%);color:#fff;padding:clamp(72px,10vw,128px) 0 clamp(64px,8vw,104px)}
+      .rv::before{content:"";position:absolute;inset:auto -10% -40% auto;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(210,174,102,.18),transparent 60%);pointer-events:none}
+      .rv .wrap{position:relative}
+      .rv-top{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,72px);align-items:end}
+      .rv-score{font-stretch:68%;font-weight:800;font-size:clamp(6rem,16vw,13rem);line-height:.8;color:var(--gold-bright);letter-spacing:-.02em}
+      .rv-stars{display:flex;gap:6px;margin-top:14px;color:var(--gold-bright);font-size:1.4rem;letter-spacing:.1em}
+      .rv-meta{font-size:.9rem;color:rgba(255,255,255,.7);margin-top:8px}
+      .rv h2{color:#fff;font-stretch:68%;font-weight:800;text-transform:uppercase;line-height:.92;font-size:clamp(2.4rem,5.4vw,4.6rem);letter-spacing:-.005em}
+      .rv h2 em{font-style:italic;font-weight:300;text-transform:none;font-stretch:100%;color:var(--gold-bright);display:block;font-size:.55em;margin-top:.35em;letter-spacing:0}
+      .rv-hero{margin:clamp(48px,7vw,88px) 0 0;max-width:30ch;font-size:clamp(1.7rem,3.6vw,3rem);line-height:1.12;font-weight:300;font-style:italic;color:#fff}
+      .rv-hero blockquote{margin:0}
+      .rv-hero mark{background:none;color:var(--gold-bright);font-weight:600}
+      .rv-hero figcaption{font-style:normal;font-size:.95rem;font-weight:400;color:rgba(255,255,255,.7);margin-top:18px}
+      .rv-hero figcaption b{color:#fff;font-weight:700}
+      .rv-belt{margin-top:clamp(48px,6vw,80px);display:grid;gap:14px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+      .rv-row{display:flex;gap:14px;width:max-content}
+      .rv-card{flex:none;max-width:420px;padding:18px 22px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+      .rv-card q{display:block;quotes:"“" "”";font-size:1.05rem;line-height:1.4;color:#fff}
+      .rv-card span{display:block;margin-top:10px;font-size:.8rem;color:rgba(255,255,255,.62)}
+      .rv-card span::before{content:"★★★★★ ";color:var(--gold-bright);letter-spacing:.08em}
+      .rv-cta{margin-top:clamp(40px,5vw,64px);display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center}
+      .rv-cta .link{color:#fff;border-color:rgba(255,255,255,.35)}
+      .rv-cta .link:hover{border-color:#fff}
+      @media (prefers-reduced-motion:no-preference){
+        .rv-row{animation:rvL 46s linear infinite}
+        .rv-row.r{animation-name:rvR;animation-duration:54s}
+        .rv-belt:hover .rv-row{animation-play-state:paused}
+        @keyframes rvL{to{transform:translateX(-50%)}}
+        @keyframes rvR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+      }
+      @media (prefers-reduced-motion:reduce){.rv-row{flex-wrap:wrap;width:auto}.rv-row [aria-hidden]{display:none}.rv-belt{mask-image:none;-webkit-mask-image:none}}
+      @media (max-width:720px){.rv-top{grid-template-columns:1fr;align-items:start}.rv-card{max-width:300px}}
+    </style>
+    <div class="wrap">
+      <div class="rv-top">
+        <div>
+          <div class="rv-score" aria-hidden="true">5.0</div>
+          <div class="rv-stars" aria-hidden="true">★★★★★</div>
+          <p class="rv-meta">21 reseñas en Google · todas de 5 estrellas</p>
+        </div>
+        <h2 id="h-rv">Salieron de la sala y lo escribieron.<em>Sin guion. Sin filtro. Tal cual en Google.</em></h2>
+      </div>
+
+      <figure class="rv-hero">
+        <blockquote>“Los casos de la vida real ayudaron a abrir la perspectiva a la negociación para <mark>darle a la contraparte lo que quiere en mis términos</mark>.”</blockquote>
+        <figcaption><b>Zeylineth C.</b> · Reseña en Google</figcaption>
+      </figure>
+
+      <div class="rv-belt" aria-label="Reseñas de participantes en Google">
+        <div class="rv-row">
+          <div class="rv-card"><q>Te permite entender que muchas veces solo manejas una pequeña parte del problema.</q><span>Omar G.</span></div>
+          <div class="rv-card"><q>Muy dinámico y muy sincero.</q><span>Jaime E.</span></div>
+          <div class="rv-card"><q>¡ESPECTACULAR! MUY ENTRETENIDO</q><span>Liliana S.</span></div>
+          <div class="rv-card"><q>Ejemplos claros y cotidianos que nos invitan a reflexionar.</q><span>Safety Garage</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Te permite entender que muchas veces solo manejas una pequeña parte del problema.</q><span>Omar G.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Muy dinámico y muy sincero.</q><span>Jaime E.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>¡ESPECTACULAR! MUY ENTRETENIDO</q><span>Liliana S.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Ejemplos claros y cotidianos que nos invitan a reflexionar.</q><span>Safety Garage</span></div>
+        </div>
+        <div class="rv-row r">
+          <div class="rv-card"><q>Se recomienda al 1000 porciento.</q><span>Jonathan V.</span></div>
+          <div class="rv-card"><q>Excelente el trabajo y presentación de Miguel y el equipo.</q><span>Federico V.</span></div>
+          <div class="rv-card"><q>Excelente buenas ideas que pondré en práctica.</q><span>Carlos T.</span></div>
+          <div class="rv-card"><q>Súper entretenido y interactivo.</q><span>Omar G.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Se recomienda al 1000 porciento.</q><span>Jonathan V.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Excelente el trabajo y presentación de Miguel y el equipo.</q><span>Federico V.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Excelente buenas ideas que pondré en práctica.</q><span>Carlos T.</span></div>
+          <div class="rv-card" aria-hidden="true"><q>Súper entretenido y interactivo.</q><span>Omar G.</span></div>
+        </div>
+      </div>
+
+      <div class="rv-cta">
+        <a class="btn light" href="https://g.page/r/CSGphZiwwJBTEAE/review" target="_blank" rel="noopener" data-where="rv-dejar">¿Estuviste en la sala? Deja la tuya <span class="arr"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        <a class="link" href="https://www.google.com/search?q=Mejorativa+Panam%C3%A1+rese%C3%B1as" target="_blank" rel="noopener">Ver todas en Google</a>
+      </div>
+    </div>
+  </section>
+
   <section class="sec about tint" id="mejorativa" aria-labelledby="h-mig">
     <div class="wrap">
       <figure class="portrait">
