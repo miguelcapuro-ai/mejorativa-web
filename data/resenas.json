@@ -1,0 +1,16 @@
+{
+  "_nota": "Fuente: Perfil de Negocio de Google de Mejorativa. Actualizar 'total' y 'calificacion' y agregar reseñas nuevas con texto; luego correr: python3 scripts/resenas.py",
+  "total": 21,
+  "calificacion": "5.0",
+  "actualizado": "2026-11-19",
+  "banner": [
+    {"autor": "Zeylineth C.", "texto": "Darle a la contraparte lo que quiere en mis términos."},
+    {"autor": "Omar G.", "texto": "Muchas veces solo manejas una pequeña parte del problema."},
+    {"autor": "Jaime E.", "texto": "Muy dinámico y muy sincero."},
+    {"autor": "Liliana S.", "texto": "¡ESPECTACULAR! MUY ENTRETENIDO"},
+    {"autor": "Safety Garage", "texto": "Ejemplos claros y cotidianos que nos invitan a reflexionar."},
+    {"autor": "Jonathan V.", "texto": "Se recomienda al 1000 porciento."},
+    {"autor": "Federico V.", "texto": "Excelente el trabajo y presentación de Miguel y el equipo."},
+    {"autor": "Carlos T.", "texto": "Excelente buenas ideas que pondré en práctica."}
+  ]
+}

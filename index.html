@@ -107,6 +107,23 @@
     </div>
   </section>
 
+  <style>
+    .rt{display:flex;align-items:center;gap:0;background:#F7F1E3;color:#0B1F3A;text-decoration:none;overflow:hidden;border-block:1px solid rgba(138,104,41,.35)}
+    .rt-badge{flex:none;position:relative;z-index:2;padding:14px clamp(14px,2.4vw,26px);background:#F7F1E3;font-size:.9rem;white-space:nowrap;box-shadow:12px 0 18px -6px #F7F1E3}
+    .rt-badge b{color:#8A6829;font-weight:800;font-size:1.05rem}
+    .rt-belt{flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+    .rt-row{display:flex;gap:44px;width:max-content;margin:0;padding:14px 0;list-style:none}
+    .rt-row li{white-space:nowrap;font-size:.98rem;font-style:italic;color:#0B1F3A}
+    .rt-row li b{font-style:normal;font-weight:600;color:#5D6677;font-size:.85rem;margin-left:6px}
+    .rt-row .st{color:#8A6829;font-style:normal;letter-spacing:.06em;margin-right:8px;font-size:.8rem}
+    .rt-go{flex:none;position:relative;z-index:2;padding:14px clamp(14px,2.4vw,26px);background:#0B1F3A;color:#fff;font-weight:700;font-size:.88rem;white-space:nowrap}
+    .rt:hover .rt-go{background:#13305A}
+    @media (prefers-reduced-motion:no-preference){.rt-row{animation:rtR 60s linear infinite}.rt:hover .rt-row{animation-play-state:paused}@keyframes rtR{from{transform:translateX(-50%)}to{transform:translateX(0)}}}
+    @media (prefers-reduced-motion:reduce){.rt-row li[aria-hidden]{display:none}}
+    @media (max-width:640px){.rt-go{display:none}.rt-badge{font-size:.8rem;padding:12px 12px}.rt-row{padding:12px 0}}
+  </style>
+  <!-- RESENAS:BANNER --><a class="rt" href="#resenas" aria-label="5.0 estrellas en Google con 21 reseñas. Ver lo que dicen los participantes"><span class="rt-badge"><b>★ 5.0</b> en Google · 21 reseñas</span><span class="rt-belt"><ul class="rt-row"><li><span class="st" aria-hidden="true">★★★★★</span>“Darle a la contraparte lo que quiere en mis términos.” <b>Zeylineth C.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Muchas veces solo manejas una pequeña parte del problema.” <b>Omar G.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Muy dinámico y muy sincero.” <b>Jaime E.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“¡ESPECTACULAR! MUY ENTRETENIDO” <b>Liliana S.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Ejemplos claros y cotidianos que nos invitan a reflexionar.” <b>Safety Garage</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Se recomienda al 1000 porciento.” <b>Jonathan V.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Excelente el trabajo y presentación de Miguel y el equipo.” <b>Federico V.</b></li><li><span class="st" aria-hidden="true">★★★★★</span>“Excelente buenas ideas que pondré en práctica.” <b>Carlos T.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Darle a la contraparte lo que quiere en mis términos.” <b>Zeylineth C.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Muchas veces solo manejas una pequeña parte del problema.” <b>Omar G.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Muy dinámico y muy sincero.” <b>Jaime E.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“¡ESPECTACULAR! MUY ENTRETENIDO” <b>Liliana S.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Ejemplos claros y cotidianos que nos invitan a reflexionar.” <b>Safety Garage</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Se recomienda al 1000 porciento.” <b>Jonathan V.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Excelente el trabajo y presentación de Miguel y el equipo.” <b>Federico V.</b></li><li aria-hidden="true"><span class="st" aria-hidden="true">★★★★★</span>“Excelente buenas ideas que pondré en práctica.” <b>Carlos T.</b></li></ul></span><span class="rt-go">Leer reseñas ↓</span></a><!-- /RESENAS:BANNER -->
+
   <div class="phrases" aria-label="Frases de Mejorativa. Toca una frase para ver la pregunta que esconde.">
     <span class="phrases-hint" aria-hidden="true">Toca una frase</span>
     <div class="track">
@@ -259,7 +276,7 @@
       </div>
     </div>
   </section>
-  <section class="rv" aria-labelledby="h-rv">
+  <section class="rv" id="resenas" aria-labelledby="h-rv">
     <style>
       .rv{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 85% -10%,#1d3f73 0%,#0B1F3A 55%,#071427 100%);color:#fff;padding:clamp(72px,10vw,128px) 0 clamp(64px,8vw,104px)}
       .rv::before{content:"";position:absolute;inset:auto -10% -40% auto;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(210,174,102,.18),transparent 60%);pointer-events:none}
@@ -297,9 +314,9 @@
     <div class="wrap">
       <div class="rv-top">
         <div>
-          <div class="rv-score" aria-hidden="true">5.0</div>
+          <div class="rv-score" aria-hidden="true"><!-- RESENAS:SCORE -->5.0<!-- /RESENAS:SCORE --></div>
           <div class="rv-stars" aria-hidden="true">★★★★★</div>
-          <p class="rv-meta">21 reseñas en Google · todas de 5 estrellas</p>
+          <p class="rv-meta"><!-- RESENAS:META -->21 reseñas en Google<!-- /RESENAS:META --> · calificación promedio</p>
         </div>
         <h2 id="h-rv">Salieron de la sala y lo escribieron.<em>Sin guion. Sin filtro. Tal cual en Google.</em></h2>
       </div>
