@@ -464,7 +464,7 @@
     var nombre = file.name || 'archivo';
     var ext = (nombre.split('.').pop() || '').toLowerCase();
     function falla(motivo, msg) { return Object.assign(new Error(msg), { motivo: motivo }); }
-    if (file.size > 2 * 1024 * 1024) return Promise.reject(falla('pesado', 'Tu archivo pesa más de 2 MB. ¿Venía con certificados o anexos? Sube solo tu hoja de vida. Si aun así pesa mucho, guárdala de nuevo como PDF desde Word o Google Docs.'));
+    if (file.size > 5 * 1024 * 1024) return Promise.reject(falla('pesado', 'Tu archivo pesa más de 5 MB. ¿Venía con certificados o anexos? Sube solo tu hoja de vida. Si aun así pesa mucho, guárdala de nuevo como PDF desde Word o Google Docs.'));
     if (ext === 'doc') return Promise.reject(falla('doc_antiguo', 'Los archivos .doc antiguos no se pueden leer. Guárdalo como PDF o como .docx.'));
     var esPDF = ext === 'pdf' || file.type === 'application/pdf';
     var esDOCX = ext === 'docx';
