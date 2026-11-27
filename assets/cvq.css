@@ -560,3 +560,6 @@ body:has(#p-diag[hidden]) .cta-fija{display:none!important}
 .tplayer figcaption span{display:block;margin-top:8px;font-size:.88rem;color:#C3CCDA}
 @media (max-width:860px){.testi .wrap{grid-template-columns:1fr;grid-template-areas:"head" "player" "cta";row-gap:clamp(32px,6vw,48px)}}
 @media (max-width:420px){.tp-row{gap:14px}.tp-btn.play{width:56px;height:56px}.tp-wave{gap:2px;height:48px}}
+
+/* Factura a nombre de empresa (solo Panamá) */
+.fac{margin:4px 0 14px}.fac-check{display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer;padding:6px 0}.fac-check input{width:20px;height:20px;accent-color:#D2AE66}.fac-row{display:grid;grid-template-columns:1fr 96px;gap:12px;align-items:end}#fac-datos{margin-top:8px}.fac .fine-w{margin-top:8px}
