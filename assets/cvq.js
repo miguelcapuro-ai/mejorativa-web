@@ -42,6 +42,16 @@
   }
   function money(n) { var v = Number(n || 0); return '$' + (v % 1 ? v.toFixed(2) : String(v)); }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  // Navegador interno de una app (nov. 2026): dentro de Instagram o Facebook la ventana de PayPal a veces
+  // se abre y se cierra sola. Se usa para avisar a la persona y para medirlo en el panel (sin datos personales).
+  function navApp() {
+    var ua = navigator.userAgent || '';
+    if (/Instagram/i.test(ua)) return 'instagram';
+    if (/FBAN|FBAV|FB_IAB|FBIOS|FB4A|Messenger/i.test(ua)) return 'facebook';
+    if (/TikTok|musical_ly|BytedanceWebview|LinkedInApp|Snapchat|Twitter|Line\//i.test(ua)) return 'otra_app';
+    return '';
+  }
+  var NAV = navApp();
   function track(ev, data) { try { if (window.umami) window.umami.track(ev, data); } catch (e) { /* nada */ } }
   var store = {
     get: function (k) { try { return JSON.parse(sessionStorage.getItem('cvq:' + k)); } catch (e) { return null; } },
@@ -803,6 +813,42 @@
       }, cada || 3000);
     }
 
+    // Aviso dentro de Instagram, Facebook y otras apps: ahí la ventana de PayPal a veces no abre.
+    // El enlace que se copia retoma la misma revisión en Chrome o Safari (la sesión viaja en el #).
+    function avisoApp(yappyOn) {
+      if (!NAV) return '';
+      var app = NAV === 'instagram' ? 'Instagram' : NAV === 'facebook' ? 'Facebook' : 'esta app';
+      var android = /Android/i.test(navigator.userAgent || '');
+      return '<div class="app-aviso" id="app-aviso"><b>Estás dentro de ' + app + '.</b> Aquí la ventana de PayPal a veces no abre.' +
+        (yappyOn ? ' Con Yappy sí puedes pagar aquí mismo.' : '') +
+        ' Para pagar con tarjeta o PayPal, abre esta página en ' + (android ? 'Chrome' : 'Safari') + ': toca los tres puntos (arriba) y elige «Abrir en el navegador». Tu diagnóstico te espera allá.' +
+        '<div class="app-acc">' + (android ? '<button class="btn gold" type="button" id="app-chrome">Abrir en Chrome</button>' : '') +
+        '<button class="btn" type="button" id="app-copiar">Copiar enlace</button></div></div>';
+    }
+    function enlaceRevision(ses) {
+      return location.origin + location.pathname.replace(/revisar\/?(index\.html)?$/, 'informe/') + '#' + ses.id + '.' + ses.key;
+    }
+    function conectarAvisoApp(ses) {
+      var url = enlaceRevision(ses);
+      var copiar = $('#app-copiar');
+      if (copiar) copiar.addEventListener('click', function () {
+        function listo() { copiar.textContent = 'Enlace copiado'; setTimeout(function () { copiar.textContent = 'Copiar enlace'; }, 2500); }
+        function aMano() { window.prompt('Copia este enlace y pégalo en Chrome o Safari:', url); }
+        try { navigator.clipboard.writeText(url).then(listo, aMano); } catch (e) { aMano(); }
+      });
+      var chrome = $('#app-chrome');
+      if (chrome) chrome.addEventListener('click', function () {
+        location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+      });
+    }
+    // Por qué no terminó un pago con PayPal (una vez por revisión y motivo; sin datos de la persona).
+    function medirPayPal(ses, que) {
+      if (DEMO) return;
+      var b = { id: ses.id, key: ses.key, que: que };
+      if (NAV) b.nav = NAV;
+      api('/api/interes', { method: 'POST', body: b }).catch(function () { /* medir nunca rompe nada */ });
+    }
+
     function montarPago(ses, precio) {
       var box = $('#pay-body');
       cargarConfig().then(function (c) {
@@ -830,11 +876,12 @@
         if (yappyOn) h += '<div class="paym" id="m-yappy"><div class="field"><label for="tel">Tu número de Yappy</label><input id="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="6123-4567"><span class="hint">Al tocar el botón azul te llega una solicitud a tu app. Solo se cobra si tú la apruebas (tienes 5 minutos).</span></div><div class="yappy-slot" id="yslot"></div></div>';
         if (manualOn) h += '<div class="paym" id="m-manual"><p class="pp-t">Pagas ' + money(precio) + ' por Yappy.</p><button class="btn gold" type="button" id="manual-btn">Quiero mi informe</button></div>';
         if ((yappyOn || manualOn) && paypalOn) h += '<div class="or" role="separator"><span>¿Prefieres tarjeta o PayPal?</span></div>';
-        if (paypalOn) h += '<div class="paym" id="m-paypal">' + '<p class="pp-t">Paga con tarjeta de crédito o débito, o con tu cuenta PayPal.</p><p class="fine-w" style="margin:-4px 0 10px">Para pagar con tarjeta no necesitas cuenta de PayPal: toca «Tarjeta de débito o crédito».</p>' + '<div class="pp-slot" id="ppslot"></div></div>';
+        if (paypalOn) h += '<div class="paym" id="m-paypal">' + '<p class="pp-t">Paga con tarjeta de crédito o débito, o con tu cuenta PayPal.</p><p class="fine-w" style="margin:-4px 0 10px">Para pagar con tarjeta no necesitas cuenta de PayPal: toca «Tarjeta de débito o crédito».</p>' + avisoApp(yappyOn) + '<div class="pp-slot" id="ppslot"></div></div>';
         h += '</div>';
         h += '<details class="promo"><summary>¿Tienes un código de regalo?</summary><div class="promo-row"><input id="promo" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código de regalo" placeholder="Escribe tu código"><button class="btn" type="button" id="promo-btn">Usar código</button></div></details>';
         h += '<div class="alert" id="e-pay" hidden></div><div id="pay-status" aria-live="polite"></div>';
         box.innerHTML = h;
+        conectarAvisoApp(ses);
 
         var tel = $('#tel');
         if (tel) tel.addEventListener('input', function () { var v = tel.value.replace(/\D/g, '').slice(0, 8); tel.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; });
@@ -851,6 +898,7 @@
         }
         function datosPago(extra) {
           var b = { id: ses.id, key: ses.key, email: correo(), cargo: cargo() };
+          if (NAV) b.nav = NAV;
           for (var k in extra) b[k] = extra[k];
           return { method: 'POST', body: b };
         }
@@ -1017,8 +1065,14 @@
                     fallo(e.message);
                   });
                 },
-                onCancel: function () { fallo('Cancelaste el pago en PayPal. Puedes intentarlo de nuevo cuando quieras.'); },
-                onError: function () { fallo(ultimoError || ('PayPal no pudo procesar el pago. Intenta de nuevo' + (yappyOn ? ' o paga con Yappy.' : '.'))); }
+                onCancel: function () {
+                  medirPayPal(ses, 'pp_cancelo');
+                  fallo(NAV ? 'La ventana de PayPal se cerró sin completar el pago. Dentro de esta app suele pasar: abre la página en tu navegador (instrucciones arriba) y paga desde ahí.' : 'Cancelaste el pago en PayPal. Puedes intentarlo de nuevo cuando quieras.');
+                },
+                onError: function () {
+                  medirPayPal(ses, 'pp_error');
+                  fallo(ultimoError || ('PayPal no pudo procesar el pago. Intenta de nuevo' + (yappyOn ? ' o paga con Yappy.' : '.')));
+                }
               }).render('#ppslot');
             }).catch(function () {
               $('#ppslot').innerHTML = '<p class="fine-w">No pudimos cargar PayPal. Revisa tu conexión' + (yappyOn ? ' o paga con Yappy.' : ' y recarga la página.') + '</p>';

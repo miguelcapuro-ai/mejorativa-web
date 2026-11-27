@@ -528,3 +528,10 @@ body:has(#p-diag[hidden]) .cta-fija{display:none!important}
 .recorte-nota{background:#FFF7E6;border:1px solid #EBD3A0;color:var(--ink);border-radius:14px;padding:12px 14px;font-size:.95rem;margin:0 0 18px}
 /* Mientras el aviso de cookies está abierto (abajo), la barra sube para no quedar tapada. */
 @media (max-width:760px){body:has(.mj-cc) .cta-fija{bottom:calc(110px + env(safe-area-inset-bottom,0px))}}
+
+/* Aviso dentro de Instagram/Facebook antes de PayPal (nov. 2026) */
+.app-aviso{background:rgba(201,162,90,.12);border:1px solid rgba(201,162,90,.45);border-radius:14px;padding:14px 16px;color:#E7ECF3;font-size:.9rem;line-height:1.5}
+.app-aviso b{color:#fff}
+.app-acc{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.app-acc .btn{padding:10px 16px;font-size:.88rem}
+.app-acc .btn:not(.gold){background:transparent;border:1px solid rgba(231,236,243,.5);color:#fff}
