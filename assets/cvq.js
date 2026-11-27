@@ -869,6 +869,11 @@
         var cargoInf = (diagActual && diagActual.cargo_objetivo_inferido) || '';
         var h = (cargoInf ? '<div class="field"><label for="cargo">Tu informe se enfoca en este cargo</label><input id="cargo" maxlength="120" value="' + esc(cargoInf) + '"><span class="hint">Lo deduje de tu CV. Si apuntas a otro, cámbialo antes de pagar.</span></div>' : '') +
           '<div class="field"><label for="mail">¿A qué correo te envío el informe?</label><input id="mail" type="email" inputmode="email" autocomplete="email" maxlength="200" placeholder="nombre.apellido@gmail.com"></div>';
+        // Factura a nombre de una empresa (nov. 2026): opcional y solo para quien paga desde Panamá. Afuera no aparece.
+        if (enPanama) h += '<div class="fac"><label class="fac-check"><input type="checkbox" id="fac-on"> Necesito la factura a nombre de una empresa</label>' +
+          '<div id="fac-datos" hidden><div class="field"><label for="fac-nombre">Razón social</label><input id="fac-nombre" maxlength="120" autocomplete="organization"></div>' +
+          '<div class="fac-row"><div class="field"><label for="fac-ruc">RUC</label><input id="fac-ruc" maxlength="40" autocomplete="off"></div><div class="field"><label for="fac-dv">DV</label><input id="fac-dv" maxlength="4" inputmode="numeric" autocomplete="off"></div></div></div>' +
+          '<p class="fine-w">Tu factura electrónica te llegará a tu correo en un plazo máximo de 7 días. Si no marcas la casilla, sale a tu nombre.</p></div>';
         // Paso intermedio (nov. 2026): los botones de pago no aparecen hasta que la persona decide seguir.
         // Antes, con el correo y el número autocompletados, un toque sin querer al botón de Yappy enviaba la solicitud de cobro.
         h += '<div class="pay-gate" id="pay-gate"><button class="btn gold" type="button" id="pay-seguir">Continuar al pago</button><p class="fine-w">Todavía no se cobra nada. En el siguiente paso eliges cómo pagar.</p></div>';
@@ -888,7 +893,22 @@
         function numero() { return tel ? tel.value.replace(/\D/g, '') : ''; }
         function correo() { return ($('#mail').value || '').trim(); }
         function cargo() { var x = $('#cargo'); return x ? x.value.trim() : ''; }
+        var facOn = $('#fac-on');
+        if (facOn) facOn.addEventListener('change', function () { $('#fac-datos').hidden = !facOn.checked; if (facOn.checked) $('#fac-nombre').focus(); });
+        function factura() {
+          if (!facOn || !facOn.checked) return null;
+          return { nombre: ($('#fac-nombre').value || '').trim(), ruc: ($('#fac-ruc').value || '').replace(/\s/g, ''), dv: ($('#fac-dv').value || '').trim() };
+        }
+        function facturaOk() {
+          var f = factura();
+          if (!f) return true;
+          if (!f.nombre) { alerta('#e-pay', 'Escribe la razón social para la factura.'); $('#fac-nombre').focus(); return false; }
+          if (!/^[0-9A-Za-z-]{3,40}$/.test(f.ruc)) { alerta('#e-pay', 'Revisa el RUC de la empresa.'); $('#fac-ruc').focus(); return false; }
+          if (f.dv && !/^\d{1,4}$/.test(f.dv)) { alerta('#e-pay', 'El DV son solo números.'); $('#fac-dv').focus(); return false; }
+          return true;
+        }
         function correoOk() {
+          if (!facturaOk()) return false;
           if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo())) return true;
           alerta('#e-pay', 'Escribe tu correo: ahí te llega el informe.'); $('#mail').focus(); return false;
         }
@@ -898,6 +918,7 @@
         }
         function datosPago(extra) {
           var b = { id: ses.id, key: ses.key, email: correo(), cargo: cargo() };
+          if (factura()) b.factura = factura();
           if (NAV) b.nav = NAV;
           for (var k in extra) b[k] = extra[k];
           return { method: 'POST', body: b };
